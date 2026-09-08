@@ -1,5 +1,17 @@
 # OpenCode history and continuation
 
+## Installed commands and historical lessons
+
+Checked version: 1.18.28. `opencode debug paths` prints resolved data, config, state, and log roots. Use it before guessed OS paths. `opencode db --help` exposes database discovery; inspect schema read-only before querying.
+
+```sh
+opencode run --session SESSION_ID --format json --file /path/to/handoff.txt 'Continue the scoped task described in the attached handoff'
+```
+
+Run in the selected workspace; omit `--session` only for a new task. `run --format json` emits raw JSON events; it is not spelled `--output-format`. For an existing backend, current run help supports `--attach URL` and `--dir` (a remote path when attaching). A CLI run needs no interactive PTY. Preserve session ID, errors, completion events, and output artifacts separately.
+
+Retained history reports an Antigravity-orchestrated OpenCode smoke call returning its expected marker with exit zero. Another provider route failed with an invalid API key. The lesson is to resolve the actual binary, model/provider, and credentials used by the worker. Do not carry an old free-model name, cost claim, credential wrapper, or fallback ladder into another user's installation. A successful alternate API request is not proof the failed OpenCode route worked.
+
 ## Native discovery
 
 Check `opencode --version` and subcommand help. Use `opencode session list` to find sessions and `opencode export SESSION_ID` to read a selected transcript as JSON. Confirm output/redaction flags in installed help. Export into private scratch space when a file is needed.
@@ -21,4 +33,3 @@ Source: [official storage and troubleshooting documentation](https://opencode.ai
 ## Identify the right session
 
 Match session ID, title, project directory, modification time, and parent/child relationship when available. Compare the selected transcript's final user request and last result to the intended work. Use the configured server's documented session API if local history belongs to a remote backend; an empty local list does not prove that remote history is absent.
-

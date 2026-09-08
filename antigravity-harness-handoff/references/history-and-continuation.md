@@ -1,5 +1,11 @@
 # Antigravity history and continuation
 
+## Retained live-test findings
+
+A prior 1.1.26 live test verified headless launch, two turns in one process, native child messaging, and exact-ID resume in a new process. The parent used `invoke_subagent`, then `send_message` with `Recipient` and `Message`. A child transcript and written artifact independently supported receipt and execution. The second turn and later resumed process recalled prior context.
+
+The test used user-authorized relaxed permissions; that is a test condition, not a portable default. Arbitrary attachment to busy sessions, remote control, Teamwork, and worktree isolation were not exercised by that test.
+
 Evidence: adapted from installed agent CLI 1.1.26 help and local storage inspection notes. CLI, desktop, and IDE can have separate stores.
 
 ## Discover and read
@@ -34,4 +40,3 @@ agy --input-format stream-json --output-format stream-json
 Keep its stdin open and obtain the current input message contract from installed help/documentation before writing messages. Do not add an initial `-p` to this shape. Native child messaging belongs to the owning parent's actual tool schema. `agy agents` lists definitions, not every live child. No `agy export` or `agy sessions list` was present in the checked version.
 
 Sources: [CLI reference](https://antigravity.google/docs/cli/reference), [conversations](https://antigravity.google/docs/cli/conversations/), [projects](https://antigravity.google/docs/cli/projects/).
-

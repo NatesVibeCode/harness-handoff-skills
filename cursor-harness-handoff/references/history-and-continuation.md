@@ -1,5 +1,21 @@
 # Cursor history and continuation
 
+## Installed CLI and actual local store
+
+Checked version: 2026.07.23-e383d2b. The installed `cursor-agent` presents itself as `agent`. Its help supports `--workspace`, `--resume`, `--print`, and `--output-format json|stream-json|text`.
+
+Observed CLI history layout: `~/.cursor/chats/WORKSPACE_KEY/CHAT_ID/store.db`. This is separate from editor `state.vscdb`. An inspected store contains `meta(key TEXT, value TEXT)` and `blobs(id TEXT, data BLOB)`. Enumerate metadata keys read-only first, inspect selected values, and follow actual references into blobs. Do not assume BLOB data is plain JSON or infer workspace identity solely from a hash. Use the installed client decoder/native view when encoding is unclear.
+
+For requested continuation, after reading enough context to identify the task:
+
+```sh
+cursor-agent --workspace /path/to/workspace --resume CHAT_ID --print --output-format json 'The scoped handoff request'
+```
+
+Pass long prompts through a safe argument vector; do not interpolate untrusted text into shell commands. `create-chat` creates state and is not lookup. `ls` is described as a resume picker in current help, so do not treat it as a guaranteed noninteractive listing API.
+
+A retained resume attempt encountered `SecItemCopyMatching failed -50`; its subsequent launch was not established as successful in the inspected record. Authentication-access failure does not prove the chat is absent. A Cursor UUID was first incorrectly queried as a Codex task ID. Resolve the owning harness before routing, and do not report an attempted resume as completed work.
+
 ## Separate CLI, editor, and remote agents
 
 Resolve the installed `cursor-agent` or `agent` binary and inspect its version/help. Do not assume an executable named `agent` belongs to Cursor without checking provenance. The editor launcher alone does not establish an agent CLI.
@@ -27,4 +43,3 @@ sqlite3 -readonly /path/to/state.vscdb '.schema'
 For a confirmed key/value table, enumerate a bounded set of key names matching chat, composer, conversation, or bubble; inspect selected values only after mapping workspace/session identity. Discover actual table and column names before querying. JSON metadata may reference message records elsewhere; follow those exact IDs rather than reporting headers as a full transcript. Binary or missing data should be reported as incomplete and read through the native history UI/export when available.
 
 These database details are implementation-dependent discovery hints, not a verified parser or guaranteed storage contract. Never modify editor databases to resume a chat. Cloud agents may require the corresponding native remote history surface even when local stores are empty.
-

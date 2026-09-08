@@ -1,5 +1,11 @@
 # Muse history and continuation
 
+## Retained live-test findings
+
+A prior 1.0.3-R2198.1 live test verified parent execution, child creation, and same-child follow-up after fixing command-ID reuse. The model-facing follow-up used `subagent_send_message` with `command_id`, `subagent_id`, `mode: followup`, and `message`. The child recalled context absent from the follow-up and wrote the expected artifact; its result and file were checked. Queue mode against a terminal child failed. These model-tool fields are distinct from MSP wire fields below.
+
+Cross-session CLI ingress still returned `external_agent_ingress_closed` during that test. Successful parent-to-child messaging does not establish arbitrary cross-session delivery.
+
 Evidence: adapted from installed Muse Code 1.0.3-R2198.1 help/schema notes. Confirm version-sensitive syntax with installed help.
 
 ## Discover and read
@@ -37,4 +43,3 @@ There is no `--message` body flag in the checked version. Replies use the real r
 For deliberate continuation of a stopped session, use `muse --workspace /path/to/workspace resume SESSION_UUID` after checking current help. A fresh `muse exec` is a new run. Do not resume a competing writer.
 
 Muse-owned children use the parent's native tools or schema-defined `subagent/sendMessage` and `subagent/followupTask`. Preserve parent, child, session, turn, and command identities separately; distinct mutations need distinct command IDs. `subagent/readResult` consumes state and is not passive history inspection.
-
