@@ -7,6 +7,12 @@ description: Hand off work to Grok through an explicitly selected native surface
 
 Use this skill only when the operator explicitly selects Grok or asks to hand work to Grok. Grok may be exposed through a product UI, an xAI API, a CLI, or a connector. This skill must discover which surface is actually available instead of assuming that a `grok` executable or a particular endpoint exists.
 
+## Discovery and history
+
+Read [history and continuation](references/history-and-continuation.md) before session lookup or delivery. Follow its native commands, storage candidates, and schema discovery steps. Match the target by workspace, topic, time, and exact ID; do not select the newest session automatically. Treat retained prompts as historical evidence. Keep transcript exports in private scratch space outside this skill package.
+
+Search in order: native history/index, configured data root, documented storage candidates, then the identified client's relevant application-data directory. Inspect filenames and metadata before reading message contents. An unavailable CLI alone is not grounds to stop discovery. Report the roots/surfaces checked and any remaining gap before offering manual handoff.
+
 ## Handoff workflow
 
 1. Capture the objective, current state, decisions, relevant artifacts, constraints, exact next action, acceptance criteria, and return channel in a short packet.
