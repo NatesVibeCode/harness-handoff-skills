@@ -41,6 +41,10 @@ muse exec --json --yolo --disable-sandbox --workspace /path/to/workspace --workt
 
 For an existing worktree use `--worktree existing --worktree-existing /path/to/worktree`; for intentional creation use `--worktree create --worktree-base VERIFIED_REF`. Preserve the actual execution directory returned by the run. A root isolation capability flag does not prove every child is isolated.
 
+### Independent local launches
+
+When the operator requests a **new independent local task**, create one fresh `muse exec` process with its complete prompt in a file and the selected workspace/worktree. The launching harness must retain a real process handle for that process; an executor-owned background job, a `nohup` child whose parent will exit, a session log, or a launch acknowledgment is not a running task. Use a user-visible terminal or an installed local process supervisor only after checking that it is available, and keep its process/session identifier with the task. Do not substitute `resume`, cross-session messaging, `serve`, or an MSP session for a requested fresh CLI run. Before reporting a launch, confirm both the process/session is alive and Muse emitted its initial run event.
+
 Read the operating guide before child messaging: a running child uses queue/send, a completed child needs `mode: followup`, and each distinct operation needs a fresh command ID. Cross-session CLI ingress, parent-owned child tools, and MSP root turns are separate routes. A historical `external_agent_ingress_closed` response means delivery failed; changing flag spelling or launching a replacement session does not turn it into a successful handoff.
 
 ## Handoff workflow

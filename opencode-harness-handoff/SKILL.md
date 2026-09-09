@@ -43,6 +43,10 @@ opencode run --session SESSION_ID --fork --format json 'Explore this alternative
 
 `run` needs no PTY. Use the caller's managed process tool, retain its handle and returned session ID, inspect error events, and verify artifacts. Interactive TUI control needs a terminal; historical `/exit` input opened an agent selector, so use supported terminal interruption rather than importing another harness's slash commands. Inspect the pane before any input.
 
+### Independent local launches
+
+When the operator requests a **new independent local task**, create one fresh `opencode run` process for the selected `--dir` and prompt file. The launching harness must retain a real process handle for that process; an executor-owned background job, a `nohup` child whose parent will exit, a session record, or a launch acknowledgment is not a running task. Use a user-visible terminal or an installed local process supervisor only after checking that it is available, and keep its process/session identifier with the task. Do not substitute `--session`, `--attach`, or a server-backed task for a requested fresh local run. Before reporting a launch, confirm both the process/session is alive and OpenCode emitted its initial event.
+
 A historical OpenCode worker returned the requested smoke marker and exited zero. A separate provider route failed authentication. Those are separate outcomes: a successful direct provider API call cannot validate the failed OpenCode route. Check binary resolution, selected provider/model, and `auth list` in the worker's execution context before changing anything.
 
 Use an already selected worktree as the process cwd or `--dir`; a conversation fork is not a Git worktree. Preserve changes when interrupted. Exact session continuation, a fresh run, and attachment to an existing backend are different operations. Read [history and continuation](references/history-and-continuation.md) for storage discovery and transcript lookup before selecting a retained session.

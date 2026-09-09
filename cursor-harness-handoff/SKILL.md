@@ -46,6 +46,10 @@ Use the exact CLI chat ID only after matching workspace metadata and the relevan
 
 A recorded continuation failed with `SecItemCopyMatching failed -50`. That is credential access failure, not missing history. Check `status` under the actual launching account and executable. Do not replace an authenticated session with a different endpoint, API key, or provider merely to make a smoke test pass.
 
+## Independent local launches
+
+When the operator requests a **new independent local task**, create one fresh Cursor CLI process in the selected workspace/worktree with the complete prompt from a file. The launching harness must retain a real process handle for that process; an executor-owned background job, a `nohup` child whose parent will exit, a session record, or a launch acknowledgment is not a running task. Use a user-visible terminal or an installed local process supervisor only after checking that it is available, and keep its process/session identifier with the task. Do not substitute a continuation, editor task, or remote bridge for a requested fresh local run. Before reporting a launch, confirm both the process/session is alive and Cursor emitted its initial event.
+
 Keep the subprocess handle, stream output and stderr, and inspect the final result and requested artifacts. Quiet output does not prove a hang. A new CLI resume is a new process continuing history; it does not establish delivery into an already busy editor agent. For a selected running editor agent, use its available native control surface and verify the selected workspace before sending.
 
 Use this skill only when the operator explicitly selects Cursor or asks to hand work to Cursor. This adapter coordinates context transfer; it does not decide which editor, agent, repository, or model should be used.

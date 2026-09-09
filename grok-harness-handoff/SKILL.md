@@ -78,6 +78,10 @@ Use `--max-turns N` for an explicitly bounded run, `--model MODEL` and `--reason
 
 A historical run returned its artifact while a process remained alive; another reported cancellation. Track process state, terminal result, and artifact verification separately. If an observation times out, check the same handle before retrying. Do not launch duplicate work merely because the command wrapper has not exited.
 
+### Independent local launches
+
+When the operator requests a **new independent local task**, create one fresh Grok Build CLI process in the selected `--cwd` with its prompt file. The launching harness must retain a real process handle for that process; an executor-owned background job, a `nohup` child whose parent will exit, a session record, or a launch acknowledgment is not a running task. Use a user-visible terminal or an installed local process supervisor only after checking that it is available, and keep its process/session identifier with the task. Do not substitute `--resume`, a leader, or an agent relay for a requested fresh local run. Before reporting a launch, confirm both the process/session is alive and Grok emitted its initial event.
+
 ## Handoff workflow
 
 When the user redirects this task here, stop advancing the superseded attempt and deliver the handoff; do not finish your own approach first. Preserve the goal, state, constraints, and requested outputs without prescribing the sender's tool recipe unless the user chose that method. Before replacing an owned worker for the same task, verify its identity and stop it through its native controls when cancellation is authorized; preserve its edits and do not terminate unrelated sessions. Relay any new approval question to the user rather than answering on their behalf. An existing approval applies only within its original scope.

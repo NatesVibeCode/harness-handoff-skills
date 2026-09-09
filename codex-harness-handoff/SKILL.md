@@ -69,6 +69,10 @@ Remote commands accept `--remote` with a supported websocket or Unix address and
 
 Headless `exec` works through pipes; a PTY is for interactive use. Retain the process handle and read JSONL while it runs. Keep diagnostics on stderr separate from stdout events. A final message file, zero process exit, and a successful launch are different facts: inspect errors and verify the requested files/tests before reporting success.
 
+### Independent local launches
+
+When the operator requests a **new independent local task**, create one fresh `codex exec` process in the selected checkout with its complete prompt supplied from a file. The launching harness must retain a real process handle for that process; an executor-owned background job, a `nohup` child whose parent will exit, a session file, or a thread-created acknowledgment is not a running task. Use a user-visible terminal or an installed local process supervisor only after checking that it is available, and keep its process/session identifier with the task. Do not substitute `resume`, `queue`, an app-server task, or a desktop-thread API for a requested fresh CLI run. Before reporting a launch, confirm both the process/session is alive and the CLI emitted its initial run event.
+
 For a selected linked worktree, inspect `git rev-parse --show-toplevel`, `git rev-parse --git-common-dir`, `git branch --show-current`, and `git status --short` there. A historical sandbox failure came from inaccessible shared Git metadata outside the worktree. Resolve that exact directory before adding access under the authorized scope. In service contexts, bubblewrap/user-namespace failures can occur before useful model work; identify the actual failing layer and use the user's selected execution controls.
 
 Resume restores conversation context; it does not promise rollback or transfer of dirty files. A fork of context does not establish a separate checkout. Preserve existing edits and the selected branch. Do not start a second writer to nudge a busy task. For authorized cancellation, stop the owned process, inspect its final state and changes, then decide whether exact-ID continuation or a new run is appropriate.

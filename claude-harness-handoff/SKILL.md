@@ -93,6 +93,10 @@ Use `--add-dir /path/to/extra-input` for additional authorized tool access. `--w
 
 Keep the selected auth path. `--bare` skips OAuth/keychain and auto-discovered context; it requires API-key/helper auth (or the selected third-party provider's credentials), so it is not a harmless startup optimization for subscription sessions. `--safe-mode` disables customizations but preserves normal auth/permissions. `--no-session-persistence` prevents later resume. Neither belongs in a durable handoff by default.
 
+### Independent local launches
+
+When the operator requests a **new independent local task**, create one fresh Claude CLI process in the selected checkout with its complete prompt supplied from a file. The launching harness must retain a real process handle for that process; an executor-owned background job, a `nohup` child whose parent will exit, a conversation record, or a background-ID acknowledgment alone is not a running task. Use a user-visible terminal or an installed local process supervisor only after checking that it is available, and keep its process/session identifier with the task. Do not substitute `--resume`, cloud messaging, or an app task for a requested fresh local run. Before reporting a launch, confirm both the process/session is alive and Claude emitted its initial event.
+
 Optional task controls: `--model MODEL`, `--effort LEVEL`, `--max-budget-usd AMOUNT` for print mode, and `--json-schema SCHEMA` for structured output. Preserve configured defaults unless requested. Record result errors as failures; parseable JSON and a printed background ID establish neither task success nor artifact correctness.
 
 ## Workflow

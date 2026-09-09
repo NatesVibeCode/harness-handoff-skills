@@ -41,6 +41,10 @@ For that persistent stream, submit newline-delimited `{"event":"user","message":
 
 `--dangerously-skip-permissions` approves permission requests; it does not prove sandboxing is off. `--sandbox` forces sandboxing on, and the configured `enableTerminalSandbox` setting must be checked for an explicit no-sandbox request. No `--yolo` or universal `--no-sandbox` alias is established here. See the operating guide for the bounded settings check, argument-vector long-prompt example, and native child-message schema.
 
+## Independent local launches
+
+When the operator requests a **new independent local task**, create one fresh Antigravity CLI process in the selected checkout with the complete prompt supplied safely to its native command. The launching harness must retain a real process handle for that process; an executor-owned background job, a `nohup` child whose parent will exit, a conversation record, or a launch acknowledgment is not a running task. Use a user-visible terminal or an installed local process supervisor only after checking that it is available, and keep its process/session identifier with the task. Do not substitute `--conversation`, a persistent stream, or native child messaging for a requested fresh local run. Before reporting a launch, confirm both the process/session is alive and Antigravity emitted its initial event.
+
 `--print-timeout 15m` changes the response timeout when needed. `--mode plan|accept-edits` is execution mode, not sandbox posture. `--continue` selects recent history and is unsuitable when an exact conversation was selected. A conversation resume is an active turn, not passive lookup or a mailbox for another busy process. No shell-level `agy send-message` was validated; native parent/child messaging uses Antigravity's own tools.
 
 ## Handoff workflow
