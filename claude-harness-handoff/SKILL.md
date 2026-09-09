@@ -16,6 +16,7 @@ command -v claude
 claude --version
 claude --help
 claude agents --help
+claude auth status --json
 
 # Passive native process discovery, including completed background sessions.
 claude agents --json --all --cwd /path/to/workspace
@@ -81,7 +82,7 @@ For a caller-owned multi-turn subprocess, launch:
 claude -p --verbose --input-format stream-json --output-format stream-json --replay-user-messages
 ```
 
-Keep stdin open and write native JSON message envelopes, one per line, such as `{"type":"user","message":{"role":"user","content":"Perform the scoped next step."}}`. Read the returned session and result events before sending the next turn. A closed stdin or completed one-shot process is not a live messaging channel. Do not pipe a raw handoff text file into stream-json input. This protocol does not inject into an unrelated running TUI.
+Keep stdin open and write native JSON message envelopes, one per line, such as `{"type":"user","message":{"role":"user","content":"Perform the scoped next step."},"parent_tool_use_id":null}`. Read the returned session and result events before sending the next turn. A closed stdin or completed one-shot process is not a live messaging channel. Do not pipe a raw handoff text file into stream-json input. This protocol does not inject into an unrelated running TUI. The [SDK message reference](https://code.claude.com/docs/en/agent-sdk/typescript) defines user, initialization, and result envelopes; preserve parent tool identity for actual child traffic instead of copying the root example.
 
 Use `--add-dir /path/to/extra-input` for additional authorized tool access. `--worktree NAME` creates a new checkout; choose it only when the task calls for isolation. `--tmux` requires `--worktree` in this release. Headless print and native background modes do not universally require tmux or a PTY.
 
