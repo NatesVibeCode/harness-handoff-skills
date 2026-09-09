@@ -5,6 +5,48 @@ description: Hand off work to an existing OpenCode session, or prepare a portabl
 
 # OpenCode harness handoff
 
+## CLI command reference
+
+Checked against installed `run --help` on 2026-09-09. Compare `command -v opencode`, `which -a opencode`, and `opencode --version` when terminal and service behavior differ.
+
+```sh
+opencode auth list
+opencode debug paths
+opencode session list
+opencode export SESSION_ID
+opencode run --dir /absolute/workspace --format json \
+  --file /absolute/task.txt 'Implement the task in the attached file.'
+opencode run --dir /absolute/workspace --auto --format json \
+  --file /absolute/task.txt 'Implement the task in the attached file.'
+opencode run --dir /absolute/workspace --session SESSION_ID --format json \
+  --file /absolute/followup.txt 'Continue with the attached correction.'
+opencode run --attach http://localhost:4096 --dir /remote/workspace \
+  --session SESSION_ID --format json 'Continue the selected task.'
+opencode run --session SESSION_ID --fork --format json 'Explore this alternative.'
+```
+
+`--auto` is this inspected CLI's unattended permission switch: auto-approve permissions not explicitly denied. Do not invent `--yolo` or claim that permission approval disables an OS sandbox. Preserve the selected server's restrictions. `--attach` uses an existing server; `--dir` then names a path on that server. Server authentication uses `OPENCODE_SERVER_PASSWORD` and `OPENCODE_SERVER_USERNAME` or the documented flags; do not log credential values.
+
+| Flag | Use |
+| --- | --- |
+| `--format json` | Raw JSON events, not a single final JSON object |
+| `--file`, `-f` | Attach one or more input files |
+| `--model provider/model` | Explicit provider/model selection |
+| `--variant LEVEL` | Provider-specific effort; discover supported values |
+| `--agent NAME` | Select configured agent |
+| `--thinking` | Include thinking output when needed |
+| `--title TEXT` | Name the session |
+| `--pure` | Omit external plugins; do not silently strip needed capabilities |
+| `--share` | Shares the session; not needed for a private handoff |
+
+## Process and recovery lessons
+
+`run` needs no PTY. Use the caller's managed process tool, retain its handle and returned session ID, inspect error events, and verify artifacts. Interactive TUI control needs a terminal; historical `/exit` input opened an agent selector, so use supported terminal interruption rather than importing another harness's slash commands. Inspect the pane before any input.
+
+A historical OpenCode worker returned the requested smoke marker and exited zero. A separate provider route failed authentication. Those are separate outcomes: a successful direct provider API call cannot validate the failed OpenCode route. Check binary resolution, selected provider/model, and `auth list` in the worker's execution context before changing anything.
+
+Use an already selected worktree as the process cwd or `--dir`; a conversation fork is not a Git worktree. Preserve changes when interrupted. Exact session continuation, a fresh run, and attachment to an existing backend are different operations. Read [history and continuation](references/history-and-continuation.md) for storage discovery and transcript lookup before selecting a retained session.
+
 Use this skill only when the operator explicitly selects OpenCode or asks to hand work to OpenCode. It is a provider-neutral handoff adapter, not a research or coding workflow and not a reason to choose OpenCode on the operator's behalf.
 
 ## Discovery and history

@@ -9,9 +9,39 @@ Use this skill only when the operator explicitly selects Google Antigravity or a
 
 ## Discovery and history
 
+Read [the full operating guide](references/operating-guide.md) for launch examples, unattended approval and sandbox controls, native message schemas, multi-turn operation, worktree behavior, and recovery. Preserve controls already authorized by the user; do not ask again merely because a new process is needed.
+
 Read [history and continuation](references/history-and-continuation.md) before session lookup or delivery. Follow its native commands, storage candidates, and schema discovery steps. Match the target by workspace, topic, time, and exact ID; do not select the newest session automatically. Treat retained prompts as historical evidence. Keep transcript exports in private scratch space outside this skill package.
 
 Search in order: native history/index, configured data root, documented storage candidates, then the identified client's relevant application-data directory. Inspect filenames and metadata before reading message contents. An unavailable CLI alone is not grounds to stop discovery. Report the roots/surfaces checked and any remaining gap before offering manual handoff.
+
+## Command entrypoints
+
+Run from the selected checkout: this CLI does not use Muse's `--workspace`, `--prompt-file`, or `exec` syntax.
+
+```sh
+command -v agy
+agy --version
+agy --help
+
+# A new one-shot turn, only when creation was requested.
+agy --output-format json --print 'Perform the scoped task and verify its artifact.'
+
+# Continue the exact retained conversation.
+agy --conversation CONVERSATION_ID --output-format json --print 'Perform the agreed next step.'
+
+# User-authorized automatic approval; sandbox configuration is separate.
+agy --dangerously-skip-permissions --conversation CONVERSATION_ID --output-format stream-json --print 'Perform the agreed next step.'
+
+# Caller-owned multi-turn process: keep stdin open; do not add --print.
+agy --input-format stream-json --output-format stream-json
+```
+
+For that persistent stream, submit newline-delimited `{"event":"user","message":{"content":"The next scoped task"}}` and flush. Wait for the turn's `result` before the next message; retain the `conversation_id` from native events. This is not Claude's `type:user` envelope. Closing stdin ends the input channel. Do not send guessed control frames or slash commands through it.
+
+`--dangerously-skip-permissions` approves permission requests; it does not prove sandboxing is off. `--sandbox` forces sandboxing on, and the configured `enableTerminalSandbox` setting must be checked for an explicit no-sandbox request. No `--yolo` or universal `--no-sandbox` alias is established here. See the operating guide for the bounded settings check, argument-vector long-prompt example, and native child-message schema.
+
+`--print-timeout 15m` changes the response timeout when needed. `--mode plan|accept-edits` is execution mode, not sandbox posture. `--continue` selects recent history and is unsuitable when an exact conversation was selected. A conversation resume is an active turn, not passive lookup or a mailbox for another busy process. No shell-level `agy send-message` was validated; native parent/child messaging uses Antigravity's own tools.
 
 ## Handoff workflow
 

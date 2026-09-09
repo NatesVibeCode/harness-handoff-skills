@@ -5,6 +5,49 @@ description: Hand off work to an existing Cursor agent or workspace, or prepare 
 
 # Cursor harness handoff
 
+## CLI command reference
+
+Checked against installed help on 2026-09-09. Resolve `command -v cursor-agent` and `cursor-agent --version`; an executable named `agent` needs provenance checking because other products use that name too.
+
+```sh
+cursor-agent status
+cursor-agent models
+cursor-agent --workspace /absolute/workspace --print --output-format json 'Implement the selected task.'
+cursor-agent --workspace /absolute/workspace --yolo --sandbox disabled --trust \
+  --print --output-format stream-json 'Implement the selected task.'
+cursor-agent --workspace /absolute/workspace --resume CHAT_ID \
+  --print --output-format json 'Continue with the requested correction.'
+cursor-agent --workspace /absolute/workspace --mode ask --print 'Explain the selected code.'
+cursor-agent --workspace /absolute/workspace --mode plan --print 'Plan the requested change.'
+cursor-agent --workspace /absolute/repository --worktree selected-name \
+  --worktree-base VERIFIED_REF --print 'Implement the isolated task.'
+```
+
+For long prompts, read the UTF-8 file and pass its contents as one argument through the caller's process API or `subprocess.Popen([...], cwd=...)`; this CLI does not advertise a prompt-file flag. Do not paste arbitrary prompt text into shell code.
+
+| Flag | Meaning |
+| --- | --- |
+| `--yolo`, `--force`, `-f` | Allow commands unless explicitly denied; YOLO is a force alias |
+| `--sandbox disabled` | Explicitly disables sandbox mode, overriding configuration |
+| `--sandbox enabled` | Explicitly enables sandbox mode |
+| `--trust` | Trust selected workspace without prompting |
+| `--auto-review` | Classifier-based approval; may still prompt |
+| `--approve-mcps` | Approves MCP servers separately; use when included in the requested controls |
+| `--stream-partial-output` | Adds text deltas with print + stream-json |
+| `--model MODEL` | Uses an explicit model; discover available IDs with `models` |
+| `--add-dir PATH` | Adds another workspace root |
+| `--skip-worktree-setup` | Skips configured worktree setup scripts; changes startup behavior |
+
+Preserve the user's already-authorized controls in follow-ups. Force approval and sandbox mode are separate. Print mode has write and shell tools; it is not automatically read-only. `create-chat` creates new state. `ls` and bare `resume` are interactive/latest-session routes, not substitutes for bounded passive history lookup.
+
+## Continuation and failure handling
+
+Use the exact CLI chat ID only after matching workspace metadata and the relevant transcript. Editor and cloud conversation IDs are not automatically CLI chat IDs. The [history reference](references/history-and-continuation.md) covers the CLI SQLite store and separate editor stores.
+
+A recorded continuation failed with `SecItemCopyMatching failed -50`. That is credential access failure, not missing history. Check `status` under the actual launching account and executable. Do not replace an authenticated session with a different endpoint, API key, or provider merely to make a smoke test pass.
+
+Keep the subprocess handle, stream output and stderr, and inspect the final result and requested artifacts. Quiet output does not prove a hang. A new CLI resume is a new process continuing history; it does not establish delivery into an already busy editor agent. For a selected running editor agent, use its available native control surface and verify the selected workspace before sending.
+
 Use this skill only when the operator explicitly selects Cursor or asks to hand work to Cursor. This adapter coordinates context transfer; it does not decide which editor, agent, repository, or model should be used.
 
 ## Discovery and history

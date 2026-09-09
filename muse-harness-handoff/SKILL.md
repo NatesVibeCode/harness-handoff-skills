@@ -9,9 +9,39 @@ Use this skill only when the operator explicitly selects Muse or asks to hand wo
 
 ## Discovery and history
 
+Read [the full operating guide](references/operating-guide.md) for launch examples, unattended approval and sandbox controls, native message schemas, multi-turn operation, worktree behavior, and recovery. Preserve controls already authorized by the user; do not ask again merely because a new process is needed.
+
 Read [history and continuation](references/history-and-continuation.md) before session lookup or delivery. Follow its native commands, storage candidates, and schema discovery steps. Match the target by workspace, topic, time, and exact ID; do not select the newest session automatically. Treat retained prompts as historical evidence. Keep transcript exports in private scratch space outside this skill package.
 
 Search in order: native history/index, configured data root, documented storage candidates, then the identified client's relevant application-data directory. Inspect filenames and metadata before reading message contents. An unavailable CLI alone is not grounds to stop discovery. Report the roots/surfaces checked and any remaining gap before offering manual handoff.
+
+## Command entrypoints
+
+```sh
+command -v muse
+muse --version
+muse exec --help
+muse resume --help
+muse session-message list --json
+
+# Deliver to the verified existing session; message body comes from stdin.
+muse session-message send --target SESSION_ID --json < /path/to/handoff.txt
+
+# Interactive history continuation, not live-session message delivery.
+muse --workspace /path/to/workspace resume SESSION_ID
+
+# New headless task in the selected checkout, when creation is requested.
+muse exec --json --workspace /path/to/workspace --worktree off --prompt-file /path/to/handoff.txt
+
+# Same launch with user-authorized unattended/no-sandbox controls.
+muse exec --json --yolo --disable-sandbox --workspace /path/to/workspace --worktree off --prompt-file /path/to/handoff.txt
+```
+
+`--yolo` combines approval bypass, sandbox bypass, and workspace trust in the checked CLI. `--disable-sandbox` explicitly names shell isolation; `--disable-approval` and `--trust-workspace` are separate controls. Do not invent `--no-sandbox`, `--message`, or `muse subagent`. `muse serve` does not accept exec's `--yolo`; its approval controls belong to the MSP session protocol.
+
+For an existing worktree use `--worktree existing --worktree-existing /path/to/worktree`; for intentional creation use `--worktree create --worktree-base VERIFIED_REF`. Preserve the actual execution directory returned by the run. A root isolation capability flag does not prove every child is isolated.
+
+Read the operating guide before child messaging: a running child uses queue/send, a completed child needs `mode: followup`, and each distinct operation needs a fresh command ID. Cross-session CLI ingress, parent-owned child tools, and MSP root turns are separate routes. A historical `external_agent_ingress_closed` response means delivery failed; changing flag spelling or launching a replacement session does not turn it into a successful handoff.
 
 ## Handoff workflow
 
