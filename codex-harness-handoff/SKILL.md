@@ -77,6 +77,8 @@ Read [history and continuation](references/history-and-continuation.md) before d
 
 ## Workflow
 
+When the user redirects this task here, stop advancing the superseded attempt and deliver the handoff; do not finish your own approach first. Preserve the goal, state, constraints, and requested outputs without prescribing the sender's tool recipe unless the user chose that method. Before replacing an owned worker for the same task, verify its identity and stop it through its native controls when cancellation is authorized; preserve its edits and do not terminate unrelated sessions. Relay any new approval question to the user rather than answering on their behalf. An existing approval applies only within its original scope.
+
 1. Resolve the installed client and relevant help. Search native history and retained metadata by workspace, topic, date, and exact ID. Read the relevant prior request, last result, and unresolved work.
 2. Deliver a concise goal, current state, constraints, input artifacts, and expected result. Let the receiving harness choose its native tools unless the user specified a method.
 3. Continue the selected session when requested. A resume starts activity; use retained logs or native read tools for passive lookup. A new process is not a live-session message.

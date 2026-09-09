@@ -80,6 +80,8 @@ A historical run returned its artifact while a process remained alive; another r
 
 ## Handoff workflow
 
+When the user redirects this task here, stop advancing the superseded attempt and deliver the handoff; do not finish your own approach first. Preserve the goal, state, constraints, and requested outputs without prescribing the sender's tool recipe unless the user chose that method. Before replacing an owned worker for the same task, verify its identity and stop it through its native controls when cancellation is authorized; preserve its edits and do not terminate unrelated sessions. Relay any new approval question to the user rather than answering on their behalf. An existing approval applies only within its original scope.
+
 1. Capture the objective, current state, decisions, relevant artifacts, constraints, exact next action, acceptance criteria, and return channel in a short packet.
 2. Keep operator identity, Grok product surface, client, channel, model or inference mechanism, and execution adapter separate. Never infer a Grok target from the fact that the current harness is conversational.
 3. Confirm the native surface and authorization: Grok UI, xAI API, installed CLI, or connector. Use only its documented operations and the credentials already authorized for that surface.

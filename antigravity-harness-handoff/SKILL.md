@@ -45,6 +45,8 @@ For that persistent stream, submit newline-delimited `{"event":"user","message":
 
 ## Handoff workflow
 
+When the user redirects this task here, stop advancing the superseded attempt and deliver the handoff; do not finish your own approach first. Preserve the goal, state, constraints, and requested outputs without prescribing the sender's tool recipe unless the user chose that method. Before replacing an owned worker for the same task, verify its identity and stop it through its native controls when cancellation is authorized; preserve its edits and do not terminate unrelated sessions. Relay any new approval question to the user rather than answering on their behalf. An existing approval applies only within its original scope.
+
 1. Capture a concise packet containing the objective, current state, decisions, relevant artifacts, constraints, exact next action, acceptance criteria, and return channel.
 2. Keep operator identity, product, client, channel, model or inference mechanism, and execution adapter separate. Do not infer the target from the application currently in use.
 3. Discover the native Antigravity surface in the target environment. When the `agy` CLI is available, inspect its supported commands and options before using it. Otherwise use the available native Antigravity integration or UI.
