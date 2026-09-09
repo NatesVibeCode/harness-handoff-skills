@@ -45,6 +45,14 @@ claude attach BACKGROUND_ID
 
 For authorized cancellation, `claude stop BACKGROUND_ID` stops the background process and retains the conversation. `claude rm BACKGROUND_ID` deletes the background session and potentially its worktree; it is not routine cleanup. `claude respawn --help` describes process restart after an upgrade, not task retry after an observation timeout.
 
+## Native cross-session messaging
+
+Current Claude documentation adds a route beyond CLI resume: inside a supported Claude session, `/list-agents` shows reachable agents; Claude uses `ListAgents` and `SendMessage` to discover and message the selected recipient. These are native model tools, not invented shell subcommands. Have the existing Claude parent use its actual tool schema and resolved recipient; do not start another session merely to perform discovery.
+
+Messages arrive between tool calls or start a turn when idle. Delivery can be held or refused by `crossSessionInbound`; acceptance does not prove execution. Ordinary print workers can receive messages, but bare-mode workers have no inbox. For explicitly authorized unattended inbound delivery, the session-local setting is `--settings '{"crossSessionInbound":"accept"}'`; do not silently change global settings.
+
+`SendMessage` also supports a one-shot `notify_when_idle` subscription for eligible same-machine sessions. Availability and cross-machine routing depend on version/provider and Remote Control. Use the documented discovery route, not guessed sockets or copied auth tokens. See [official cross-session messaging](https://code.claude.com/docs/en/cross-session-messaging) for current requirements and controls. This route was documentation-checked, not live-tested here.
+
 ## Approval, YOLO-equivalent, and isolation
 
 Claude's checked CLI does not advertise a `--yolo` flag. Its explicit bypass is:
