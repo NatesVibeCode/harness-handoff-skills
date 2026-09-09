@@ -1,0 +1,127 @@
+#!/bin/zsh
+# Launch and observe retained, local Codex CLI tasks through GNU screen.
+# This intentionally creates fresh `codex exec` runs only: no resume, queue,
+# app-server, or desktop-thread automation.
+
+set -u
+
+bridge_root="${XDG_DATA_HOME:-$HOME/.local/share}/codex-task-bridge"
+codex_bin="${CODEX_TASK_BRIDGE_CODEX:-$HOME/.local/bin/codex}"
+self_path="${0:A}"
+
+usage() {
+  cat <<'EOF'
+Usage:
+  codex-task-bridge start --name NAME --workspace PATH --prompt-file PATH --model MODEL [options]
+  codex-task-bridge list
+  codex-task-bridge attach NAME
+  codex-task-bridge status NAME
+  codex-task-bridge stop NAME
+
+Options for start:
+  --reasoning EFFORT       default: high
+  --sandbox MODE           read-only, workspace-write, or danger-full-access
+  --add-dir PATH           repeatable additional writable directory
+
+Each start is a fresh, retained local `codex exec` process in a GNU screen
+session named codex-task-NAME. Attach from a terminal with `attach NAME`.
+EOF
+}
+
+valid_name() {
+  [[ "$1" =~ '^[A-Za-z0-9][A-Za-z0-9._-]*$' ]]
+}
+
+screen_name() {
+  print -r -- "codex-task-$1"
+}
+
+state_dir() {
+  print -r -- "$bridge_root/$1"
+}
+
+screen_exists() {
+  screen -ls 2>/dev/null | grep -Fq ".$(screen_name "$1")"
+}
+
+run_task() {
+  local name="$1" workspace="$2" prompt="$3" model="$4" reasoning="$5" sandbox="$6"
+  shift 6
+  local dir="$(state_dir "$name")"
+  mkdir -p "$dir"
+  local -a command
+  command=("$codex_bin" exec -C "$workspace" -m "$model" -c "model_reasoning_effort=\"$reasoning\"" -s "$sandbox" --json -o "$dir/final.md")
+  while (( $# > 0 )); do
+    command+=(--add-dir "$1")
+    shift
+  done
+  command+=(-)
+
+  print -r -- "started_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)" > "$dir/status"
+  print -r -- "workspace=$workspace" >> "$dir/status"
+  print -r -- "model=$model" >> "$dir/status"
+  print -r -- "reasoning=$reasoning" >> "$dir/status"
+  print -r -- "sandbox=$sandbox" >> "$dir/status"
+  print -r -- "prompt_file=$prompt" >> "$dir/status"
+  print -r -- "Running fresh Codex task: $name"
+  "${command[@]}" < "$prompt" 2>&1 | tee "$dir/events.jsonl"
+  local code=${pipestatus[1]}
+  print -r -- "exit_code=$code" >> "$dir/status"
+  print -r -- "finished_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$dir/status"
+  print -r -- "Codex task $name exited with $code. Output: $dir"
+  return "$code"
+}
+
+start_task() {
+  local name='' workspace='' prompt='' model='' reasoning='high' sandbox='workspace-write'
+  local -a add_dirs
+  while (( $# > 0 )); do
+    case "$1" in
+      --name) name="${2:-}"; shift 2 ;;
+      --workspace) workspace="${2:-}"; shift 2 ;;
+      --prompt-file) prompt="${2:-}"; shift 2 ;;
+      --model) model="${2:-}"; shift 2 ;;
+      --reasoning) reasoning="${2:-}"; shift 2 ;;
+      --sandbox) sandbox="${2:-}"; shift 2 ;;
+      --add-dir) add_dirs+=("${2:-}"); shift 2 ;;
+      *) print -u2 -r -- "unknown option: $1"; return 2 ;;
+    esac
+  done
+
+  [[ -n "$name" && -n "$workspace" && -n "$prompt" && -n "$model" ]] || { usage >&2; return 2; }
+  valid_name "$name" || { print -u2 -r -- "name may contain only letters, digits, dot, underscore, and hyphen"; return 2; }
+  [[ -d "$workspace" ]] || { print -u2 -r -- "workspace does not exist: $workspace"; return 2; }
+  [[ -r "$prompt" ]] || { print -u2 -r -- "prompt file is not readable: $prompt"; return 2; }
+  [[ -x "$codex_bin" ]] || { print -u2 -r -- "codex executable is not available: $codex_bin"; return 2; }
+  case "$sandbox" in read-only|workspace-write|danger-full-access) ;; *) print -u2 -r -- "invalid sandbox: $sandbox"; return 2;; esac
+  screen_exists "$name" && { print -u2 -r -- "already running: $(screen_name "$name")"; return 1; }
+
+  local dir="$(state_dir "$name")"
+  [[ ! -e "$dir" ]] || { print -u2 -r -- "state already exists: $dir (choose a new name)"; return 1; }
+  mkdir -p "$dir"
+  screen -dmS "$(screen_name "$name")" /bin/zsh "$self_path" _run "$name" "$workspace" "$prompt" "$model" "$reasoning" "$sandbox" "${add_dirs[@]}"
+  print -r -- "started local screen session: $(screen_name "$name")"
+  print -r -- "attach: codex-task-bridge attach $name"
+  print -r -- "status: codex-task-bridge status $name"
+}
+
+case "${1:-}" in
+  _run) shift; run_task "$@" ;;
+  start) shift; start_task "$@" ;;
+  list) screen -ls 2>/dev/null | grep 'codex-task-' || true ;;
+  attach)
+    [[ $# -eq 2 ]] && valid_name "$2" || { usage >&2; exit 2; }
+    exec screen -r "$(screen_name "$2")"
+    ;;
+  status)
+    [[ $# -eq 2 ]] && valid_name "$2" || { usage >&2; exit 2; }
+    dir="$(state_dir "$2")"
+    [[ -f "$dir/status" ]] && cat "$dir/status" || print -r -- "no retained state for $2"
+    [[ -f "$dir/events.jsonl" ]] && tail -n 20 "$dir/events.jsonl"
+    ;;
+  stop)
+    [[ $# -eq 2 ]] && valid_name "$2" || { usage >&2; exit 2; }
+    screen -S "$(screen_name "$2")" -X quit
+    ;;
+  *) usage >&2; exit 2 ;;
+esac
