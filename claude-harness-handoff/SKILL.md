@@ -40,7 +40,12 @@ claude logs BACKGROUND_ID
 
 # Interactive attachment, when requested; not a read-only log operation.
 claude attach BACKGROUND_ID
+
+# Existing CLOUD session only: queue a prompt there, not a local resume.
+claude --cloud CLOUD_SESSION_ID -p 'Continue with the agreed next step.'
 ```
+
+The [headless documentation](https://code.claude.com/docs/en/headless) distinguishes cloud session-ID messaging from cloud creation: `--cloud` with a task description cannot be combined with print mode, while an existing cloud ID can. Do not replace a local target with cloud execution. `--bg` also cannot be combined with `-p`.
 
 `claude --continue` uses the newest conversation in the current directory. Do not use it when the user selected a different or exact conversation. Do not run concurrent resumes against the same conversation. `claude --session-id UUID` is not a substitute for `--resume`.
 

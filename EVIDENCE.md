@@ -27,3 +27,11 @@ The core handoff lesson from prior use is to provide the goal, current state, co
 - OpenCode: session/export/run/attach, headless auto-approval of non-denied tools, directory semantics for remote attachment, model/provider selection, and auth/process failures.
 
 Help validation establishes accepted syntax and documented behavior, not a successful inference or handoff. Historical live-test findings remain labeled by their original versions and dates. No claim is made that every launch, permission mode, transport, or installed host skill-discovery path has been exercised end to end.
+
+## Source-recovery disposition
+
+The recovery compared the original authoring record, the Muse and Antigravity operating/live-test guides, existing Codex/Claude/OpenCode delegation guides, cross-harness handoff lessons, and retained command/failure reports against the published package. Current help and official documentation resolve version conflicts. The portable operating details are included in each skill and its references; the original private transcripts are not redistributed.
+
+Preserved lessons include respecting a redirect immediately, sending outcomes rather than imposing the sender's tool recipe, retaining existing authorization without broadening it, relaying new approval questions, preventing duplicate workers, separating session/process/worktree identity, and independently checking resulting artifacts.
+
+Not carried forward as current facts: universal PTY/tmux requirements, blanket print-mode permission approval, mandatory Git initialization, Claude having no native messaging, treating an agent browser as a JSON session index, fixed historical model/cost defaults, private coordination services, and speculative context-percentage thresholds. Product-specific project policy and unrelated hook/plugin tutorials are not portable handoff mechanics. Discovery paths and schemas remain version-sensitive, and bounded historical retrieval cannot certify that deleted or unindexed records have been recovered.
