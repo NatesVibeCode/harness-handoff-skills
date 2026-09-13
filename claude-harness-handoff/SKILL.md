@@ -5,6 +5,30 @@ description: Find Claude Code sessions and local transcripts, hand off tasks, an
 
 # Claude Code harness handoff
 
+## Direct lane spawning
+
+For a new handoff, spawn the requested number of independent Claude CLI processes directly. Each lane gets its own prompt, process handle, and result. Do not use a lane manager, leader, coordinator, relay, server, background task manager, or parent agent to fan out or run the lanes. Existing-session continuation is allowed only when the operator explicitly asks to continue that exact session.
+
+## Direct lane spawning
+
+For a new handoff, spawn the requested number of independent Claude CLI processes directly. Each lane gets its own prompt, process handle, and result. Do not use a lane manager, leader, coordinator, relay, server, background task manager, or parent agent to fan out or run the lanes. Existing-session continuation is allowed only when the operator explicitly asks to continue that exact session.
+
+## Direct lane spawning
+
+For a new handoff, spawn the requested number of independent Claude CLI processes directly. Each lane gets its own prompt, process handle, and result. Do not use a lane manager, leader, coordinator, relay, server, background task manager, or parent agent to fan out or run the lanes. Existing-session continuation is allowed only when the operator explicitly asks to continue that exact session.
+
+## Direct lane spawning
+
+For a new handoff, spawn the requested number of independent Claude CLI processes directly. Each lane gets its own prompt, process handle, and result. Do not use a lane manager, leader, coordinator, relay, server, background task manager, or parent agent to fan out or run the lanes. Existing-session continuation is allowed only when the operator explicitly asks to continue that exact session.
+
+## Direct lane spawning
+
+For a new handoff, spawn the requested number of independent Claude CLI processes directly. Each lane gets its own prompt, process handle, and result. Do not use a lane manager, leader, coordinator, relay, server, background task manager, or parent agent to fan out or run the lanes. Existing-session continuation is allowed only when the operator explicitly asks to continue that exact session.
+
+## Direct lane spawning
+
+For a new handoff, spawn the requested number of independent Claude CLI processes directly. Each lane gets its own prompt, process handle, and result. Do not use a lane manager, leader, coordinator, relay, server, background task manager, or parent agent to fan out or run the lanes. Existing-session continuation is allowed only when the operator explicitly asks to continue that exact session.
+
 Read [history and continuation](references/history-and-continuation.md) before discovery or execution. The user's request selects the workspace, task, and whether to inspect, send, continue, or create a session.
 
 ## CLI recipes

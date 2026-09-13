@@ -5,6 +5,30 @@ description: Hand off work to an existing Cursor agent or workspace, or prepare 
 
 # Cursor harness handoff
 
+## Direct lane spawning
+
+For a new handoff, spawn the requested number of independent Cursor CLI processes directly. Each lane gets its own prompt, process handle, and result. Do not use a lane manager, leader, coordinator, relay, server, background task manager, or parent agent to fan out or run the lanes. Existing-session continuation is allowed only when the operator explicitly asks to continue that exact session.
+
+## Direct lane spawning
+
+For a new handoff, spawn the requested number of independent Cursor CLI processes directly. Each lane gets its own prompt, process handle, and result. Do not use a lane manager, leader, coordinator, relay, server, background task manager, or parent agent to fan out or run the lanes. Existing-session continuation is allowed only when the operator explicitly asks to continue that exact session.
+
+## Direct lane spawning
+
+For a new handoff, spawn the requested number of independent Cursor CLI processes directly. Each lane gets its own prompt, process handle, and result. Do not use a lane manager, leader, coordinator, relay, server, background task manager, or parent agent to fan out or run the lanes. Existing-session continuation is allowed only when the operator explicitly asks to continue that exact session.
+
+## Direct lane spawning
+
+For a new handoff, spawn the requested number of independent Cursor CLI processes directly. Each lane gets its own prompt, process handle, and result. Do not use a lane manager, leader, coordinator, relay, server, background task manager, or parent agent to fan out or run the lanes. Existing-session continuation is allowed only when the operator explicitly asks to continue that exact session.
+
+## Direct lane spawning
+
+For a new handoff, spawn the requested number of independent Cursor CLI processes directly. Each lane gets its own prompt, process handle, and result. Do not use a lane manager, leader, coordinator, relay, server, background task manager, or parent agent to fan out or run the lanes. Existing-session continuation is allowed only when the operator explicitly asks to continue that exact session.
+
+## Direct lane spawning
+
+For a new handoff, spawn the requested number of independent Cursor CLI processes directly. Each lane gets its own prompt, process handle, and result. Do not use a lane manager, leader, coordinator, relay, server, background task manager, or parent agent to fan out or run the lanes. Existing-session continuation is allowed only when the operator explicitly asks to continue that exact session.
+
 ## CLI command reference
 
 Checked against installed help on 2026-09-09. Resolve `command -v cursor-agent` and `cursor-agent --version`; an executable named `agent` needs provenance checking because other products use that name too.

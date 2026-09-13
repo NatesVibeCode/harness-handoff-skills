@@ -5,6 +5,30 @@ description: Hand off work to an existing Google Antigravity conversation, or pr
 
 # Antigravity harness handoff
 
+## Direct lane spawning
+
+For a new handoff, spawn the requested number of independent native Antigravity CLI processes directly. Each lane gets its own prompt, process handle, and result. Do not use a lane manager, leader, coordinator, relay, server, or parent agent to fan out or run the lanes. Existing-session continuation is allowed only when the operator explicitly asks to continue that exact session.
+
+## Direct lane spawning
+
+For a new handoff, spawn the requested number of independent native Antigravity CLI processes directly. Each lane gets its own prompt, process handle, and result. Do not use a lane manager, leader, coordinator, relay, server, or parent agent to fan out or run the lanes. Existing-session continuation is allowed only when the operator explicitly asks to continue that exact session.
+
+## Direct lane spawning
+
+For a new handoff, spawn the requested number of independent native Antigravity CLI processes directly. Each lane gets its own prompt, process handle, and result. Do not use a lane manager, leader, coordinator, relay, server, or parent agent to fan out or run the lanes. Existing-session continuation is allowed only when the operator explicitly asks to continue that exact session.
+
+## Direct lane spawning
+
+For a new handoff, spawn the requested number of independent native Antigravity CLI processes directly. Each lane gets its own prompt, process handle, and result. Do not use a lane manager, leader, coordinator, relay, server, or parent agent to fan out or run the lanes. Existing-session continuation is allowed only when the operator explicitly asks to continue that exact session.
+
+## Direct lane spawning
+
+For a new handoff, spawn the requested number of independent native Antigravity CLI processes directly. Each lane gets its own prompt, process handle, and result. Do not use a lane manager, leader, coordinator, relay, server, or parent agent to fan out or run the lanes. Existing-session continuation is allowed only when the operator explicitly asks to continue that exact session.
+
+## Direct lane spawning
+
+For a new handoff, spawn the requested number of independent native Antigravity CLI processes directly. Each lane gets its own prompt, process handle, and result. Do not use a lane manager, leader, coordinator, relay, server, or parent agent to fan out or run the lanes. Existing-session continuation is allowed only when the operator explicitly asks to continue that exact session.
+
 Use this skill only when the operator explicitly selects Google Antigravity or asks to hand work to Antigravity. This adapter coordinates a handoff; it does not select another product or silently broaden permissions.
 
 ## Discovery and history
