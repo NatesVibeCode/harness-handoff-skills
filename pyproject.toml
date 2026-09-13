@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "harness-handoff-skills"
+version = "0.1.0"
+description = "Portable direct-CLI handoff skills for coding-agent harnesses"
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [{name = "Nate's Vibe Code"}]
+license = {text = "MIT"}
+classifiers = [
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+]
+
+[tool.setuptools]
+py-modules = ["harness_handoff_skills"]
+
+[tool.setuptools.data-files]
+"share/harness-handoff-skills" = ["README.md", "EVIDENCE.md"]
+"share/harness-handoff-skills/scripts" = ["scripts/codex-task-bridge"]
+"share/harness-handoff-skills/antigravity-harness-handoff" = ["antigravity-harness-handoff/SKILL.md"]
+"share/harness-handoff-skills/antigravity-harness-handoff/references" = ["antigravity-harness-handoff/references/history-and-continuation.md", "antigravity-harness-handoff/references/operating-guide.md"]
+"share/harness-handoff-skills/claude-harness-handoff" = ["claude-harness-handoff/SKILL.md"]
+"share/harness-handoff-skills/claude-harness-handoff/references" = ["claude-harness-handoff/references/history-and-continuation.md"]
+"share/harness-handoff-skills/codex-harness-handoff" = ["codex-harness-handoff/SKILL.md"]
+"share/harness-handoff-skills/cursor-harness-handoff" = ["cursor-harness-handoff/SKILL.md"]
+"share/harness-handoff-skills/cursor-harness-handoff/references" = ["cursor-harness-handoff/references/history-and-continuation.md"]
+"share/harness-handoff-skills/grok-harness-handoff" = ["grok-harness-handoff/SKILL.md"]
+"share/harness-handoff-skills/grok-harness-handoff/references" = ["grok-harness-handoff/references/history-and-continuation.md"]
+"share/harness-handoff-skills/muse-harness-handoff" = ["muse-harness-handoff/SKILL.md"]
+"share/harness-handoff-skills/muse-harness-handoff/references" = ["muse-harness-handoff/references/history-and-continuation.md", "muse-harness-handoff/references/operating-guide.md"]
+"share/harness-handoff-skills/opencode-harness-handoff" = ["opencode-harness-handoff/SKILL.md"]
+"share/harness-handoff-skills/opencode-harness-handoff/references" = ["opencode-harness-handoff/references/history-and-continuation.md"]
