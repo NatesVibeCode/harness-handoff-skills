@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "harness-handoff-skills"
-version = "0.1.0"
+version = "0.2.0"
 description = "Portable direct-CLI handoff skills for coding-agent harnesses"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -18,19 +18,25 @@ classifiers = [
 [tool.setuptools]
 py-modules = ["harness_handoff_skills"]
 
+# The seven <harness>-harness-handoff/SKILL.md trees and their contract.json files are
+# GENERATED from skills-src/ by scripts/build_skills.py. Do not hand-edit them; edit the
+# source and re-run the generator, then `--check` to prove the trees are current.
 [tool.setuptools.data-files]
 "share/harness-handoff-skills" = ["README.md", "EVIDENCE.md"]
-"share/harness-handoff-skills/scripts" = ["scripts/codex-task-bridge"]
-"share/harness-handoff-skills/antigravity-harness-handoff" = ["antigravity-harness-handoff/SKILL.md"]
+"share/harness-handoff-skills/scripts" = ["scripts/codex-task-bridge", "scripts/build_skills.py", "scripts/extract_skill_sources.py"]
+"share/harness-handoff-skills/skills-src" = ["skills-src/contracts.json"]
+"share/harness-handoff-skills/skills-src/harnesses" = ["skills-src/harnesses/antigravity.md", "skills-src/harnesses/claude.md", "skills-src/harnesses/codex.md", "skills-src/harnesses/cursor.md", "skills-src/harnesses/grok.md", "skills-src/harnesses/muse.md", "skills-src/harnesses/opencode.md"]
+"share/harness-handoff-skills/skills-src/lane-spawning" = ["skills-src/lane-spawning/antigravity.md", "skills-src/lane-spawning/claude.md", "skills-src/lane-spawning/codex.md", "skills-src/lane-spawning/cursor.md", "skills-src/lane-spawning/grok.md", "skills-src/lane-spawning/muse.md", "skills-src/lane-spawning/opencode.md"]
+"share/harness-handoff-skills/antigravity-harness-handoff" = ["antigravity-harness-handoff/SKILL.md", "antigravity-harness-handoff/contract.json"]
 "share/harness-handoff-skills/antigravity-harness-handoff/references" = ["antigravity-harness-handoff/references/history-and-continuation.md", "antigravity-harness-handoff/references/operating-guide.md"]
-"share/harness-handoff-skills/claude-harness-handoff" = ["claude-harness-handoff/SKILL.md"]
+"share/harness-handoff-skills/claude-harness-handoff" = ["claude-harness-handoff/SKILL.md", "claude-harness-handoff/contract.json"]
 "share/harness-handoff-skills/claude-harness-handoff/references" = ["claude-harness-handoff/references/history-and-continuation.md"]
-"share/harness-handoff-skills/codex-harness-handoff" = ["codex-harness-handoff/SKILL.md"]
-"share/harness-handoff-skills/cursor-harness-handoff" = ["cursor-harness-handoff/SKILL.md"]
+"share/harness-handoff-skills/codex-harness-handoff" = ["codex-harness-handoff/SKILL.md", "codex-harness-handoff/contract.json"]
+"share/harness-handoff-skills/cursor-harness-handoff" = ["cursor-harness-handoff/SKILL.md", "cursor-harness-handoff/contract.json"]
 "share/harness-handoff-skills/cursor-harness-handoff/references" = ["cursor-harness-handoff/references/history-and-continuation.md"]
-"share/harness-handoff-skills/grok-harness-handoff" = ["grok-harness-handoff/SKILL.md"]
+"share/harness-handoff-skills/grok-harness-handoff" = ["grok-harness-handoff/SKILL.md", "grok-harness-handoff/contract.json"]
 "share/harness-handoff-skills/grok-harness-handoff/references" = ["grok-harness-handoff/references/history-and-continuation.md"]
-"share/harness-handoff-skills/muse-harness-handoff" = ["muse-harness-handoff/SKILL.md"]
+"share/harness-handoff-skills/muse-harness-handoff" = ["muse-harness-handoff/SKILL.md", "muse-harness-handoff/contract.json"]
 "share/harness-handoff-skills/muse-harness-handoff/references" = ["muse-harness-handoff/references/history-and-continuation.md", "muse-harness-handoff/references/operating-guide.md"]
-"share/harness-handoff-skills/opencode-harness-handoff" = ["opencode-harness-handoff/SKILL.md"]
+"share/harness-handoff-skills/opencode-harness-handoff" = ["opencode-harness-handoff/SKILL.md", "opencode-harness-handoff/contract.json"]
 "share/harness-handoff-skills/opencode-harness-handoff/references" = ["opencode-harness-handoff/references/history-and-continuation.md"]
