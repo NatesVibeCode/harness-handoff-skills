@@ -1,14 +1,3 @@
----
-name: codex-harness-handoff
-description: Launch one or more explicitly requested fresh Codex CLI sessions with autonomous handoff prompts. Use when the operator explicitly asks to hand work to Codex CLI; do not use for an existing-session follow-up.
----
-
-# Codex CLI harness handoff
-
-## Direct lane spawning
-
-For a new handoff, spawn the requested number of independent Codex CLI processes directly. Do not insert a lane manager, leader, coordinator, relay, server, background task manager, or parent agent between the sender and the lanes.
-
 Use this skill only when the operator explicitly selects a **new Codex CLI handoff**. It creates one fresh CLI session in the operator-selected workspace. The fresh session, not the sending harness, continues the task.
 
 Create more than one session only when the operator explicitly asks for a count, parallel lanes, or equivalent—for example, “spawn four lanes to attack this in parallel.” Do not infer parallelism from task size. Every requested lane is a separate fresh `codex exec` process with its own prompt file, output file, and retained process identity.

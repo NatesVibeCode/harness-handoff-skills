@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "harness": "claude",
+  "skill": "claude-harness-handoff",
+  "generated_by": "scripts/build_skills.py",
+  "generated_from": "skills-src/contracts.json",
+  "binary": "claude",
+  "prompt_delivery": "stdin",
+  "prompt_file_flag": null,
+  "parser": "json_object",
+  "model_from_route": false,
+  "discovery_argv": null,
+  "call_workdir": false,
+  "task_config_strategy": "none",
+  "oneshot_argv": [
+    "-p",
+    "--output-format",
+    "json"
+  ],
+  "references": [
+    "references/history-and-continuation.md"
+  ],
+  "advisory_vocabulary": {
+    "status": [
+      "started",
+      "milestone",
+      "blocked",
+      "done"
+    ],
+    "fan_out": [
+      "blocked",
+      "done"
+    ],
+    "semantics": "self-reported presence, never proof of completion; carries no control state and never blocks the lane",
+    "implemented_by": "work-coordination"
+  },
+  "adapter": "harness_fleet/providers/claude.py"
+}

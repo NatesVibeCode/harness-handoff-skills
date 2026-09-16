@@ -1,14 +1,3 @@
----
-name: muse-harness-handoff
-description: Hand off work to an existing Muse session, or prepare a portable handoff packet when Muse is the explicitly selected target.
----
-
-# Muse harness handoff
-
-## Direct lane spawning
-
-For a new handoff, spawn the requested number of independent `muse exec` CLI processes directly. Each lane gets its own prompt, process handle, and result. Do not use a lane manager, leader, coordinator, relay, server, MSP session, child-message relay, or parent agent to fan out or run the lanes. Existing-session continuation is allowed only when the operator explicitly asks to continue that exact session.
-
 Use this skill only when the operator explicitly selects Muse or asks to hand work to Muse. This is a coordination adapter. It does not choose a different harness, silently launch one, or grant permissions.
 
 ## Discovery and history

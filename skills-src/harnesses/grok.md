@@ -1,14 +1,3 @@
----
-name: grok-harness-handoff
-description: Hand off work to Grok through an explicitly selected native surface, or prepare a portable handoff packet when no direct Grok bridge is available.
----
-
-# Grok harness handoff
-
-## Direct lane spawning
-
-For a new handoff, spawn the requested number of independent Grok Build CLI processes directly with `--no-leader` when that installed CLI supports the flag. Each lane gets its own prompt, process handle, and result. Do not use a lane manager, shared leader, coordinator, relay, server, or parent agent to fan out or run the lanes. Existing-session continuation is allowed only when the operator explicitly asks to continue that exact session.
-
 Use this skill only when the operator explicitly selects Grok or asks to hand work to Grok. Grok may be exposed through a product UI, an xAI API, a CLI, or a connector. This skill must discover which surface is actually available instead of assuming that a `grok` executable or a particular endpoint exists.
 
 ## Discovery and history

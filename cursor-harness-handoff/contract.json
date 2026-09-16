@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "harness": "cursor",
+  "skill": "cursor-harness-handoff",
+  "generated_by": "scripts/build_skills.py",
+  "generated_from": "skills-src/contracts.json",
+  "binary": "cursor-agent",
+  "prompt_delivery": "argv_last",
+  "prompt_file_flag": null,
+  "parser": "json_object",
+  "model_from_route": true,
+  "discovery_argv": [
+    "models"
+  ],
+  "call_workdir": false,
+  "task_config_strategy": "cursor_sandbox_enabled",
+  "oneshot_argv": [
+    "--workspace",
+    "<workspace>",
+    "--sandbox",
+    "enabled",
+    "--print",
+    "--output-format",
+    "json",
+    "--model",
+    "<model>",
+    "<prompt>"
+  ],
+  "references": [
+    "references/history-and-continuation.md"
+  ],
+  "advisory_vocabulary": {
+    "status": [
+      "started",
+      "milestone",
+      "blocked",
+      "done"
+    ],
+    "fan_out": [
+      "blocked",
+      "done"
+    ],
+    "semantics": "self-reported presence, never proof of completion; carries no control state and never blocks the lane",
+    "implemented_by": "work-coordination"
+  },
+  "adapter": "harness_fleet/providers/cursor.py"
+}

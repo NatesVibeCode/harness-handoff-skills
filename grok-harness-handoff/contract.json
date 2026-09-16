@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "harness": "grok",
+  "skill": "grok-harness-handoff",
+  "generated_by": "scripts/build_skills.py",
+  "generated_from": "skills-src/contracts.json",
+  "binary": "grok",
+  "prompt_delivery": "file_flag",
+  "prompt_file_flag": "--prompt-file",
+  "parser": "json_object",
+  "model_from_route": false,
+  "discovery_argv": [
+    "models"
+  ],
+  "call_workdir": true,
+  "task_config_strategy": "none",
+  "oneshot_argv": [
+    "--cwd",
+    "<workspace>",
+    "--prompt-file",
+    "<prompt-file>",
+    "--output-format",
+    "json"
+  ],
+  "references": [
+    "references/history-and-continuation.md"
+  ],
+  "advisory_vocabulary": {
+    "status": [
+      "started",
+      "milestone",
+      "blocked",
+      "done"
+    ],
+    "fan_out": [
+      "blocked",
+      "done"
+    ],
+    "semantics": "self-reported presence, never proof of completion; carries no control state and never blocks the lane",
+    "implemented_by": "work-coordination"
+  },
+  "adapter": "harness_fleet/providers/grok.py"
+}

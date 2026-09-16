@@ -1,0 +1,44 @@
+{
+  "version": 1,
+  "harness": "muse",
+  "skill": "muse-harness-handoff",
+  "generated_by": "scripts/build_skills.py",
+  "generated_from": "skills-src/contracts.json",
+  "binary": "muse",
+  "prompt_delivery": "file_flag",
+  "prompt_file_flag": "--prompt-file",
+  "parser": "muse_jsonl",
+  "model_from_route": false,
+  "discovery_argv": null,
+  "call_workdir": true,
+  "task_config_strategy": "none",
+  "oneshot_argv": [
+    "exec",
+    "--json",
+    "--workspace",
+    "<workspace>",
+    "--worktree",
+    "off",
+    "--prompt-file",
+    "<prompt-file>"
+  ],
+  "references": [
+    "references/history-and-continuation.md",
+    "references/operating-guide.md"
+  ],
+  "advisory_vocabulary": {
+    "status": [
+      "started",
+      "milestone",
+      "blocked",
+      "done"
+    ],
+    "fan_out": [
+      "blocked",
+      "done"
+    ],
+    "semantics": "self-reported presence, never proof of completion; carries no control state and never blocks the lane",
+    "implemented_by": "work-coordination"
+  },
+  "adapter": "harness_fleet/providers/muse.py"
+}

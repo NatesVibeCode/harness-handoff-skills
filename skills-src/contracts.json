@@ -1,0 +1,169 @@
+{
+  "version": 1,
+  "about": [
+    "The machine-readable half of each handoff skill: how to invoke that harness CLI.",
+    "This file and skills-src/ are the single source of truth; the seven",
+    "<harness>-harness-handoff/ trees are generated from them by scripts/build_skills.py.",
+    "",
+    "harness-fleet's adapters cite these skills as their CLI contract (see the module",
+    "docstring in harness_fleet/providers/<harness>.py). scripts/check_harness_drift.py in",
+    "the harness-fleet checkout validates each adapter against this file, so a change here",
+    "that the adapters do not match fails a check instead of silently diverging.",
+    "",
+    "Placeholders in oneshot_argv: <prompt> is the prompt text, <model> the route model,",
+    "<workspace> the call workspace, <prompt-file> the staged prompt file, and <workdir>",
+    "the adapter's per-call temporary directory (codex writes <workdir>/final.md)."
+  ],
+  "placeholders": ["<prompt>", "<model>", "<workspace>", "<prompt-file>", "<workdir>"],
+  "advisory_vocabulary": {
+    "status": ["started", "milestone", "blocked", "done"],
+    "fan_out": ["blocked", "done"],
+    "semantics": "self-reported presence, never proof of completion; carries no control state and never blocks the lane",
+    "implemented_by": "work-coordination"
+  },
+  "harnesses": {
+    "antigravity": {
+      "skill": "antigravity-harness-handoff",
+      "title": "Antigravity harness handoff",
+      "description": "Hand off work to an existing Google Antigravity conversation, or prepare a portable handoff packet when Antigravity is the explicitly selected target.",
+      "binary": "agy",
+      "prompt_delivery": "argv_last",
+      "prompt_file_flag": null,
+      "parser": "json_object",
+      "model_from_route": false,
+      "discovery_argv": ["models"],
+      "call_workdir": false,
+      "task_config_strategy": "none",
+      "oneshot_argv": ["--output-format", "json", "--print", "<prompt>"],
+      "references": [
+        "references/history-and-continuation.md",
+        "references/operating-guide.md"
+      ],
+      "adapter": "harness_fleet/providers/antigravity.py"
+    },
+    "claude": {
+      "skill": "claude-harness-handoff",
+      "title": "Claude Code harness handoff",
+      "description": "Find Claude Code sessions and local transcripts, hand off tasks, and continue selected conversations through supported native capabilities.",
+      "binary": "claude",
+      "prompt_delivery": "stdin",
+      "prompt_file_flag": null,
+      "parser": "json_object",
+      "model_from_route": false,
+      "discovery_argv": null,
+      "call_workdir": false,
+      "task_config_strategy": "none",
+      "oneshot_argv": ["-p", "--output-format", "json"],
+      "references": [
+        "references/history-and-continuation.md"
+      ],
+      "adapter": "harness_fleet/providers/claude.py"
+    },
+    "codex": {
+      "skill": "codex-harness-handoff",
+      "title": "Codex CLI harness handoff",
+      "description": "Launch one or more explicitly requested fresh Codex CLI sessions with autonomous handoff prompts. Use when the operator explicitly asks to hand work to Codex CLI; do not use for an existing-session follow-up.",
+      "binary": "codex",
+      "prompt_delivery": "stdin",
+      "prompt_file_flag": null,
+      "parser": "codex_jsonl",
+      "model_from_route": false,
+      "discovery_argv": null,
+      "call_workdir": true,
+      "task_config_strategy": "none",
+      "oneshot_argv": ["exec", "-C", "<workspace>", "--json", "-o", "<workdir>/final.md", "-"],
+      "references": [],
+      "adapter": "harness_fleet/providers/codex.py"
+    },
+    "cursor": {
+      "skill": "cursor-harness-handoff",
+      "title": "Cursor harness handoff",
+      "description": "Hand off work to an existing Cursor agent or workspace, or prepare a portable handoff packet when Cursor is the explicitly selected target.",
+      "binary": "cursor-agent",
+      "prompt_delivery": "argv_last",
+      "prompt_file_flag": null,
+      "parser": "json_object",
+      "model_from_route": true,
+      "discovery_argv": ["models"],
+      "call_workdir": false,
+      "task_config_strategy": "cursor_sandbox_enabled",
+      "oneshot_argv": [
+        "--workspace", "<workspace>",
+        "--sandbox", "enabled",
+        "--print",
+        "--output-format", "json",
+        "--model", "<model>",
+        "<prompt>"
+      ],
+      "references": [
+        "references/history-and-continuation.md"
+      ],
+      "adapter": "harness_fleet/providers/cursor.py"
+    },
+    "grok": {
+      "skill": "grok-harness-handoff",
+      "title": "Grok harness handoff",
+      "description": "Hand off work to Grok through an explicitly selected native surface, or prepare a portable handoff packet when no direct Grok bridge is available.",
+      "binary": "grok",
+      "prompt_delivery": "file_flag",
+      "prompt_file_flag": "--prompt-file",
+      "parser": "json_object",
+      "model_from_route": false,
+      "discovery_argv": ["models"],
+      "call_workdir": true,
+      "task_config_strategy": "none",
+      "oneshot_argv": [
+        "--cwd", "<workspace>",
+        "--prompt-file", "<prompt-file>",
+        "--output-format", "json"
+      ],
+      "references": [
+        "references/history-and-continuation.md"
+      ],
+      "adapter": "harness_fleet/providers/grok.py"
+    },
+    "muse": {
+      "skill": "muse-harness-handoff",
+      "title": "Muse harness handoff",
+      "description": "Hand off work to an existing Muse session, or prepare a portable handoff packet when Muse is the explicitly selected target.",
+      "binary": "muse",
+      "prompt_delivery": "file_flag",
+      "prompt_file_flag": "--prompt-file",
+      "parser": "muse_jsonl",
+      "model_from_route": false,
+      "discovery_argv": null,
+      "call_workdir": true,
+      "task_config_strategy": "none",
+      "oneshot_argv": [
+        "exec",
+        "--json",
+        "--workspace", "<workspace>",
+        "--worktree", "off",
+        "--prompt-file", "<prompt-file>"
+      ],
+      "references": [
+        "references/history-and-continuation.md",
+        "references/operating-guide.md"
+      ],
+      "adapter": "harness_fleet/providers/muse.py"
+    },
+    "opencode": {
+      "skill": "opencode-harness-handoff",
+      "title": "OpenCode harness handoff",
+      "description": "Hand off work to an existing OpenCode session, or prepare a portable handoff packet when OpenCode is the explicitly selected target.",
+      "binary": "opencode",
+      "prompt_delivery": "argv_last",
+      "prompt_file_flag": null,
+      "parser": "opencode_jsonl",
+      "model_from_route": true,
+      "discovery_argv": ["models", "--verbose"],
+      "call_workdir": false,
+      "task_config_strategy": "opencode_deny_all",
+      "oneshot_argv": ["run", "--format", "json", "--model", "<model>", "<prompt>"],
+      "references": [
+        "references/history-and-continuation.md"
+      ],
+      "adapter": "harness_fleet/providers/opencode.py"
+    }
+  }
+}

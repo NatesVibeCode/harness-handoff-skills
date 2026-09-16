@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "harness": "antigravity",
+  "skill": "antigravity-harness-handoff",
+  "generated_by": "scripts/build_skills.py",
+  "generated_from": "skills-src/contracts.json",
+  "binary": "agy",
+  "prompt_delivery": "argv_last",
+  "prompt_file_flag": null,
+  "parser": "json_object",
+  "model_from_route": false,
+  "discovery_argv": [
+    "models"
+  ],
+  "call_workdir": false,
+  "task_config_strategy": "none",
+  "oneshot_argv": [
+    "--output-format",
+    "json",
+    "--print",
+    "<prompt>"
+  ],
+  "references": [
+    "references/history-and-continuation.md",
+    "references/operating-guide.md"
+  ],
+  "advisory_vocabulary": {
+    "status": [
+      "started",
+      "milestone",
+      "blocked",
+      "done"
+    ],
+    "fan_out": [
+      "blocked",
+      "done"
+    ],
+    "semantics": "self-reported presence, never proof of completion; carries no control state and never blocks the lane",
+    "implemented_by": "work-coordination"
+  },
+  "adapter": "harness_fleet/providers/antigravity.py"
+}
