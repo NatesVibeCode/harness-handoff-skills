@@ -85,16 +85,37 @@ jobs:
           python -m build --wheel
           python - <<'PY'
           import glob, zipfile
+
           wheel = glob.glob("dist/*.whl")[0]
           names = zipfile.ZipFile(wheel).namelist()
-          required = [
-              "harness_handoff_skills.py",
-              "share/harness-handoff-skills/scripts/build_skills.py",
-              "share/harness-handoff-skills/skills-src/contracts.json",
-          ]
-          missing = [name for name in required if name not in names]
-          assert not missing, f"wheel is missing {missing}"
-          trees = {n.split("/")[2] for n in names if n.startswith("share/harness-handoff-skills/") and n.count("/") > 2}
-          assert len([t for t in trees if t.endswith("-harness-handoff")]) == 7, sorted(trees)
-          print(f"wheel carries the package module and 7 skill trees: {wheel}")
+
+          # data-files land under "<name>.data/data/<dest>" in the wheel and are
+          # relocated on install, so match the destination suffix rather than a
+          # "share/" prefix.
+          marker = "harness-handoff-skills/"
+          payload = [n for n in names if marker in n]
+          assert payload, f"the wheel carries no data files: {names}"
+
+          def has(relative):
+              assert any(n.endswith(relative) for n in payload), f"wheel is missing {relative}"
+
+          has("share/harness-handoff-skills/scripts/build_skills.py")
+          has("share/harness-handoff-skills/scripts/extract_skill_sources.py")
+          has("share/harness-handoff-skills/skills-src/contracts.json")
+
+          trees = {
+              n.split(marker, 1)[1].split("/")[0]
+              for n in payload
+              if n.split(marker, 1)[1].count("/") >= 1
+          }
+          skills = sorted(t for t in trees if t.endswith("-harness-handoff"))
+          assert len(skills) == 7, f"expected the seven skill trees, found {skills}"
+
+          # Every generated tree must ship its entry point and its contract.
+          for skill in skills:
+              has(f"{skill}/SKILL.md")
+              has(f"{skill}/contract.json")
+
+          assert "harness_handoff_skills.py" in names, "the module itself must ship"
+          print(f"wheel carries the module and 7 skill trees ({len(names)} entries): {wheel}")
           PY
