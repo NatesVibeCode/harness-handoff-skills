@@ -1,0 +1,100 @@
+name: CI
+
+# Three things must hold for a change to this repository: the generator's rules
+# still reject bad authorship, the checked-in trees match their source, and the
+# package still builds. The skill trees are what agents on other people's
+# machines read, so "the trees are stale" is a correctness failure, not tidiness.
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # 3.9 is the declared floor; 3.14 is what the author runs.
+        python: ["3.9", "3.12", "3.14"]
+    name: python ${{ matrix.python }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Install test dependencies
+        run: python -m pip install --upgrade pip pytest
+
+      - name: Generator rules and fixture isolation
+        run: python -m pytest -q
+
+      # The gate the generator exists for: a hand-edited tree, or a source edit
+      # that was never regenerated, fails here.
+      - name: Checked-in trees match skills-src/
+        run: python scripts/build_skills.py --check
+
+      # A malformed source must produce one line and exit 2, never a traceback.
+      # `--check` on a bad source is the path a contributor hits first.
+      - name: A rejected source reports cleanly
+        run: |
+          set -euo pipefail
+          work="$(mktemp -d)"
+          mkdir -p "$work/repo/skills-src/lane-spawning" "$work/repo/skills-src/harnesses"
+          python - "$work/repo" <<'PY'
+          import json, sys
+          from pathlib import Path
+          repo = Path(sys.argv[1])
+          entry = {
+              "skill": "demo-harness-handoff", "description": "d", "title": "T",
+              "binary": "b", "prompt_delivery": "argv", "prompt_file_flag": None,
+              "parser": "p", "model_from_route": False, "discovery_argv": ["b"],
+              "call_workdir": False, "task_config_strategy": "none",
+              "oneshot_argv": ["b"], "references": [],
+          }
+          (repo / "skills-src" / "contracts.json").write_text(
+              json.dumps({"version": 1, "harnesses": {"demo": entry}})
+          )
+          lane = "## Direct lane spawning\n\nA.\n\n## Direct lane spawning\n\nB.\n"
+          (repo / "skills-src" / "lane-spawning" / "demo.md").write_text(lane)
+          (repo / "skills-src" / "harnesses" / "demo.md").write_text("## Notes\n\nbody\n")
+          PY
+          set +e
+          output="$(python scripts/build_skills.py --repo "$work/repo" --check 2>&1)"
+          status=$?
+          set -e
+          echo "$output"
+          test "$status" -eq 2 || { echo "::error::a bad source must exit 2, got $status"; exit 1; }
+          case "$output" in
+            *"Traceback"*) echo "::error::a bad source must not traceback"; exit 1 ;;
+          esac
+
+  wheel:
+    runs-on: ubuntu-latest
+    name: installable wheel
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Build and inspect the wheel
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip build
+          python -m build --wheel
+          python - <<'PY'
+          import glob, zipfile
+          wheel = glob.glob("dist/*.whl")[0]
+          names = zipfile.ZipFile(wheel).namelist()
+          required = [
+              "harness_handoff_skills.py",
+              "share/harness-handoff-skills/scripts/build_skills.py",
+              "share/harness-handoff-skills/skills-src/contracts.json",
+          ]
+          missing = [name for name in required if name not in names]
+          assert not missing, f"wheel is missing {missing}"
+          trees = {n.split("/")[2] for n in names if n.startswith("share/harness-handoff-skills/") and n.count("/") > 2}
+          assert len([t for t in trees if t.endswith("-harness-handoff")]) == 7, sorted(trees)
+          print(f"wheel carries the package module and 7 skill trees: {wheel}")
+          PY

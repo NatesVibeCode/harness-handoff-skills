@@ -40,3 +40,13 @@ py-modules = ["harness_handoff_skills"]
 "share/harness-handoff-skills/muse-harness-handoff/references" = ["muse-harness-handoff/references/history-and-continuation.md", "muse-harness-handoff/references/operating-guide.md"]
 "share/harness-handoff-skills/opencode-harness-handoff" = ["opencode-harness-handoff/SKILL.md", "opencode-harness-handoff/contract.json"]
 "share/harness-handoff-skills/opencode-harness-handoff/references" = ["opencode-harness-handoff/references/history-and-continuation.md"]
+
+[project.optional-dependencies]
+dev = ["pytest>=7"]
+
+[project.urls]
+Repository = "https://github.com/NatesVibeCode/harness-handoff-skills"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

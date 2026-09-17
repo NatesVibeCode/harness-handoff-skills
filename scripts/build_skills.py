@@ -49,6 +49,25 @@ class SourceError(ValueError):
     """skills-src/ is unusable, naming the file that has to change."""
 
 
+def _validate_skill_path(name: str, entry: dict, contract_path: Path) -> None:
+    """`skill` becomes an output directory, so it must be a plain name inside the repo.
+
+    Nothing checked this. A contract entry of ``"skill": "../../../ESCAPED"`` — which
+    an agent editing contracts.json could write without meaning any harm — made the
+    generator create ``SKILL.md`` and ``contract.json`` above the repository root.
+    The value is refused rather than sanitised: silently rewriting it would put a
+    tree somewhere its author did not name.
+    """
+    skill = entry.get("skill")
+    if not isinstance(skill, str) or not skill:
+        raise SourceError(f"{contract_path}: {name} has no 'skill' directory name")
+    if skill in {".", ".."} or "/" in skill or "\\" in skill or Path(skill).is_absolute():
+        raise SourceError(
+            f"{contract_path}: {name} declares skill {skill!r}, which is not a plain "
+            "directory name inside the repository"
+        )
+
+
 def load_sources(source_root: Path) -> tuple[dict, dict[str, dict]]:
     contract_path = source_root / CONTRACT_FILE
     if not contract_path.is_file():
@@ -61,6 +80,7 @@ def load_sources(source_root: Path) -> tuple[dict, dict[str, dict]]:
         missing = [k for k in CONTRACT_KEYS if k not in entry]
         if missing:
             raise SourceError(f"{contract_path}: {name} is missing {', '.join(missing)}")
+        _validate_skill_path(name, entry, contract_path)
         if entry["prompt_delivery"] == "file_flag" and not entry.get("prompt_file_flag"):
             raise SourceError(
                 f"{contract_path}: {name} uses prompt_delivery=file_flag "
@@ -145,15 +165,28 @@ def main() -> int:
         skill_dir = repo / entry["skill"]
         lane_path = source_root / "lane-spawning" / f"{name}.md"
         body_path = source_root / "harnesses" / f"{name}.md"
-        for path in (lane_path, body_path):
-            if not path.is_file():
-                problems.append(f"missing source {path.relative_to(repo)}")
-        if problems:
+        absent = [path for path in (lane_path, body_path) if not path.is_file()]
+        for path in absent:
+            problems.append(f"missing source {path.relative_to(repo)}")
+        # This harness only, not the accumulating `problems` list: skip the
+        # harness whose own source is missing, and keep examining the rest.
+        if absent:
             continue
 
-        skill_text = render_skill(
-            name, entry, lane_path.read_text(encoding="utf-8"), body_path.read_text(encoding="utf-8")
-        )
+        try:
+            skill_text = render_skill(
+                name,
+                entry,
+                lane_path.read_text(encoding="utf-8"),
+                body_path.read_text(encoding="utf-8"),
+            )
+        except SourceError as exc:
+            # Rejecting bad authorship is this script's job, so it reports one
+            # line and moves on. It used to raise: a duplicated lane block, a
+            # missing heading, or a hand-written block in the body produced a
+            # traceback instead of the file that has to change.
+            problems.append(str(exc))
+            continue
         contract_text = render_contract(name, entry, document)
         problems.extend(check_references(skill_dir, entry, name))
 
