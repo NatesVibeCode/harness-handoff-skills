@@ -65,3 +65,25 @@ Progress advisories. While running, a lane may report milestones against the pac
 - Use Muse subagent communication only when the operator explicitly asks for subagent work.
 - Do not invent a Muse command, API, session ID, or message-delivery result.
 - Keep local process and session identifiers out of the shareable skill and out of portable handoff text unless the operator specifically needs one for a local continuation.
+
+## MCP tools (optional)
+
+Three local stdio servers expose the operator's own tooling, so a lane can
+use tools instead of pasting transcripts: harness-fleet (research lanes),
+skillflow (DAG runs and panel rooms), work-coordination (presence and
+advisory messages). Wire once per machine:
+
+- `harness-fleet mcp install --client muse --workspace-root <root>` writes
+  the `mcpServers` entry into `~/.config/muse/settings.json`
+  (`$XDG_CONFIG_HOME` honored). Server docs live in the fleet README.
+- skillflow: install with the `mcp` extra, then an entry running
+  `python3 -m skillflow.mcp_server` with `cwd` at a skillflow checkout
+  (panel tools need `panel/` beside the engine). See the skillflow README.
+- work-coordination: an entry running `node <repo>/mcp/src/index.mjs` with
+  `WORK_COORDINATION_MCP_CONFIG` pointing at a `config.json` written from
+  `mcp/config.example.json`. See `mcp/README.md`.
+
+Muse documents streamable-HTTP entries under `mcpServers`; a stdio entry is
+written the same way. Confirm with a live session (ask it to list its MCP
+tools) before relying on it. Never copy API keys into these files implicitly;
+fleet's `--env NAME` opt-in is the pattern.

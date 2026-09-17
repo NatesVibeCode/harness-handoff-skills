@@ -36,3 +36,27 @@ Use `--dangerously-bypass-approvals-and-sandbox` by default for this handoff. Om
 This command starts a new persisted Codex CLI thread. Confirm its initial JSON event and retain its process identity before reporting a launch. A process exit, final-message file, or JSON event alone does not prove the delegated work succeeded; inspect the requested result before reporting completion.
 
 Do not create a worktree, clone a repository, start a background daemon, or launch a second writer unless the operator explicitly requests that separate action.
+
+## MCP tools (optional)
+
+Three local stdio servers expose the operator's own tooling, so a lane can
+use tools instead of pasting transcripts: harness-fleet (research lanes),
+skillflow (DAG runs and panel rooms), work-coordination (presence and
+advisory messages). Wire once per machine:
+
+- `harness-fleet mcp install --client codex --workspace-root <root>`
+  appends the `[mcp_servers."harness-fleet"]` section to
+  `~/.codex/config.toml`. That file is TOML and the installer is
+  append-only there: read it back to confirm, and edit by hand to change it.
+  Server docs live in the fleet README.
+- skillflow: install with the `mcp` extra, then a section running
+  `python3 -m skillflow.mcp_server` with `cwd` at a skillflow checkout
+  (panel tools need `panel/` beside the engine). See the skillflow README.
+- work-coordination: a section running `node <repo>/mcp/src/index.mjs`
+  with a `[mcp_servers.work-coordination.env]` table setting
+  `WORK_COORDINATION_MCP_CONFIG` to a `config.json` written from
+  `mcp/config.example.json`. See `mcp/README.md`.
+
+Confirm with a live session (ask it to list its MCP tools) before relying on
+them. Never copy API keys into these files implicitly; fleet's `--env NAME`
+opt-in is the pattern.
