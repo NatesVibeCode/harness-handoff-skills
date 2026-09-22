@@ -23,6 +23,9 @@
     "<model>",
     "<prompt>"
   ],
+  "interactivity": "prompts",
+  "credential_channel": "native-session",
+  "credential_auth": "native-session",
   "references": [
     "references/history-and-continuation.md"
   ],

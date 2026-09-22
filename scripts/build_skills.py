@@ -42,7 +42,16 @@ CONTRACT_KEYS = (
     "call_workdir",
     "task_config_strategy",
     "oneshot_argv",
+    "interactivity",
+    "credential_channel",
+    "credential_auth",
 )
+
+# The approval posture of the pinned oneshot argv (praxis F1 §6.1).
+INTERACTIVITY_VALUES = ("non_interactive", "prompts")
+# How the harness reaches its credentials. The pinned argv passes no
+# credential values, so these name the onboarding channel, not a secret.
+CREDENTIAL_CHANNELS = ("env", "stdin", "file", "keychain", "native-session")
 
 
 class SourceError(ValueError):
@@ -86,6 +95,18 @@ def load_sources(source_root: Path) -> tuple[dict, dict[str, dict]]:
                 f"{contract_path}: {name} uses prompt_delivery=file_flag "
                 "but declares no prompt_file_flag"
             )
+        if entry["interactivity"] not in INTERACTIVITY_VALUES:
+            raise SourceError(
+                f"{contract_path}: {name} declares interactivity "
+                f"{entry['interactivity']!r}; expected one of "
+                f"{', '.join(INTERACTIVITY_VALUES)}"
+            )
+        for key in ("credential_channel", "credential_auth"):
+            if entry[key] not in CREDENTIAL_CHANNELS:
+                raise SourceError(
+                    f"{contract_path}: {name} declares {key} {entry[key]!r}; "
+                    f"expected one of {', '.join(CREDENTIAL_CHANNELS)}"
+                )
     return document, harnesses
 
 

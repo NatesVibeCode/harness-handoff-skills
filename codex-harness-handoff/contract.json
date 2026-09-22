@@ -21,6 +21,9 @@
     "<workdir>/final.md",
     "-"
   ],
+  "interactivity": "non_interactive",
+  "credential_channel": "native-session",
+  "credential_auth": "native-session",
   "references": [],
   "advisory_vocabulary": {
     "status": [

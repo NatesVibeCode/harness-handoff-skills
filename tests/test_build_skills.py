@@ -45,6 +45,9 @@ def _entry(**overrides):
         "call_workdir": False,
         "task_config_strategy": "none",
         "oneshot_argv": ["demo", "-p", "{prompt}"],
+        "interactivity": "prompts",
+        "credential_channel": "native-session",
+        "credential_auth": "native-session",
         "references": [],
     }
     entry.update(overrides)
@@ -132,6 +135,34 @@ def test_every_missing_contract_key_is_named(tmp_path):
     assert "parser" in result.stdout and "oneshot_argv" in result.stdout, (
         "the error must name the keys to add, not just say a key is missing"
     )
+
+
+@pytest.mark.parametrize("key", ["interactivity", "credential_channel", "credential_auth"])
+def test_every_missing_onboarding_key_is_named(tmp_path, key):
+    """The F1 handoff vocabulary: admission reads these; a contract without them is incomplete."""
+    entry = _entry()
+    del entry[key]
+    root = scratch_repo(tmp_path, {"demo": entry})
+    result = run_build(root, "--check")
+    assert result.returncode == 2
+    assert key in result.stdout, "the error must name the key to add"
+
+
+@pytest.mark.parametrize("value", ["sometimes", "", "PROMPTS"])
+def test_an_unknown_interactivity_value_is_refused(tmp_path, value):
+    root = scratch_repo(tmp_path, {"demo": _entry(interactivity=value)})
+    result = run_build(root, "--check")
+    assert result.returncode == 2
+    assert "interactivity" in result.stdout and "non_interactive" in result.stdout
+
+
+@pytest.mark.parametrize("value", ["telepathy", "", "env "])
+@pytest.mark.parametrize("key", ["credential_channel", "credential_auth"])
+def test_an_unknown_credential_channel_value_is_refused(tmp_path, key, value):
+    root = scratch_repo(tmp_path, {"demo": _entry(**{key: value})})
+    result = run_build(root, "--check")
+    assert result.returncode == 2
+    assert key in result.stdout and "native-session" in result.stdout
 
 
 def test_file_flag_delivery_without_a_flag_is_refused(tmp_path):
@@ -300,6 +331,15 @@ def test_the_contract_carries_every_declared_key_and_its_provenance(tmp_path):
     assert payload["advisory_vocabulary"] == {"status": ["done"]}
 
 
+def test_the_contract_carries_the_onboarding_vocabulary(tmp_path):
+    root = scratch_repo(tmp_path, {"demo": _entry(interactivity="non_interactive", credential_channel="env", credential_auth="keychain")})
+    assert run_build(root).returncode == 0
+    payload = json.loads((root / "demo-harness-handoff" / "contract.json").read_text(encoding="utf-8"))
+    assert payload["interactivity"] == "non_interactive"
+    assert payload["credential_channel"] == "env"
+    assert payload["credential_auth"] == "keychain"
+
+
 def test_an_adapter_key_is_optional(tmp_path):
     root = scratch_repo(tmp_path, {"demo": _entry()})
     assert run_build(root).returncode == 0
@@ -360,6 +400,18 @@ def test_every_harness_in_the_contract_has_a_generated_tree():
         assert payload["skill"] == entry["skill"]
         for key in CONTRACT_KEYS:
             assert payload[key] == entry[key], f"{entry['skill']}/contract.json disagrees on {key}"
+
+
+def test_the_real_harness_onboarding_vocabulary_is_closed():
+    """Every shipped contract declares the F1 approval posture and credential channel."""
+    document = json.loads((REPO / "skills-src" / "contracts.json").read_text(encoding="utf-8"))
+    for name, entry in document["harnesses"].items():
+        assert entry["interactivity"] in ("non_interactive", "prompts"), name
+        for key in ("credential_channel", "credential_auth"):
+            assert entry[key] in ("env", "stdin", "file", "keychain", "native-session"), f"{name}: {key}"
+    assert document["harnesses"]["codex"]["interactivity"] == "non_interactive", (
+        "codex exec is the non-interactive pinned invocation; a change here changes parking behavior"
+    )
 
 
 def test_one_lane_block_source_per_harness_and_no_extras():

@@ -12,7 +12,15 @@
     "",
     "Placeholders in oneshot_argv: <prompt> is the prompt text, <model> the route model,",
     "<workspace> the call workspace, <prompt-file> the staged prompt file, and <workdir>",
-    "the adapter's per-call temporary directory (codex writes <workdir>/final.md)."
+    "the adapter's per-call temporary directory (codex writes <workdir>/final.md).",
+    "",
+    "interactivity declares the approval posture of the pinned oneshot argv:",
+    "non_interactive configures approvals away and never parks; prompts can reach an",
+    "approval boundary, where Praxis parks an explicit awaiting-approval receipt.",
+    "credential_channel and credential_auth declare how the harness reaches its own",
+    "credentials (env | stdin | file | keychain | native-session); the pinned argv",
+    "passes no credential values, so these name how per-invocation grants reach the",
+    "harness when it is Praxis-hosted, and the harness's native auth otherwise."
   ],
   "placeholders": ["<prompt>", "<model>", "<workspace>", "<prompt-file>", "<workdir>"],
   "advisory_vocabulary": {
@@ -34,6 +42,9 @@
       "discovery_argv": ["models"],
       "call_workdir": false,
       "task_config_strategy": "none",
+      "interactivity": "prompts",
+      "credential_channel": "native-session",
+      "credential_auth": "native-session",
       "oneshot_argv": ["--output-format", "json", "--print", "<prompt>"],
       "references": [
         "references/history-and-continuation.md",
@@ -53,6 +64,9 @@
       "discovery_argv": null,
       "call_workdir": false,
       "task_config_strategy": "none",
+      "interactivity": "prompts",
+      "credential_channel": "native-session",
+      "credential_auth": "native-session",
       "oneshot_argv": ["-p", "--output-format", "json"],
       "references": [
         "references/history-and-continuation.md"
@@ -71,6 +85,9 @@
       "discovery_argv": null,
       "call_workdir": true,
       "task_config_strategy": "none",
+      "interactivity": "non_interactive",
+      "credential_channel": "native-session",
+      "credential_auth": "native-session",
       "oneshot_argv": ["exec", "-C", "<workspace>", "--json", "-o", "<workdir>/final.md", "-"],
       "references": [],
       "adapter": "harness_fleet/providers/codex.py"
@@ -87,6 +104,9 @@
       "discovery_argv": ["models"],
       "call_workdir": false,
       "task_config_strategy": "cursor_sandbox_enabled",
+      "interactivity": "prompts",
+      "credential_channel": "native-session",
+      "credential_auth": "native-session",
       "oneshot_argv": [
         "--workspace", "<workspace>",
         "--sandbox", "enabled",
@@ -112,6 +132,9 @@
       "discovery_argv": ["models"],
       "call_workdir": true,
       "task_config_strategy": "none",
+      "interactivity": "prompts",
+      "credential_channel": "native-session",
+      "credential_auth": "native-session",
       "oneshot_argv": [
         "--cwd", "<workspace>",
         "--prompt-file", "<prompt-file>",
@@ -134,6 +157,9 @@
       "discovery_argv": null,
       "call_workdir": true,
       "task_config_strategy": "none",
+      "interactivity": "prompts",
+      "credential_channel": "native-session",
+      "credential_auth": "native-session",
       "oneshot_argv": [
         "exec",
         "--json",
@@ -159,6 +185,9 @@
       "discovery_argv": ["models", "--verbose"],
       "call_workdir": false,
       "task_config_strategy": "opencode_deny_all",
+      "interactivity": "prompts",
+      "credential_channel": "native-session",
+      "credential_auth": "native-session",
       "oneshot_argv": ["run", "--format", "json", "--model", "<model>", "<prompt>"],
       "references": [
         "references/history-and-continuation.md"
