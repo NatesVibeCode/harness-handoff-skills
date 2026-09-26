@@ -6,7 +6,8 @@ Tools are thin, policy-enforcing wrappers around the v2 contract:
 - route selection (SDK preferred where authorized and importable, else CLI);
 - forbidden-route refusal (Codex continuation, newest-as-exact everywhere);
 - exact session IDs only, never latest/continue inference;
-- no credential values in argv, secrets redacted from receipts.
+- prompt delivery follows each contract; some CLIs expose prompt text in argv.
+  Receipts apply best-effort credential pattern redaction.
 
 Each call performs at most one harness execution and returns its receipt.
 This server never fans out lanes, shares sessions across harnesses, or
@@ -16,6 +17,8 @@ substitutes another product when the selected one is unavailable.
 from __future__ import annotations
 
 import asyncio
+import os
+import re
 import shutil
 import subprocess
 import tempfile
@@ -27,12 +30,35 @@ from mcp_bridge import cli_executor, contracts, sdk_executors
 
 mcp = FastMCP("harness-sdk-bridge")
 
-# Codex fresh lanes run unattended by skill policy unless restricted.
-CODEX_UNATTENDED_argv = ["--dangerously-bypass-approvals-and-sandbox"]
+CODEX_RESTRICTED_ARGV = ["--sandbox", "read-only", "-c", 'approval_policy="on-request"']
+CODEX_AUTONOMOUS_ARGV = ["--dangerously-bypass-approvals-and-sandbox"]
+EXACT_SESSION_ID = re.compile(r"[A-Za-z0-9][A-Za-z0-9._:-]{0,255}\Z")
+SESSION_SELECTORS = {"latest", "last", "newest", "continue"}
+UNATTENDED_ALLOWLIST_ENV = "HARNESS_HANDOFF_UNATTENDED_HARNESSES"
 
 
 def _refuse(message: str) -> dict:
     return {"refused": True, "reason": message}
+
+
+def _is_exact_session_id(value: str) -> bool:
+    return isinstance(value, str) and bool(EXACT_SESSION_ID.fullmatch(value)) and value.lower() not in SESSION_SELECTORS
+
+
+def _unattended_allowed(harness: str) -> bool:
+    allowed = {item.strip() for item in os.environ.get(UNATTENDED_ALLOWLIST_ENV, "").split(",")}
+    return harness in allowed
+
+
+def _stage_prompt(prompt: str) -> Path:
+    directory = Path(tempfile.mkdtemp(prefix="harness-lane-"))
+    path = directory / "prompt.txt"
+    try:
+        path.write_text(prompt, encoding="utf-8")
+    except OSError:
+        shutil.rmtree(directory)
+        raise
+    return path
 
 
 def _choose_route(entry: dict, use: str) -> str:
@@ -82,9 +108,13 @@ async def handoff_fresh(
 ) -> dict:
     """Start one fresh execution in the selected harness and return its receipt.
 
-    approval is "default" (harness defaults) or "restricted" (no bypasses).
-    For Codex, anything but "restricted" applies the skill's unattended
-    bypass flag. use is "auto", "sdk", or "cli".
+    approval is "default", "restricted", or "unattended". An explicitly
+    dispatched Codex handoff runs autonomously with full access by default;
+    restricted selects a read-only sandbox with on-request approval.
+    OpenHands headless CLI requires "unattended" explicitly.
+    Copilot SDK approval bypass requires "unattended"; ordinary Copilot calls
+    use the CLI route. Other routes accept only "default" because this bridge
+    does not implement their approval controls. use is "auto", "sdk", or "cli".
     """
     entry = contracts.get_harness(harness)
     short = _short_name(entry)
@@ -92,6 +122,41 @@ async def handoff_fresh(
         route = _choose_route(entry, use)
     except RuntimeError as exc:
         return _refuse(str(exc))
+    if approval not in {"default", "restricted", "unattended"}:
+        return _refuse("approval must be 'default', 'restricted', or 'unattended'")
+    if approval == "unattended" and short != "codex" and not _unattended_allowed(short):
+        return _refuse(f"{short}: unattended execution is disabled by {UNATTENDED_ALLOWLIST_ENV}")
+    if short == "antigravity" and workspace and route == "sdk":
+        if use == "sdk":
+            return _refuse("antigravity SDK adapter cannot bind the selected workspace")
+        route = "cli"
+    if short == "copilot":
+        if approval == "restricted":
+            return _refuse("copilot: restricted approval control is not implemented by this bridge")
+        if approval == "unattended" and route != "sdk":
+            return _refuse("copilot: unattended approval is implemented only for the SDK route")
+        if approval == "unattended" and not model:
+            return _refuse("copilot SDK adapter requires an explicit model")
+        if approval == "unattended" and workspace:
+            return _refuse("copilot SDK adapter cannot bind the selected workspace")
+        if approval == "default" and route == "sdk":
+            if use == "sdk":
+                return _refuse("copilot SDK route requires approval='unattended' because it uses approve_all")
+            route = "cli"
+    if short == "openhands" and route == "sdk" and not model:
+        if use == "sdk":
+            return _refuse("openhands SDK adapter requires an explicit model")
+        route = "cli"
+    if short == "openhands" and route == "cli" and approval != "unattended":
+        return _refuse("openhands headless CLI always approves tools; use approval='unattended' only when authorized")
+    if short not in {"codex", "openhands", "copilot"} and approval != "default":
+        return _refuse(f"{short}: this bridge does not implement {approval!r} approval controls")
+    if short == "openhands" and route == "sdk" and approval != "default":
+        return _refuse("openhands SDK route does not implement an approval override")
+    if model and route == "sdk" and short not in {"cursor", "copilot", "openhands"}:
+        return _refuse(f"{short} SDK adapter cannot bind the selected model")
+    if model and route == "cli" and short not in {"codex", "cursor", "opencode"}:
+        return _refuse(f"{short} CLI contract cannot bind the selected model")
     if route == "sdk":
         fn = sdk_executors.EXECUTORS[short]["fresh"]
         try:
@@ -99,8 +164,11 @@ async def handoff_fresh(
         except Exception as exc:  # noqa: BLE001 — receipt, not traceback
             return {"harness": short, "route": "sdk", "error": cli_executor.redact(str(exc))}
     extra, extra_at = ([], 0)
-    if short == "codex" and approval != "restricted":
-        extra, extra_at = (CODEX_UNATTENDED_argv, 1)
+    if short == "codex":
+        controls = CODEX_RESTRICTED_ARGV if approval == "restricted" else CODEX_AUTONOMOUS_ARGV
+        extra, extra_at = (list(controls), 1)
+        if model:
+            extra.extend(["--model", model])
     try:
         receipt = await asyncio.to_thread(
             cli_executor.run_cli, entry, prompt=prompt, workspace=workspace,
@@ -108,8 +176,6 @@ async def handoff_fresh(
         )
     except cli_executor.ExecutionError as exc:
         return {"harness": short, "route": "cli", "error": cli_executor.redact(str(exc))}
-    if short == "openhands":
-        receipt["warning"] = "headless mode always runs always-approve; use only with explicit unattended authorization"
     return receipt
 
 
@@ -120,6 +186,7 @@ async def handoff_continue(
     prompt: str,
     workspace: str | None = None,
     save_dir: str | None = None,
+    approval: str = "default",
 ) -> dict:
     """Continue an explicitly selected session by exact ID. Never infers latest.
 
@@ -130,31 +197,46 @@ async def handoff_continue(
     entry = contracts.get_harness(harness)
     short = _short_name(entry)
     sdk = entry["sdk"]
-    if not session_id:
-        return _refuse("an exact session ID is required; latest/continue inference is forbidden")
+    if approval not in {"default", "unattended"}:
+        return _refuse("continuation approval must be 'default' or 'unattended'")
+    if approval == "unattended" and not _unattended_allowed(short):
+        return _refuse(f"{short}: unattended execution is disabled by {UNATTENDED_ALLOWLIST_ENV}")
+    if approval == "unattended" and short not in {"openhands", "copilot"}:
+        return _refuse(f"{short}: unattended continuation control is not implemented by this bridge")
+    if short == "copilot" and approval != "unattended":
+        return _refuse("copilot SDK continuation requires approval='unattended' because it uses approve_all")
+    if not _is_exact_session_id(session_id):
+        return _refuse("an exact session ID is required; selectors and option-like values are forbidden")
     if sdk["continuation"] == "forbidden":
         return _refuse(f"{short}: continuation is policy-forbidden for this fresh-only handoff")
     if short == "antigravity" and save_dir:
+        if workspace:
+            return _refuse("antigravity SDK restore cannot bind or verify the selected workspace")
         try:
             return await sdk_executors.antigravity_resume(session_id, prompt, workspace, save_dir=save_dir)
         except Exception as exc:  # noqa: BLE001
             return {"harness": short, "route": "sdk", "error": cli_executor.redact(str(exc))}
     executor = sdk_executors.EXECUTORS.get(short, {}).get("resume")
     if sdk["continuation"].startswith("sdk") and executor is not None and sdk_executors.available(short):
+        if workspace and short in {"cursor", "muse", "copilot"}:
+            return _refuse(f"{short} SDK resume cannot bind or verify the selected workspace")
         try:
+            if short == "copilot":
+                return await executor(session_id, prompt, workspace, approval=approval)
             return await executor(session_id, prompt, workspace)
         except Exception as exc:  # noqa: BLE001
             return {"harness": short, "route": "sdk", "error": cli_executor.redact(str(exc))}
     # CLI exact-ID continuation: render the skill's resume shape per harness.
-    return _cli_continue(entry, short, session_id, prompt, workspace)
+    try:
+        return _cli_continue(entry, short, session_id, prompt, workspace, approval)
+    except OSError as exc:
+        return {"harness": short, "route": "cli", "error": cli_executor.redact(str(exc))}
 
 
-def _cli_continue(entry: dict, short: str, session_id: str, prompt: str, workspace: str | None) -> dict:
+def _cli_continue(entry: dict, short: str, session_id: str, prompt: str,
+                  workspace: str | None, approval: str = "default") -> dict:
     binary = entry["binary"]
     prompt_file: Path | None = None
-    if entry["prompt_delivery"] == "file_flag":
-        prompt_file = Path(tempfile.mkdtemp(prefix="harness-lane-")) / "prompt.txt"
-        prompt_file.write_text(prompt, encoding="utf-8")
     argv: list[str] | None = None
     stdin_text: str | None = None
     if short == "antigravity":
@@ -165,6 +247,7 @@ def _cli_continue(entry: dict, short: str, session_id: str, prompt: str, workspa
     elif short == "cursor":
         argv = ["--workspace", workspace or ".", "--resume", session_id, "--print", "--output-format", "json", prompt]
     elif short == "grok":
+        prompt_file = _stage_prompt(prompt)
         argv = ["--cwd", workspace or ".", "--resume", session_id, "--prompt-file", str(prompt_file), "--output-format", "json"]
     elif short == "gemini":
         argv = ["--resume", session_id, "-p", prompt]
@@ -180,12 +263,14 @@ def _cli_continue(entry: dict, short: str, session_id: str, prompt: str, workspa
         )
     elif short == "opencode":
         if prompt_file is None:
-            prompt_file = Path(tempfile.mkdtemp(prefix="harness-lane-")) / "prompt.txt"
-            prompt_file.write_text(prompt, encoding="utf-8")
+            prompt_file = _stage_prompt(prompt)
         argv = ["run", "--session", session_id, "--format", "json", "--file", str(prompt_file), prompt]
     elif short == "droid":
         argv = ["exec", "-s", session_id, prompt]
     elif short == "openhands":
+        if approval != "unattended":
+            return _refuse("openhands headless continuation always approves tools; use approval='unattended' only when authorized")
+        prompt_file = _stage_prompt(prompt)
         argv = ["--resume", session_id, "--headless", "--json", "--file", str(prompt_file)]
     elif short == "junie":
         argv = ["--project", workspace or ".", "--resume", "--session-id", session_id, prompt]
@@ -195,23 +280,27 @@ def _cli_continue(entry: dict, short: str, session_id: str, prompt: str, workspa
         return _refuse(
             f"{short}: no verified exact-ID CLI continuation; install the authorized SDK and retry"
         )
-    if shutil.which(binary) is None:
-        return {"harness": short, "route": "cli", "error": f"{binary} is not installed or not on PATH"}
     try:
-        completed = subprocess.run(
-            [binary, *argv], input=stdin_text, capture_output=True,
-            text=True, timeout=900, cwd=workspace or None,
-        )
-    except (OSError, subprocess.SubprocessError) as exc:
-        return {"harness": short, "route": "cli", "error": cli_executor.redact(str(exc))}
-    return {
-        "harness": short,
-        "route": "cli",
-        "exit_code": completed.returncode,
-        "session_id": cli_executor.extract_session_id(completed.stdout or "") or session_id,
-        "output": cli_executor.redact((completed.stdout or "")[-8000:]),
-        "stderr": cli_executor.redact((completed.stderr or "")[-2000:]),
-    }
+        if shutil.which(binary) is None:
+            return {"harness": short, "route": "cli", "error": f"{binary} is not installed or not on PATH"}
+        try:
+            completed = subprocess.run(
+                [binary, *argv], input=stdin_text, capture_output=True,
+                text=True, timeout=900, cwd=workspace or None,
+            )
+        except (OSError, subprocess.SubprocessError) as exc:
+            return {"harness": short, "route": "cli", "error": cli_executor.redact(str(exc))}
+        return {
+            "harness": short,
+            "route": "cli",
+            "exit_code": completed.returncode,
+            "session_id": cli_executor.extract_session_id(completed.stdout or "") or session_id,
+            "output": cli_executor.redact((completed.stdout or "")[-8000:]),
+            "stderr": cli_executor.redact((completed.stderr or "")[-2000:]),
+        }
+    finally:
+        if prompt_file is not None:
+            shutil.rmtree(prompt_file.parent)
 
 
 @mcp.tool()
@@ -219,10 +308,14 @@ async def session_history(harness: str, session_id: str, workspace: str | None =
     """Passively retrieve history for an exact session ID. Sends no prompt."""
     entry = contracts.get_harness(harness)
     short = _short_name(entry)
-    if not session_id:
+    if not _is_exact_session_id(session_id):
         return _refuse("an exact session ID is required for history lookup")
+    if not 1 <= limit <= 500:
+        return _refuse("history limit must be between 1 and 500")
     executor = sdk_executors.EXECUTORS.get(short, {}).get("history")
     if executor is not None and sdk_executors.available(short):
+        if workspace and short == "cursor":
+            return _refuse("cursor SDK history cannot verify the selected workspace")
         try:
             return await executor(session_id, workspace, limit)
         except Exception as exc:  # noqa: BLE001

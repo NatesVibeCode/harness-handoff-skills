@@ -11,6 +11,8 @@ For a new handoff, spawn the requested number of independent caller-owned Codex 
 
 Use this skill only when the operator explicitly selects a **new Codex handoff**. It creates one fresh Codex thread in the operator-selected workspace. The fresh thread, not the sending harness, continues the task.
 
+For an explicitly requested review of existing Codex, Muse, or OpenCode sessions, use the separate `harness-session-review` skill. That workflow has its own read-only discovery and evidence rules; it does not broaden this fresh-only handoff skill.
+
 Create more than one thread only when the operator explicitly asks for a count, parallel lanes, or equivalent—for example, “spawn four lanes to attack this in parallel.” Do not infer parallelism from task size. Every requested lane is a separate fresh thread with its own prompt, output, and retained execution handle: either a TypeScript SDK thread handle or a `codex exec` process handle.
 
 Do not inspect or attach to existing Codex sessions. Do not use `codex agents`, `codex queue`, `codex resume`, `codex exec resume`, `codex exec fork`, `codex app-server`, the Python SDK, a browser, or an app-server protocol. Those are existing-session, management, or server routes, not this fresh-only handoff.
@@ -19,7 +21,11 @@ Contract source: https://developers.openai.com/codex/sdk
 
 ## Fresh SDK route
 
-Prefer the authorized TypeScript SDK for a new thread when Node execution is available. It controls a local Codex thread; it does not authorize resume, fork, thread listing, or app-server management.
+Use the authorized TypeScript SDK for a new thread only after verifying its
+effective workspace, sandbox, and autonomous approval settings in the installed version.
+The pinned CLI recipe below is the ready-to-run route with explicit controls.
+An SDK thread does not authorize resume, fork, thread listing, or app-server
+management in this fresh-only skill.
 
 ```sh
 npm install @openai/codex-sdk
@@ -31,13 +37,20 @@ import { Codex } from "@openai/codex-sdk";
 const codex = new Codex();
 const thread = codex.startThread({
   workingDirectory: "/absolute/workspace",
-  skipGitRepoCheck: true,
 });
 const result = await thread.run("Perform the scoped handoff task.");
 console.log(result.finalResponse);
 ```
 
-Retain the SDK thread handle, streamed or buffered events, final response, workspace, approval/sandbox selection, and artifact checks. History for this skill means that owned fresh thread's output—not lookup, listing, resume, or export of unrelated existing sessions. Use `runStreamed` only for live observation; buffering events does not change the fresh-only boundary. If the SDK route is unavailable, use the pinned CLI fallback below.
+The example inherits SDK and local configuration for approval and sandboxing;
+verify that it will run without per-action prompts before dispatch. Never set `skipGitRepoCheck` merely to make a
+handoff work outside the selected repository. Retain the SDK thread handle,
+streamed or buffered events, final response, workspace, approval/sandbox
+selection, and artifact checks. History for this skill means that owned fresh
+thread's output—not lookup, listing, resume, or export of unrelated existing
+sessions. Use `runStreamed` only for live observation; buffering events does
+not change the fresh-only boundary. If the SDK controls cannot be verified,
+use the pinned CLI route below.
 
 ## Handoff packet
 
@@ -59,14 +72,19 @@ Progress advisories. While running, a lane may report milestones against the pac
 Resolve the installed `codex` executable and use `codex exec` with the selected absolute workspace. Pass the complete handoff packet through stdin and keep the process handle, JSONL output, and final-message path.
 
 ```sh
-# Default: autonomous full-access session. This prevents an unattended lane
-# from stopping at Codex approval or sandbox boundaries.
+# Default for an explicitly dispatched handoff: autonomous full-access run.
 codex exec -C /absolute/workspace \
   --dangerously-bypass-approvals-and-sandbox \
   --json -o /absolute/handoff-final.md - < /absolute/handoff-prompt.md
 ```
 
-Use `--dangerously-bypass-approvals-and-sandbox` by default for this handoff. Omit it only when the operator explicitly selects a restricted sandbox or approval posture. Preserve an explicitly chosen model, profile, additional writable directory, or `--skip-git-repo-check` when applicable; otherwise leave Codex defaults intact.
+The operator authorizes the handoff at dispatch. Do not ask the sending agent
+to reapprove each action in that delegated run. Use the default full-access
+recipe only for the operator-selected task and workspace. When the operator
+explicitly selects a restricted posture, use `--sandbox read-only` with
+on-request approval instead. Preserve an explicitly chosen model, profile,
+additional writable directory, or `--skip-git-repo-check` when applicable;
+otherwise leave those Codex defaults intact.
 
 This command starts a new persisted Codex CLI thread. Confirm its initial JSON event and retain its process identity before reporting a launch. A process exit, final-message file, or JSON event alone does not prove the delegated work succeeded; inspect the requested result before reporting completion.
 
@@ -74,7 +92,7 @@ Do not create a worktree, clone a repository, start a background daemon, or laun
 
 ## Programmatic execution
 
-For driving sessions from code, prefer the repo's Go client over re-implementing CLI argv and parsers: `clients/codex-session-client/` (`github.com/NatesVibeCode/harness-handoff-skills/clients/codex-session-client`). Under this fresh-only skill use only its Start (fresh `codex exec`) path, with stdlib-only dependencies. The client also implements Resume, Fork, Stream, List, and Inspect over `codex exec` plus the documented session store, but continuation is forbidden here — the contract sets `continuation: forbidden`, this skill's lane block forbids `codex exec resume` / `codex exec fork`, and the bridge refuses codex continuation without executing. The client does not cover the TypeScript/Python SDKs, the app-server protocol, or approval/sandbox/model flags — the recipes elsewhere in this skill remain authoritative for interactive use, discovery, and those surfaces.
+For workspace-bounded programmatic execution, use the repo's Go client: `clients/codex-session-client/` (`github.com/NatesVibeCode/harness-handoff-skills/clients/codex-session-client`). Its Start path runs without approval prompts inside a workspace-write sandbox and keeps Git repository checking on by default. For the full-access handoff above, use the CLI recipe or bridge. Under this fresh-only skill use only its Start path. The client also implements Resume, Fork, Stream, List, and Inspect over `codex exec` plus the documented session store, but continuation is forbidden here — the contract sets `continuation: forbidden`, this skill's lane block forbids `codex exec resume` / `codex exec fork`, and the bridge refuses codex continuation without executing. The client does not cover the TypeScript/Python SDKs, the app-server protocol, or model flags — the recipes elsewhere in this skill remain authoritative for those surfaces.
 
 ## MCP tools (optional)
 

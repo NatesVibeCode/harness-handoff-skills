@@ -95,7 +95,7 @@ Progress advisories. While running, a lane may report milestones against the pac
 
 ## Programmatic execution
 
-For driving sessions from code, prefer the repo's Go client over re-implementing CLI argv and parsers: `clients/opencode-session-client/` (`github.com/NatesVibeCode/harness-handoff-skills/clients/opencode-session-client`). It covers Start, Resume, Fork, Stream, List, and Inspect over the CLI route with stdlib-only dependencies; run results carry raw event bytes because envelope field names are outside the consulted docs. It never attaches remotely or shares. The recipes elsewhere in this skill remain authoritative for interactive use, discovery, and the SDK/server API.
+For driving sessions from code, prefer the repo's Go client over re-implementing CLI argv and parsers: `clients/opencode-session-client/` (`github.com/NatesVibeCode/harness-handoff-skills/clients/opencode-session-client`). It covers Start, Resume, Fork, Stream, List, and Inspect over the CLI route with stdlib-only dependencies; Inspect uses `opencode export ID --sanitize`, while run results carry raw event bytes because envelope field names are outside the consulted docs. It never attaches remotely or shares. The recipes elsewhere in this skill remain authoritative for interactive use, discovery, and the SDK/server API.
 
 ## OpenCode-specific boundaries
 

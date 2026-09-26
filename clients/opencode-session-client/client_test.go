@@ -125,10 +125,7 @@ func TestListAndInspect(t *testing.T) {
 			t.Fatalf("inspect = %q, want %q", got, fixture)
 		}
 		args := readArgs(t, argsFile)
-		assertContainsSequence(t, args, "export", "ses-1")
-		if contains(args, "--sanitize") {
-			t.Fatalf("inspect unexpectedly sanitizes: %q", args)
-		}
+		assertContainsSequence(t, args, "export", "ses-1", "--sanitize")
 	})
 }
 
@@ -140,8 +137,16 @@ func TestRefusesMissingValues(t *testing.T) {
 	if _, err := client.Fork(context.Background(), "../x", "prompt"); !errors.Is(err, ErrInvalidArgument) {
 		t.Fatalf("Fork bad id error = %v", err)
 	}
+	for _, id := range []string{"--last", "latest"} {
+		if _, err := client.Resume(context.Background(), id, "prompt"); !errors.Is(err, ErrInvalidArgument) {
+			t.Fatalf("Resume(%q) error = %v", id, err)
+		}
+	}
 	if err := client.Stream(context.Background(), "", true, "prompt", &bytes.Buffer{}); !errors.Is(err, ErrInvalidArgument) {
 		t.Fatalf("Stream error = %v", err)
+	}
+	if err := client.Stream(context.Background(), "--last", false, "prompt", &bytes.Buffer{}); !errors.Is(err, ErrInvalidArgument) {
+		t.Fatalf("Stream option-like ID error = %v", err)
 	}
 	if _, err := client.List(context.Background(), -1); !errors.Is(err, ErrInvalidArgument) {
 		t.Fatalf("List error = %v", err)

@@ -120,6 +120,11 @@ func TestRefusesMissingValues(t *testing.T) {
 	if _, err := client.Resume(context.Background(), "", "prompt"); !errors.Is(err, ErrInvalidArgument) {
 		t.Fatalf("Resume error = %v", err)
 	}
+	for _, id := range []string{"--last", "latest", "../other"} {
+		if _, err := client.Resume(context.Background(), id, "prompt"); !errors.Is(err, ErrInvalidArgument) {
+			t.Fatalf("Resume(%q) error = %v", id, err)
+		}
+	}
 	if _, err := client.Start(context.Background(), ""); !errors.Is(err, ErrInvalidArgument) {
 		t.Fatalf("Start error = %v", err)
 	}

@@ -2,10 +2,11 @@
 
 ## What this repository is
 
-A generator and fourteen skill trees. It ships **markdown and JSON** that an agent
-harness reads as instructions, plus three Python scripts. There is no network
-code, no service, no runtime dependency, and nothing that executes on behalf of a
-user.
+A generator, fourteen handoff skill trees, a session-review skill, seven Go
+session clients, and an optional Python MCP bridge. The generated skills are
+instructions and contracts; the clients and bridge can execute harness calls
+when an operator selects them. The session-review helper reads local session
+stores and can emit matching text when excerpts are explicitly requested.
 
 That shapes what a vulnerability means here.
 
@@ -24,10 +25,21 @@ follow it — and the failure is silent, because the agent has no way to tell th
 description from reality.
 
 **A generator that can be made to write outside its output.** `build_skills.py`
-writes `<skill>/SKILL.md` and `<skill>/contract.json` under the paths named in
-`contracts.json`. A contract whose `skill` value escapes the repository (an
-absolute path, `..`) would be a path-traversal bug. The current code does not
-validate that, and a report showing it writing outside the repo root is welcome.
+validates each contracted skill directory name and rejects symlinked generated
+output paths before writing files. A bypass of those checks, or a generated file
+that escapes the selected repository, is in scope.
+
+**An execution or review control failure.** The MCP bridge and Go clients can
+launch or continue harness sessions. Session IDs, prompt delivery, approval
+posture, temporary files, and receipts are in scope. The review helper's
+filetree filtering, read-only database access, and transcript output boundary
+are also in scope.
+
+The MCP bridge uses local stdio and trusts the MCP host that starts it. It has
+no per-user authentication. Copilot and OpenHands unattended routes also require
+a server-side per-harness allowlist; that allowlist does not replace task-level
+approval in the host. Codex's fresh handoff is autonomous, and the MCP host
+must enforce the operator's request to dispatch it.
 
 **A leaked secret.** This is a public repository. Credentials, tokens, private
 keys, customer data, or machine-specific paths in a tracked file are in scope,
@@ -35,8 +47,8 @@ including in history.
 
 ## Out of scope
 
-- The behaviour of the harnesses themselves. This repository describes them; it
-  does not control them.
+- The behaviour of third-party harness implementations outside the code this
+  repository ships.
 - An agent misusing a skill that is working as documented. `--open`-style
   conveniences are documented as operator-only for exactly that reason.
 - Prompt injection arriving from third-party content an agent fetches while
@@ -45,8 +57,8 @@ including in history.
 
 ## Reporting
 
-Open a private security advisory on the repository, or email the address in
-`LICENSE`. Include the file and line, the command you ran, and what you observed.
+Open a private security advisory on the repository. Include the file and line,
+the command you ran, and what you observed.
 
 Please do not open a public issue for anything that would let an agent bypass an
 approval step — the skill trees are read by agents on other people's machines,

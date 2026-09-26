@@ -67,8 +67,8 @@ func (c Client) Start(ctx context.Context, prompt string) (Result, error) {
 
 // Resume continues exactly the supplied session ID and sends a prompt.
 func (c Client) Resume(ctx context.Context, sessionID, prompt string) (Result, error) {
-	if sessionID == "" {
-		return Result{}, fmt.Errorf("%w: session ID is required", ErrInvalidArgument)
+	if !validSessionID(sessionID) {
+		return Result{}, fmt.Errorf("%w: exact session ID is required", ErrInvalidArgument)
 	}
 	return c.runJSON(ctx, prompt, sessionID, false)
 }
@@ -76,8 +76,8 @@ func (c Client) Resume(ctx context.Context, sessionID, prompt string) (Result, e
 // Fork branches the supplied session ID and sends a prompt on the new
 // branch. The source session history is unchanged.
 func (c Client) Fork(ctx context.Context, sessionID, prompt string) (Result, error) {
-	if sessionID == "" {
-		return Result{}, fmt.Errorf("%w: session ID is required", ErrInvalidArgument)
+	if !validSessionID(sessionID) {
+		return Result{}, fmt.Errorf("%w: exact session ID is required", ErrInvalidArgument)
 	}
 	return c.runJSON(ctx, prompt, sessionID, true)
 }
@@ -91,8 +91,8 @@ func (c Client) Stream(ctx context.Context, sessionID string, fork bool, prompt 
 	if prompt == "" {
 		return fmt.Errorf("%w: prompt is required", ErrInvalidArgument)
 	}
-	if fork && sessionID == "" {
-		return fmt.Errorf("%w: fork requires an explicit session ID", ErrInvalidArgument)
+	if sessionID != "" && !validSessionID(sessionID) || fork && !validSessionID(sessionID) {
+		return fmt.Errorf("%w: exact session ID is required", ErrInvalidArgument)
 	}
 	return c.runPrompt(ctx, prompt, sessionID, fork, "stream-json", dst)
 }
@@ -119,8 +119,8 @@ func (c Client) List(ctx context.Context, limit int) ([]SessionEntry, error) {
 		if limit > 0 && len(out) >= limit {
 			break
 		}
-		fi, err := os.Stat(m)
-		if err != nil {
+		fi, err := os.Lstat(m)
+		if err != nil || !fi.Mode().IsRegular() {
 			continue
 		}
 		out = append(out, SessionEntry{
@@ -147,7 +147,12 @@ func (c Client) Inspect(ctx context.Context, sessionID string) ([]byte, error) {
 		return nil, err
 	}
 	limit := c.outputLimit()
-	f, err := os.Open(filepath.Join(dir, sessionID+".jsonl"))
+	path := filepath.Join(dir, sessionID+".jsonl")
+	fi, err := os.Lstat(path)
+	if err != nil || !fi.Mode().IsRegular() {
+		return nil, fmt.Errorf("claude-session-client: transcript is not a regular local file: %w", os.ErrNotExist)
+	}
+	f, err := os.Open(path)
 	if err != nil {
 		return nil, fmt.Errorf("claude-session-client: open transcript: %w", err)
 	}
@@ -212,8 +217,8 @@ func (c Client) runPrompt(ctx context.Context, prompt, sessionID string, fork bo
 	if prompt == "" {
 		return fmt.Errorf("%w: prompt is required", ErrInvalidArgument)
 	}
-	if fork && sessionID == "" {
-		return fmt.Errorf("%w: fork requires an explicit session ID", ErrInvalidArgument)
+	if sessionID != "" && !validSessionID(sessionID) || fork && !validSessionID(sessionID) {
+		return fmt.Errorf("%w: exact session ID is required", ErrInvalidArgument)
 	}
 	args := []string{"-p", "--output-format", format}
 	if sessionID != "" {
@@ -287,6 +292,9 @@ func (c Client) projectDir() (string, error) {
 
 func validSessionID(id string) bool {
 	if id == "" || len(id) > 128 {
+		return false
+	}
+	if id[0] == '-' || strings.EqualFold(id, "latest") || strings.EqualFold(id, "last") || strings.EqualFold(id, "newest") || strings.EqualFold(id, "continue") {
 		return false
 	}
 	for i := 0; i < len(id); i++ {

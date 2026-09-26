@@ -16,6 +16,14 @@ Contract source: https://docs.github.com/en/copilot/how-tos/copilot-sdk/sdk-gett
 ## SDK route
 
 Prefer the official Copilot SDK for TypeScript or Python execution. The SDK manages a Copilot CLI server over JSON-RPC and provides session creation, resume, streaming, history, tools, hooks, and persistence.
+The `approveAll` examples below are only for a task with explicit unattended
+tool approval. For ordinary handoffs, use an SDK permission handler that relays
+requests to the operator, or use the CLI's normal permission flow. The repo's
+MCP bridge uses the CLI by default and requires `approval=unattended` before
+calling its `approve_all` SDK adapter, including on resume. Its fresh SDK route
+also requires an explicit model and refuses a selected workspace it cannot bind.
+The MCP server process must additionally allowlist `copilot` in
+`HARNESS_HANDOFF_UNATTENDED_HARNESSES`.
 
 ```sh
 npm install @github/copilot-sdk
@@ -25,6 +33,7 @@ python3 -m pip install github-copilot-sdk
 ```ts
 import { CopilotClient, approveAll } from "@github/copilot-sdk";
 
+// Only after the operator explicitly authorizes unattended tool approval.
 const client = new CopilotClient();
 await client.start();
 const session = await client.createSession({
@@ -40,6 +49,7 @@ import asyncio
 from copilot import CopilotClient
 from copilot.session import PermissionHandler
 
+# Only after the operator explicitly authorizes unattended tool approval.
 async def main():
     async with CopilotClient() as client:
         async with await client.create_session(
@@ -51,7 +61,8 @@ async def main():
 asyncio.run(main())
 ```
 
-`approveAll`-style helpers apply only when managed settings are disabled. For resumable sessions, create the session with your own meaningful session ID and retain it; a generated ID cannot be resumed later. Re-provide BYOK provider configuration when resuming, since API keys are never persisted. A per-lane owned SDK client is that lane's execution handle, not a shared server. If the SDK route is unavailable, use the pinned CLI fallback below.
+`approveAll`-style helpers apply only when managed settings are disabled and
+the operator authorized unattended approval for this task. For resumable sessions, create the session with your own meaningful session ID and retain it; a generated ID cannot be resumed later. Re-provide BYOK provider configuration when resuming, since API keys are never persisted. A per-lane owned SDK client is that lane's execution handle, not a shared server. If the SDK route is unavailable, use the pinned CLI fallback below.
 
 ## CLI fallback
 

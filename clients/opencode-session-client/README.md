@@ -97,7 +97,7 @@ func main() {
 output and return the bytes verbatim. `Stream` copies native event bytes
 to the supplied writer without interpreting them. `List` returns
 `session list --format json` output verbatim; `Inspect` returns
-`opencode export <id>` JSON verbatim, unsanitized.
+`opencode export <id> --sanitize` JSON with the installed CLI's redaction.
 
 Prompts are passed as a trailing argv element (the CLI's documented prompt
 delivery), so prompt text is visible in the process list while the command

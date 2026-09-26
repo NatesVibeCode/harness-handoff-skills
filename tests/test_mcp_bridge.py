@@ -14,7 +14,7 @@ from pathlib import Path
 import pytest
 
 from mcp_bridge import cli_executor, contracts, sdk_executors
-from mcp_bridge.server import _choose_route, _cli_continue, handoff_continue, session_history
+from mcp_bridge.server import _choose_route, _cli_continue, handoff_continue, handoff_fresh, session_history
 
 
 def _entry(name: str) -> dict:
@@ -74,6 +74,20 @@ def test_workspace_is_required_when_the_template_says_so():
         cli_executor.build_argv(_entry("cursor"), prompt="hi", workspace=None, model="m")
 
 
+def test_codex_output_path_renders_inside_temporary_directory():
+    import shutil
+
+    argv, stdin_text, temp_dir = cli_executor.build_argv(
+        _entry("codex"), prompt="task", workspace="/w", model=None
+    )
+    try:
+        assert temp_dir is not None
+        assert argv[argv.index("-o") + 1] == str(temp_dir / "final.md")
+        assert stdin_text == "task"
+    finally:
+        shutil.rmtree(temp_dir)
+
+
 # --- CLI execution (mocked) -----------------------------------------------
 
 
@@ -110,6 +124,49 @@ def test_prompt_text_is_not_echoed_into_the_logged_argv(monkeypatch):
     )
     receipt = cli_executor.run_cli(_entry("amp"), prompt="super secret task wording")
     assert "super secret task wording" not in " ".join(receipt["argv"])
+
+
+def test_cli_prompt_file_is_removed_after_execution(monkeypatch):
+    monkeypatch.setattr(cli_executor.shutil, "which", lambda _: "/bin/grok")
+    staged = {}
+
+    def fake_run(argv, **kwargs):
+        staged["path"] = Path(argv[argv.index("--prompt-file") + 1])
+        assert staged["path"].read_text(encoding="utf-8") == "sensitive task"
+        return _Completed(stdout="{}")
+
+    monkeypatch.setattr(cli_executor.subprocess, "run", fake_run)
+    cli_executor.run_cli(_entry("grok"), prompt="sensitive task", workspace="/w")
+    assert not staged["path"].exists()
+
+
+def test_cli_prompt_file_is_removed_after_launch_failure(monkeypatch):
+    monkeypatch.setattr(cli_executor.shutil, "which", lambda _: "/bin/grok")
+    staged = {}
+
+    def fake_run(argv, **kwargs):
+        staged["path"] = Path(argv[argv.index("--prompt-file") + 1])
+        raise OSError("launch failed")
+
+    monkeypatch.setattr(cli_executor.subprocess, "run", fake_run)
+    with pytest.raises(cli_executor.ExecutionError, match="failed to launch"):
+        cli_executor.run_cli(_entry("grok"), prompt="sensitive task", workspace="/w")
+    assert not staged["path"].exists()
+
+
+def test_codex_final_message_is_in_receipt_before_cleanup(monkeypatch):
+    monkeypatch.setattr(cli_executor.shutil, "which", lambda _: "/bin/codex")
+    staged = {}
+
+    def fake_run(argv, **kwargs):
+        staged["path"] = Path(argv[argv.index("-o") + 1])
+        staged["path"].write_text("completed outcome", encoding="utf-8")
+        return _Completed(stdout='{"session_id":"thr-1"}')
+
+    monkeypatch.setattr(cli_executor.subprocess, "run", fake_run)
+    receipt = cli_executor.run_cli(_entry("codex"), prompt="task", workspace="/w")
+    assert receipt["final_message"] == "completed outcome"
+    assert not staged["path"].exists()
 
 
 # --- route selection ------------------------------------------------------
@@ -155,6 +212,12 @@ def test_continuation_requires_an_exact_session_id():
     assert result["refused"] is True
 
 
+@pytest.mark.parametrize("session_id", ["latest", "continue", "--model", "../another", "bad id"])
+def test_continuation_rejects_selectors_and_option_like_ids(session_id):
+    result = run(handoff_continue("claude", session_id, "continue?"))
+    assert result["refused"] is True
+
+
 def test_unverified_cli_continuation_shapes_are_refused():
     for name in ("cline", "amp", "copilot"):
         result = _cli_continue(_entry(name), name, "id-1", "hi", None)
@@ -179,6 +242,148 @@ def test_unknown_route_value_is_refused():
         _choose_route(_entry("claude"), "sometimes")
 
 
+def test_openhands_headless_requires_explicit_unattended_approval(monkeypatch):
+    from mcp_bridge import server
+
+    monkeypatch.setattr(server.sdk_executors, "available", lambda _: False)
+    monkeypatch.setattr(server.cli_executor, "run_cli", lambda *a, **k: pytest.fail("CLI launched without authorization"))
+    result = run(handoff_fresh("openhands", "task", use="cli"))
+    assert result["refused"] is True
+    assert "always approves" in result["reason"]
+    assert run(handoff_continue("openhands", "ses-1", "task"))["refused"] is True
+
+
+def test_openhands_explicit_unattended_approval_reaches_cli(monkeypatch):
+    from mcp_bridge import server
+
+    called = {}
+    monkeypatch.setenv(server.UNATTENDED_ALLOWLIST_ENV, "openhands")
+
+    def fake_run(entry, **kwargs):
+        called["harness"] = entry["skill"]
+        return {"route": "cli", "exit_code": 0}
+
+    monkeypatch.setattr(server.cli_executor, "run_cli", fake_run)
+    result = run(handoff_fresh("openhands", "task", approval="unattended", use="cli"))
+    assert result["exit_code"] == 0
+    assert called["harness"] == "openhands-harness-handoff"
+
+
+def test_copilot_default_uses_cli_even_when_sdk_is_available(monkeypatch):
+    from mcp_bridge import server
+
+    monkeypatch.setattr(server.sdk_executors, "available", lambda _: True)
+    monkeypatch.setattr(server.cli_executor, "run_cli", lambda *a, **k: {"route": "cli", "exit_code": 0})
+    assert run(handoff_fresh("copilot", "task"))["route"] == "cli"
+    refused = run(handoff_fresh("copilot", "task", use="sdk"))
+    assert refused["refused"] is True
+
+
+def test_copilot_sdk_requires_explicit_unattended_approval():
+    with pytest.raises(RuntimeError, match="explicit unattended"):
+        run(sdk_executors.copilot_fresh("task", None, None, "default"))
+    with pytest.raises(RuntimeError, match="explicit unattended"):
+        run(sdk_executors.copilot_resume("ses-1", "task", None))
+    assert run(handoff_continue("copilot", "ses-1", "task"))["refused"] is True
+
+
+def test_copilot_explicit_unattended_reaches_sdk_with_that_choice(monkeypatch):
+    from mcp_bridge import server
+
+    seen = []
+    monkeypatch.setenv(server.UNATTENDED_ALLOWLIST_ENV, "copilot")
+
+    async def fake_fresh(prompt, workspace, model, approval):
+        seen.append(("fresh", approval))
+        return {"route": "sdk", "session_id": "ses-1"}
+
+    async def fake_resume(session_id, prompt, workspace, approval):
+        seen.append(("resume", approval))
+        return {"route": "sdk", "session_id": session_id}
+
+    monkeypatch.setattr(server.sdk_executors, "available", lambda _: True)
+    monkeypatch.setitem(server.sdk_executors.EXECUTORS, "copilot", {"fresh": fake_fresh, "resume": fake_resume, "history": None})
+    assert run(handoff_fresh("copilot", "task", model="selected-model", approval="unattended"))["route"] == "sdk"
+    assert run(handoff_continue("copilot", "ses-1", "task", approval="unattended"))["route"] == "sdk"
+    assert seen == [("fresh", "unattended"), ("resume", "unattended")]
+
+
+def test_sdk_receipt_redacts_known_credential_patterns():
+    receipt = sdk_executors._receipt("demo", "ses-1", "result sk-SECRETSECRETSECRET")
+    assert "sk-SECRETSECRETSECRET" not in receipt["output"]
+
+
+def test_codex_approval_modes_are_explicit(monkeypatch):
+    from mcp_bridge import server
+
+    seen = {}
+    monkeypatch.setenv(server.UNATTENDED_ALLOWLIST_ENV, "codex")
+
+    def fake_run(entry, **kwargs):
+        seen.update(kwargs)
+        return {"route": "cli", "exit_code": 0}
+
+    monkeypatch.setattr(server.cli_executor, "run_cli", fake_run)
+    run(handoff_fresh("codex", "task", workspace="/w", approval="restricted", use="cli"))
+    assert seen["extra_argv"] == ["--sandbox", "read-only", "-c", 'approval_policy="on-request"']
+    run(handoff_fresh("codex", "task", workspace="/w", use="cli"))
+    assert seen["extra_argv"] == ["--dangerously-bypass-approvals-and-sandbox"]
+    run(handoff_fresh("codex", "task", workspace="/w", approval="unattended", use="cli"))
+    assert seen["extra_argv"] == ["--dangerously-bypass-approvals-and-sandbox"]
+
+
+def test_codex_selected_model_reaches_cli(monkeypatch):
+    from mcp_bridge import server
+
+    seen = {}
+    monkeypatch.setattr(server.cli_executor, "run_cli", lambda entry, **kwargs: seen.update(kwargs) or {"route": "cli"})
+    run(handoff_fresh("codex", "task", workspace="/w", model="selected-model", use="cli"))
+    assert seen["extra_argv"][-2:] == ["--model", "selected-model"]
+
+
+def test_unbindable_workspace_or_model_is_refused(monkeypatch):
+    from mcp_bridge import server
+
+    monkeypatch.setenv(server.UNATTENDED_ALLOWLIST_ENV, "copilot")
+    monkeypatch.setattr(server.sdk_executors, "available", lambda _: True)
+    monkeypatch.setattr(server.cli_executor, "run_cli", lambda *a, **k: pytest.fail("CLI launched"))
+    assert run(handoff_fresh("antigravity", "task", workspace="/w", use="sdk"))["refused"] is True
+    assert run(handoff_fresh("copilot", "task", workspace="/w", model="m", approval="unattended", use="sdk"))["refused"] is True
+    assert run(handoff_fresh("claude", "task", model="m", use="sdk"))["refused"] is True
+    assert run(handoff_fresh("openhands", "task", use="sdk"))["refused"] is True
+    assert run(handoff_continue("cursor", "ses-1", "task", workspace="/w"))["refused"] is True
+    assert run(session_history("cursor", "ses-1", workspace="/w"))["refused"] is True
+
+
+def test_other_unattended_routes_need_server_allowlist(monkeypatch):
+    from mcp_bridge import server
+
+    monkeypatch.delenv(server.UNATTENDED_ALLOWLIST_ENV, raising=False)
+    monkeypatch.setattr(server.cli_executor, "run_cli", lambda *a, **k: pytest.fail("CLI launched"))
+    result = run(handoff_fresh("openhands", "task", approval="unattended", use="cli"))
+    assert result["refused"] is True
+    assert server.UNATTENDED_ALLOWLIST_ENV in result["reason"]
+    continued = run(handoff_continue("openhands", "ses-1", "task", approval="unattended"))
+    assert continued["refused"] is True
+
+
+def test_codex_dispatch_does_not_depend_on_unattended_allowlist(monkeypatch):
+    from mcp_bridge import server
+
+    monkeypatch.delenv(server.UNATTENDED_ALLOWLIST_ENV, raising=False)
+    monkeypatch.setattr(server.cli_executor, "run_cli", lambda entry, **kwargs: {"route": "cli", "extra_argv": kwargs["extra_argv"]})
+    result = run(handoff_fresh("codex", "task", workspace="/w", use="cli"))
+    assert result["extra_argv"] == ["--dangerously-bypass-approvals-and-sandbox"]
+
+
+def test_unknown_approval_is_refused_before_launch(monkeypatch):
+    from mcp_bridge import server
+
+    monkeypatch.setattr(server.cli_executor, "run_cli", lambda *a, **k: pytest.fail("CLI launched"))
+    result = run(handoff_fresh("codex", "task", approval="anything", use="cli"))
+    assert result["refused"] is True
+
+
 def test_opencode_continuation_stages_a_prompt_file(monkeypatch):
     from mcp_bridge import server
 
@@ -195,6 +400,7 @@ def test_opencode_continuation_stages_a_prompt_file(monkeypatch):
     result = server._cli_continue(_entry("opencode"), "opencode", "ses-9", "do the thing", None)
     assert seen["file_text"] == "do the thing"
     assert result["session_id"] == "ses-9"
+    assert not Path(seen["argv"][seen["argv"].index("--file") + 1]).exists()
 
 
 def test_cursor_sdk_route_requires_an_explicit_model():

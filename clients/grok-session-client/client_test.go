@@ -115,6 +115,11 @@ func TestRefusesMissingIdentifiersAndBadLimits(t *testing.T) {
 	if _, err := client.Fork(context.Background(), "", "prompt"); !errors.Is(err, ErrInvalidArgument) {
 		t.Fatalf("Fork error = %v", err)
 	}
+	for _, id := range []string{"--last", "latest", "../other"} {
+		if _, err := client.Resume(context.Background(), id, "prompt"); !errors.Is(err, ErrInvalidArgument) {
+			t.Fatalf("Resume(%q) error = %v", id, err)
+		}
+	}
 	if err := client.Stream(context.Background(), "", true, "prompt", &bytes.Buffer{}); !errors.Is(err, ErrInvalidArgument) {
 		t.Fatalf("Stream error = %v", err)
 	}

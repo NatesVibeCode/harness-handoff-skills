@@ -116,8 +116,8 @@ func (c Client) Stream(ctx context.Context, sessionID string, fork bool, prompt 
 	if prompt == "" {
 		return fmt.Errorf("%w: prompt is required", ErrInvalidArgument)
 	}
-	if fork && !validSessionID(sessionID) {
-		return fmt.Errorf("%w: fork requires an explicit session ID", ErrInvalidArgument)
+	if (sessionID != "" || fork) && !validSessionID(sessionID) {
+		return fmt.Errorf("%w: exact session ID is required", ErrInvalidArgument)
 	}
 	if sessionID != "" && !validSessionID(sessionID) {
 		return fmt.Errorf("%w: session ID is malformed", ErrInvalidArgument)
@@ -145,7 +145,7 @@ func (c Client) Inspect(ctx context.Context, sessionID string) ([]byte, error) {
 	if !validSessionID(sessionID) {
 		return nil, fmt.Errorf("%w: session ID is required", ErrInvalidArgument)
 	}
-	return c.capture(ctx, []string{"export", sessionID})
+	return c.capture(ctx, []string{"export", sessionID, "--sanitize"})
 }
 
 func (c Client) runPrompt(ctx context.Context, prompt, sessionID string, fork bool, dst io.Writer) error {
@@ -223,6 +223,9 @@ func (c Client) outputLimit() int64 {
 
 func validSessionID(id string) bool {
 	if id == "" || len(id) > 128 {
+		return false
+	}
+	if id[0] == '-' || id == "latest" || id == "last" || id == "newest" || id == "continue" {
 		return false
 	}
 	for i := 0; i < len(id); i++ {

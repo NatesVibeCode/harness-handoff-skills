@@ -1,18 +1,22 @@
 #!/usr/bin/env python3
-"""Generate the fourteen handoff skill trees from skills-src/.
+"""Generate the fourteen handoff skill trees and the session review skill.
 
-One authored source, fourteen generated trees. Before this existed the trees were
-hand-maintained copies, and commit 9322d55 pasted the same ``## Direct lane spawning``
-block into every file five or six times because nothing stopped it. The lane block is
-now emitted exactly once, from ``skills-src/lane-spawning/<harness>.md``, and every
-generated file is compared byte-for-byte on ``--check``.
+The fourteen handoff trees are generated from their authored source; the standalone
+review workflow and helper are also copied into a self-contained generated skill.
+Before this existed the handoff trees were hand-maintained copies, and commit 9322d55
+pasted the same ``## Direct lane spawning`` block into every file five or six times.
+The lane block is now emitted exactly once from its source, and every generated file
+is compared byte-for-byte on ``--check``.
 
 Sources (author these)
+    skills-src/session-review.md       cross-harness session review workflow
+    scripts/session_review.py         authored metadata/health helper
     skills-src/contracts.json          per-harness execution contract, machine-readable
     skills-src/lane-spawning/<h>.md    the one authoritative lane-spawning block
     skills-src/harnesses/<h>.md        the authored remainder of the skill body
 
 Generated (never hand-edit)
+    harness-session-review/*           skill, output schema, and helper copy
     <skill>/SKILL.md                   frontmatter + title + lane block + body
     <skill>/contract.json              this harness's contract, for tooling
 
@@ -33,6 +37,12 @@ from pathlib import Path
 CONTRACT_FILE = "contracts.json"
 LANE_HEADING = "## Direct lane spawning"
 CONTRACT_VERSION = 2
+REVIEW_SKILL = "harness-session-review"
+REVIEW_SKILL_SOURCE = "session-review.md"
+REVIEW_SCHEMA_SOURCE = "session-review-output.schema.json"
+REVIEW_SCHEMA_OUTPUT = "review-output.schema.json"
+REVIEW_TOOL_SOURCE = "scripts/session_review.py"
+REVIEW_TOOL_OUTPUT = "session_review.py"
 CONTRACT_KEYS = (
     "binary",
     "prompt_delivery",
@@ -297,6 +307,11 @@ def load_sources(source_root: Path) -> tuple[dict, dict[str, dict]]:
                 f"{contract_path}: {name} uses prompt_delivery=file_flag "
                 "but declares no prompt_file_flag"
             )
+        argv = entry["oneshot_argv"]
+        if not isinstance(argv, list) or not argv or any(not isinstance(token, str) or not token for token in argv):
+            raise SourceError(f"{contract_path}: {name} oneshot_argv must be a non-empty list of strings")
+        if any("<workdir>" in token for token in argv) and not entry["call_workdir"]:
+            raise SourceError(f"{contract_path}: {name} uses <workdir> without call_workdir")
         if entry["interactivity"] not in INTERACTIVITY_VALUES:
             raise SourceError(
                 f"{contract_path}: {name} declares interactivity "
@@ -366,6 +381,45 @@ def check_references(skill_dir: Path, entry: dict, name: str) -> list[str]:
     return problems
 
 
+def load_review_skill_sources(source_root: Path) -> tuple[str, str, str]:
+    """Load the independently scoped session-review skill and its output contract."""
+    skill_path = source_root / REVIEW_SKILL_SOURCE
+    schema_path = source_root / REVIEW_SCHEMA_SOURCE
+    tool_path = source_root.parent / REVIEW_TOOL_SOURCE
+    if not skill_path.is_file():
+        raise SourceError(f"missing source {skill_path.relative_to(source_root.parent)}")
+    if not schema_path.is_file():
+        raise SourceError(f"missing source {schema_path.relative_to(source_root.parent)}")
+    if not tool_path.is_file():
+        raise SourceError(f"missing source {tool_path.relative_to(source_root.parent)}")
+    skill = skill_path.read_text(encoding="utf-8")
+    if not skill.startswith(f"---\nname: {REVIEW_SKILL}\n"):
+        raise SourceError(f"{skill_path.relative_to(source_root.parent)} must declare name: {REVIEW_SKILL} in frontmatter")
+    try:
+        schema = json.loads(schema_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        raise SourceError(f"{schema_path.relative_to(source_root.parent)} is not valid JSON: {exc.msg}") from exc
+    if not isinstance(schema, dict):
+        raise SourceError(f"{schema_path.relative_to(source_root.parent)} must contain a JSON object")
+    required = schema.get("required")
+    if schema.get("type") != "object" or not isinstance(required, list) or not required:
+        raise SourceError(f"{schema_path.relative_to(source_root.parent)} must define an object schema with required fields")
+    return skill, json.dumps(schema, indent=2) + "\n", tool_path.read_text(encoding="utf-8")
+
+
+def unsafe_output_reason(repo: Path, target: Path) -> str | None:
+    """Reject symlinked output paths before reading or writing generated files."""
+    if target.parent.is_symlink() or target.is_symlink():
+        return f"{target.relative_to(repo)} is a symlinked generated output path"
+    if target.parent.exists() and not target.parent.is_dir():
+        return f"{target.parent.relative_to(repo)} is not a directory"
+    try:
+        target.resolve().relative_to(repo)
+    except (ValueError, OSError, RuntimeError):
+        return f"{target.relative_to(repo)} resolves outside the repository"
+    return None
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--repo", type=Path, default=Path(__file__).resolve().parent.parent)
@@ -376,6 +430,7 @@ def main() -> int:
     source_root = repo / "skills-src"
     try:
         document, harnesses = load_sources(source_root)
+        review_skill_text, review_schema_text, review_tool_text = load_review_skill_sources(source_root)
     except SourceError as exc:
         print(f"ERROR  {exc}")
         return 2
@@ -383,6 +438,20 @@ def main() -> int:
     problems: list[str] = []
     stale: list[str] = []
     written = 0
+
+    for entry in harnesses.values():
+        for filename in ("SKILL.md", "contract.json"):
+            reason = unsafe_output_reason(repo, repo / entry["skill"] / filename)
+            if reason:
+                problems.append(reason)
+    for filename in ("SKILL.md", REVIEW_SCHEMA_OUTPUT, REVIEW_TOOL_OUTPUT):
+        reason = unsafe_output_reason(repo, repo / REVIEW_SKILL / filename)
+        if reason:
+            problems.append(reason)
+    if problems:
+        for problem in problems:
+            print(f"ERROR  {problem}")
+        return 2
 
     for name, entry in sorted(harnesses.items()):
         skill_dir = repo / entry["skill"]
@@ -425,6 +494,24 @@ def main() -> int:
                 target.write_text(expected, encoding="utf-8")
                 written += 1
 
+    review_dir = repo / REVIEW_SKILL
+    review_artifacts = (
+        ("SKILL.md", review_skill_text),
+        (REVIEW_SCHEMA_OUTPUT, review_schema_text),
+        (REVIEW_TOOL_OUTPUT, review_tool_text),
+    )
+    for filename, expected in review_artifacts:
+        target = review_dir / filename
+        current = target.read_text(encoding="utf-8") if target.is_file() else None
+        if current == expected:
+            continue
+        if args.check:
+            stale.append(f"{REVIEW_SKILL}/{filename}")
+        else:
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text(expected, encoding="utf-8")
+            written += 1
+
     for problem in problems:
         print(f"ERROR  {problem}")
     if problems:
@@ -437,10 +524,10 @@ def main() -> int:
                 print(f"  {item}")
             print("Run: python3 scripts/build_skills.py")
             return 1
-        print(f"OK     {len(harnesses)} skill trees match skills-src/")
+        print(f"OK     {len(harnesses)} handoff skill trees + 1 review skill match skills-src/")
         return 0
 
-    print(f"OK     wrote {written} file(s) across {len(harnesses)} skill trees")
+    print(f"OK     wrote {written} file(s) across {len(harnesses)} handoff skill trees + 1 review skill")
     return 0
 
 

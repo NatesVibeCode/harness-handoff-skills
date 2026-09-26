@@ -18,7 +18,7 @@ and behaviors below are brief- and docs-derived only.
 | `Fork` | Same with `--session <id> --fork` | Brief + CLI reference (`--fork`: fork when continuing) |
 | `Stream` | Same argv as fresh/resumed/forked; bytes pass-through | CLI reference (`--format json`: raw JSON events) |
 | `List` | `opencode session list --format json [--max-count N]`; bytes verbatim | Brief + CLI reference (`session list`, `--max-count`, `--format`) |
-| `Inspect` | `opencode export <id>`; bytes verbatim, no `--sanitize` | Brief + CLI reference (`export [sessionID]`) |
+| `Inspect` | `opencode export <id> --sanitize`; exported bytes are returned verbatim | Installed CLI help confirms `--sanitize`; wrapper argument test |
 
 ## Notes
 

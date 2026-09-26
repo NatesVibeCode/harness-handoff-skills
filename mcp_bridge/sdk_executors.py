@@ -21,6 +21,8 @@ import asyncio
 import importlib.util
 import sys
 
+from mcp_bridge import cli_executor
+
 
 def available(harness: str) -> bool:
     """True when the authorized Python SDK package is importable."""
@@ -43,17 +45,18 @@ def available(harness: str) -> bool:
 
 
 def _receipt(harness: str, session_id: str | None, output: str) -> dict:
-    return {"harness": harness, "route": "sdk", "session_id": session_id, "output": output[-8000:]}
+    return {"harness": harness, "route": "sdk", "session_id": session_id, "output": cli_executor.redact(output[-8000:])}
 
 
 # --- claude ---------------------------------------------------------------
 
 
 async def claude_fresh(prompt: str, workspace: str | None, model: str | None, approval: str) -> dict:
+    if model:
+        raise RuntimeError("claude SDK adapter cannot bind the selected model")
     from claude_agent_sdk import ClaudeAgentOptions, ResultMessage, SystemMessage, query
 
     options = ClaudeAgentOptions(
-        allowed_tools=["Read", "Edit", "Glob"],
         cwd=workspace or ".",
     )
     session_id: str | None = None
@@ -107,6 +110,8 @@ async def cursor_fresh(prompt: str, workspace: str | None, model: str | None, ap
 
 
 async def cursor_resume(session_id: str, prompt: str, workspace: str | None) -> dict:
+    if workspace:
+        raise RuntimeError("cursor SDK resume cannot bind or verify the selected workspace")
     from cursor_sdk import Agent
 
     agent = Agent.resume(session_id)
@@ -116,6 +121,8 @@ async def cursor_resume(session_id: str, prompt: str, workspace: str | None) -> 
 
 
 async def cursor_history(session_id: str, workspace: str | None, limit: int = 20) -> dict:
+    if workspace:
+        raise RuntimeError("cursor SDK history cannot verify the selected workspace")
     from cursor_sdk import Agent
 
     agent = Agent.resume(session_id)
@@ -127,13 +134,19 @@ async def cursor_history(session_id: str, workspace: str | None, limit: int = 20
 
 
 async def copilot_fresh(prompt: str, workspace: str | None, model: str | None, approval: str) -> dict:
+    if approval != "unattended":
+        raise RuntimeError("copilot SDK approve_all requires explicit unattended authorization")
+    if workspace:
+        raise RuntimeError("copilot SDK adapter cannot bind the selected workspace")
+    if not model:
+        raise RuntimeError("copilot SDK adapter requires an explicit model")
     from copilot import CopilotClient
     from copilot.session import PermissionHandler
 
     async with CopilotClient() as client:
         async with await client.create_session(
             on_permission_request=PermissionHandler.approve_all,
-            model=model or "gpt-4.1",
+            model=model,
         ) as session:
             send = getattr(session, "send_and_wait", None)
             if send is None:
@@ -143,7 +156,12 @@ async def copilot_fresh(prompt: str, workspace: str | None, model: str | None, a
             return _receipt("copilot", session.session_id, str(response))
 
 
-async def copilot_resume(session_id: str, prompt: str, workspace: str | None) -> dict:
+async def copilot_resume(session_id: str, prompt: str, workspace: str | None,
+                         approval: str = "default") -> dict:
+    if approval != "unattended":
+        raise RuntimeError("copilot SDK approve_all requires explicit unattended authorization")
+    if workspace:
+        raise RuntimeError("copilot SDK resume cannot bind or verify the selected workspace")
     from copilot import CopilotClient
     from copilot.session import PermissionHandler
 
@@ -163,6 +181,8 @@ async def copilot_resume(session_id: str, prompt: str, workspace: str | None) ->
 
 
 async def muse_fresh(prompt: str, workspace: str | None, model: str | None, approval: str) -> dict:
+    if model:
+        raise RuntimeError("muse SDK adapter cannot bind the selected model")
     from muse_code import MuseClient, MuseClientSpawnOptions, SendUserTurnOptions, StartSessionOptions
 
     client = await MuseClient.spawn(
@@ -188,6 +208,8 @@ async def muse_fresh(prompt: str, workspace: str | None, model: str | None, appr
 
 
 async def muse_resume(session_id: str, prompt: str, workspace: str | None) -> dict:
+    if workspace:
+        raise RuntimeError("muse SDK resume cannot bind or verify the selected workspace")
     from muse_code import MuseClient, MuseClientSpawnOptions, SendUserTurnOptions
 
     client = await MuseClient.spawn(
@@ -215,6 +237,8 @@ async def muse_resume(session_id: str, prompt: str, workspace: str | None) -> di
 
 
 async def antigravity_fresh(prompt: str, workspace: str | None, model: str | None, approval: str) -> dict:
+    if workspace or model:
+        raise RuntimeError("antigravity SDK adapter cannot bind the selected workspace or model")
     from google.antigravity import Agent, LocalAgentConfig
 
     config = LocalAgentConfig()
@@ -225,6 +249,8 @@ async def antigravity_fresh(prompt: str, workspace: str | None, model: str | Non
 
 async def antigravity_resume(session_id: str, prompt: str, workspace: str | None, *, save_dir: str, app_data_dir: str | None = None) -> dict:
     """Restore an SDK-owned session only: matching save_dir/app_data_dir required."""
+    if workspace:
+        raise RuntimeError("antigravity SDK restore cannot bind or verify the selected workspace")
     from google.antigravity import Agent, LocalAgentConfig
 
     config = LocalAgentConfig(
@@ -239,6 +265,8 @@ async def antigravity_resume(session_id: str, prompt: str, workspace: str | None
 
 
 async def openhands_fresh(prompt: str, workspace: str | None, model: str | None, approval: str) -> dict:
+    if not model:
+        raise RuntimeError("openhands SDK adapter requires an explicit model")
     import os
 
     from openhands.sdk import LLM, Agent, Conversation
@@ -246,7 +274,7 @@ async def openhands_fresh(prompt: str, workspace: str | None, model: str | None,
     api_key = os.environ.get("LLM_API_KEY")
     if not api_key:
         raise RuntimeError("openhands SDK route needs LLM_API_KEY in the server environment")
-    llm = LLM(model=model or "claude-sonnet-4-20250514", api_key=api_key)
+    llm = LLM(model=model, api_key=api_key)
     agent = Agent(llm=llm, tools=[])
     conversation = Conversation(agent=agent, workspace=workspace or "./workspace")
     conversation.send_message(prompt)

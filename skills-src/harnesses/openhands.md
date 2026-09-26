@@ -25,6 +25,10 @@ Select the workspace backend explicitly: local machine, Docker/ephemeral workspa
 ## CLI fallback
 
 Headless CLI mode always runs with always-approve and cannot be changed. Use it only with explicit unattended authorization.
+The repo's MCP bridge requires `approval=unattended` before it uses this CLI
+mode. Its SDK adapter requires an explicit model rather than choosing a provider
+model on the operator's behalf. The MCP server process must also allowlist
+`openhands` in `HARNESS_HANDOFF_UNATTENDED_HARNESSES`.
 
 ```sh
 command -v openhands

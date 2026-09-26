@@ -189,6 +189,9 @@ func validSessionID(id string) bool {
 	if id == "" || len(id) > 128 {
 		return false
 	}
+	if id[0] == '-' || id == "latest" || id == "last" || id == "newest" || id == "continue" {
+		return false
+	}
 	for i := 0; i < len(id); i++ {
 		ch := id[i]
 		if ch >= 'a' && ch <= 'z' || ch >= 'A' && ch <= 'Z' || ch >= '0' && ch <= '9' || ch == '-' || ch == '_' {

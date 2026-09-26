@@ -19,11 +19,15 @@ auth. The documented automation guidance prefers `CODEX_API_KEY` inline
 for a single invocation rather than exported job-wide. This package
 inherits the process environment and stores no credentials.
 
-The client launches the CLI in the selected working directory, so Codex
-uses that workspace's normal configuration, permissions, sandbox, and
-local session store. The client does not change sandbox, approval, or
-model settings; `--skip-git-repo-check` is always passed so disposable
-non-git workspaces work.
+The client launches the CLI in the selected working directory. Execution pins
+`workspace-write` sandboxing and `never` approval prompts, while authentication
+and the model stay with the installed CLI. Git repository checking remains on
+by default; set `Client.SkipGitRepoCheck` only when the selected non-Git
+directory is authorized. The client offers no full-access bypass option. A
+command that needs access beyond its workspace fails and returns control to
+the dispatcher.
+`List` and `Inspect` match the selected workspace from session metadata;
+`Inspect` also requires an exact session ID.
 
 ## Install the library
 

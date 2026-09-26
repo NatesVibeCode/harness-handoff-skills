@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -32,7 +33,10 @@ func TestStartResumeAndFork(t *testing.T) {
 			t.Fatalf("result = %#v", result)
 		}
 		args := readArgs(t, argsFile)
-		assertContainsSequence(t, args, "exec", "-C", dir, "--json", "--skip-git-repo-check", "-")
+		assertContainsSequence(t, args, "exec", "-C", dir, "-c", `sandbox_mode="workspace-write"`, "-c", `approval_policy="never"`, "--json", "-")
+		if contains(args, "--skip-git-repo-check") {
+			t.Fatalf("fresh args bypass Git check by default: %q", args)
+		}
 		if contains(args, "resume") || contains(args, "fork") {
 			t.Fatalf("fresh args unexpectedly resume or fork: %q", args)
 		}
@@ -52,13 +56,24 @@ func TestStartResumeAndFork(t *testing.T) {
 		}
 	})
 
+	t.Run("Git check bypass is explicit", func(t *testing.T) {
+		client, _, argsFile, _ := fakeClient(t, fixture)
+		client.SkipGitRepoCheck = true
+		if _, err := client.Start(context.Background(), "x"); err != nil {
+			t.Fatal(err)
+		}
+		if args := readArgs(t, argsFile); !contains(args, "--skip-git-repo-check") {
+			t.Fatalf("opted-in Git check bypass missing: %q", args)
+		}
+	})
+
 	t.Run("resume exact id", func(t *testing.T) {
 		client, _, argsFile, stdinFile := fakeClient(t, fixture)
 		if _, err := client.Resume(context.Background(), "id-123", "continue"); err != nil {
 			t.Fatal(err)
 		}
 		args := readArgs(t, argsFile)
-		assertContainsSequence(t, args, "exec", "resume", "id-123", "--json", "--skip-git-repo-check", "-")
+		assertContainsSequence(t, args, "exec", "resume", "id-123", "-c", `sandbox_mode="workspace-write"`, "-c", `approval_policy="never"`, "--json", "-")
 		if contains(args, "fork") {
 			t.Fatalf("resume unexpectedly forks: %q", args)
 		}
@@ -73,7 +88,7 @@ func TestStartResumeAndFork(t *testing.T) {
 			t.Fatal(err)
 		}
 		args := readArgs(t, argsFile)
-		assertContainsSequence(t, args, "exec", "fork", "id-123", "--json", "--skip-git-repo-check", "-")
+		assertContainsSequence(t, args, "exec", "fork", "id-123", "-c", `sandbox_mode="workspace-write"`, "-c", `approval_policy="never"`, "--json", "-")
 	})
 }
 
@@ -88,7 +103,7 @@ func TestStreamPassesThroughJSONL(t *testing.T) {
 		t.Fatalf("stream output = %q, want %q", output.Bytes(), fixture)
 	}
 	args := readArgs(t, argsFile)
-	assertContainsSequence(t, args, "exec", "fork", "id-stream", "--json", "--skip-git-repo-check", "-")
+	assertContainsSequence(t, args, "exec", "fork", "id-stream", "-c", `sandbox_mode="workspace-write"`, "-c", `approval_policy="never"`, "--json", "-")
 	if got := readFile(t, stdinFile); got != "stream this" {
 		t.Fatalf("stdin prompt = %q", got)
 	}
@@ -165,6 +180,10 @@ func TestListAndInspect(t *testing.T) {
 
 	t.Run("inspect transcript", func(t *testing.T) {
 		client := setupStore(t)
+		collision := filepath.Join(os.Getenv("CODEX_HOME"), "sessions", "2026", "09", "25", "rollout-x-a-id-0.jsonl")
+		if err := os.WriteFile(collision, []byte("{\"type\":\"session_meta\",\"payload\":{\"session_id\":\"wrong-id\"}}\n"), 0o600); err != nil {
+			t.Fatal(err)
+		}
 		got, err := client.Inspect(context.Background(), "a-id")
 		if err != nil {
 			t.Fatal(err)
@@ -188,7 +207,49 @@ func TestListAndInspect(t *testing.T) {
 		if _, err := client.Inspect(context.Background(), "nope"); !errors.Is(err, ErrSessionNotFound) {
 			t.Fatalf("Inspect error = %v", err)
 		}
+		if _, err := client.Inspect(context.Background(), "z-id"); !errors.Is(err, ErrSessionNotFound) {
+			t.Fatalf("out-of-workspace Inspect error = %v", err)
+		}
 	})
+
+	t.Run("inspect ignores symlinked transcript", func(t *testing.T) {
+		client := setupStore(t)
+		outside := filepath.Join(t.TempDir(), "outside.jsonl")
+		if err := os.WriteFile(outside, []byte("{\"type\":\"session_meta\",\"payload\":{\"session_id\":\"outside-id\"}}\n"), 0o600); err != nil {
+			t.Fatal(err)
+		}
+		link := filepath.Join(os.Getenv("CODEX_HOME"), "sessions", "2026", "09", "25", "linked.jsonl")
+		if err := os.Symlink(outside, link); err != nil {
+			t.Fatal(err)
+		}
+		if _, err := client.Inspect(context.Background(), "outside-id"); !errors.Is(err, ErrSessionNotFound) {
+			t.Fatalf("symlinked Inspect error = %v", err)
+		}
+	})
+}
+
+func TestListHasNoImplicitSessionCountCap(t *testing.T) {
+	home := t.TempDir()
+	t.Setenv("CODEX_HOME", home)
+	work := t.TempDir()
+	store := filepath.Join(home, "sessions")
+	if err := os.MkdirAll(store, 0o700); err != nil {
+		t.Fatal(err)
+	}
+	for i := 0; i < 5001; i++ {
+		path := filepath.Join(store, fmt.Sprintf("session-%04d.jsonl", i))
+		body := fmt.Sprintf("{\"type\":\"session_meta\",\"payload\":{\"session_id\":\"id-%04d\",\"cwd\":%q}}\n", i, work)
+		if err := os.WriteFile(path, []byte(body), 0o600); err != nil {
+			t.Fatal(err)
+		}
+	}
+	got, err := (Client{WorkingDirectory: work}).List(context.Background(), 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(got) != 5001 {
+		t.Fatalf("got %d sessions, want 5001", len(got))
+	}
 }
 
 func TestRefusesMissingIdentifiers(t *testing.T) {
@@ -198,6 +259,14 @@ func TestRefusesMissingIdentifiers(t *testing.T) {
 	}
 	if _, err := client.Fork(context.Background(), "", "prompt"); !errors.Is(err, ErrInvalidArgument) {
 		t.Fatalf("Fork error = %v", err)
+	}
+	for _, id := range []string{"--last", "latest", "../other"} {
+		if _, err := client.Resume(context.Background(), id, "prompt"); !errors.Is(err, ErrInvalidArgument) {
+			t.Fatalf("Resume(%q) error = %v", id, err)
+		}
+		if _, err := client.Fork(context.Background(), id, "prompt"); !errors.Is(err, ErrInvalidArgument) {
+			t.Fatalf("Fork(%q) error = %v", id, err)
+		}
 	}
 	if err := client.Stream(context.Background(), "", true, "prompt", &bytes.Buffer{}); !errors.Is(err, ErrInvalidArgument) {
 		t.Fatalf("Stream error = %v", err)

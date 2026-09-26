@@ -73,8 +73,8 @@ func (c Client) Start(ctx context.Context, prompt string) (Result, error) {
 
 // Resume continues exactly the supplied chat ID and sends a prompt.
 func (c Client) Resume(ctx context.Context, sessionID, prompt string) (Result, error) {
-	if sessionID == "" {
-		return Result{}, fmt.Errorf("%w: session ID is required", ErrInvalidArgument)
+	if !validSessionID(sessionID) {
+		return Result{}, fmt.Errorf("%w: exact session ID is required", ErrInvalidArgument)
 	}
 	if prompt == "" {
 		return Result{}, fmt.Errorf("%w: prompt is required", ErrInvalidArgument)
@@ -153,6 +153,9 @@ func (c Client) runPrompt(ctx context.Context, prompt, sessionID, format string,
 	if prompt == "" {
 		return fmt.Errorf("%w: prompt is required", ErrInvalidArgument)
 	}
+	if sessionID != "" && !validSessionID(sessionID) {
+		return fmt.Errorf("%w: exact session ID is required", ErrInvalidArgument)
+	}
 	ws, err := c.workspace()
 	if err != nil {
 		return err
@@ -169,6 +172,20 @@ func (c Client) runPrompt(ctx context.Context, prompt, sessionID, format string,
 	}
 	args = append(args, prompt)
 	return c.run(ctx, args, dst)
+}
+
+func validSessionID(id string) bool {
+	if id == "" || len(id) > 128 || id[0] == '-' || id == "latest" || id == "last" || id == "newest" || id == "continue" {
+		return false
+	}
+	for i := 0; i < len(id); i++ {
+		ch := id[i]
+		if ch >= 'a' && ch <= 'z' || ch >= 'A' && ch <= 'Z' || ch >= '0' && ch <= '9' || ch == '-' || ch == '_' {
+			continue
+		}
+		return false
+	}
+	return true
 }
 
 func (c Client) capture(ctx context.Context, args []string) ([]byte, error) {

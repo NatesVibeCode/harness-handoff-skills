@@ -1,0 +1,168 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Cross-harness session review report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "window",
+    "coverage",
+    "confidence",
+    "workstreams",
+    "accomplishments",
+    "open_work",
+    "evidence",
+    "strengths",
+    "weaknesses",
+    "next_actions",
+    "harness_health",
+    "costs",
+    "limitations",
+    "operator_confirmed_closures"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "window": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from_inclusive", "through_inclusive", "timezone", "start_utc", "end_exclusive_utc"],
+      "properties": {
+        "from_inclusive": {"type": "string", "format": "date"},
+        "through_inclusive": {"type": "string", "format": "date"},
+        "timezone": {"type": "string"},
+        "start_utc": {"type": "string", "format": "date-time"},
+        "end_exclusive_utc": {"type": "string", "format": "date-time"}
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "required": ["sources_checked", "complete", "gaps"],
+      "properties": {
+        "sources_checked": {"type": "array", "items": {"type": "string"}},
+        "complete": {"type": "boolean"},
+        "gaps": {"type": "array", "items": {"type": "string"}},
+        "matching_session_count": {"type": "integer", "minimum": 0}
+      }
+    },
+    "confidence": {
+      "type": "object",
+      "required": ["overall", "basis"],
+      "properties": {
+        "overall": {"enum": ["high", "medium", "low"]},
+        "basis": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "workstreams": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "summary", "thread_refs", "grouping_basis", "confidence"],
+        "properties": {
+          "name": {"type": "string"},
+          "summary": {"type": "string"},
+          "thread_refs": {"type": "array", "items": {"type": "string"}},
+          "grouping_basis": {"type": "string"},
+          "confidence": {"enum": ["high", "medium", "low"]}
+        }
+      }
+    },
+    "accomplishments": {"$ref": "#/$defs/findings"},
+    "open_work": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["item", "state", "basis", "evidence_refs"],
+        "properties": {
+          "item": {"type": "string"},
+          "state": {"enum": ["explicitly_open", "blocked", "complete", "unknown"]},
+          "basis": {"type": "string"},
+          "evidence_refs": {"type": "array", "items": {"type": "string"}},
+          "owner": {"type": ["string", "null"]},
+          "recommended_action": {"type": ["string", "null"]}
+        }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["ref", "kind", "observed_at", "observation"],
+        "properties": {
+          "ref": {"type": "string"},
+          "kind": {"enum": ["session_event", "artifact", "commit", "test_result", "cli_diagnostic", "operator_confirmation"]},
+          "observed_at": {"type": ["string", "null"]},
+          "observation": {"type": "string", "description": "Concise paraphrase; never raw transcript or secret text."},
+          "artifact_refs": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    },
+    "strengths": {"$ref": "#/$defs/findings"},
+    "weaknesses": {"$ref": "#/$defs/findings"},
+    "next_actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["action", "reason", "evidence_refs", "priority"],
+        "properties": {
+          "action": {"type": "string"},
+          "reason": {"type": "string"},
+          "evidence_refs": {"type": "array", "items": {"type": "string"}},
+          "owner": {"type": ["string", "null"]},
+          "priority": {"enum": ["high", "medium", "low"]}
+        }
+      }
+    },
+    "harness_health": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["harness", "cli_status", "authentication_status", "provider_probe"],
+        "properties": {
+          "harness": {"enum": ["codex", "muse", "opencode"]},
+          "cli_status": {"type": "string"},
+          "authentication_status": {"type": "string"},
+          "provider_probe": {"const": "not_probed"},
+          "notes": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    },
+    "costs": {
+      "type": "object",
+      "required": ["helper_provider_calls", "provider_connectivity_probes", "new_harness_sessions", "review_inference_cost"],
+      "properties": {
+        "helper_provider_calls": {"const": 0},
+        "provider_connectivity_probes": {"const": 0},
+        "new_harness_sessions": {"const": 0},
+        "review_inference_cost": {"type": "string", "description": "Say unknown/not visible unless a reliable cost receipt exists."},
+        "notes": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "limitations": {"type": "array", "items": {"type": "string"}},
+    "operator_confirmed_closures": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["item", "confirmed_by", "confirmed_at"],
+        "properties": {
+          "item": {"type": "string"},
+          "confirmed_by": {"type": "string"},
+          "confirmed_at": {"type": "string", "format": "date-time"}
+        }
+      }
+    }
+  },
+  "$defs": {
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["finding", "evidence_refs", "confidence"],
+        "properties": {
+          "finding": {"type": "string"},
+          "evidence_refs": {"type": "array", "items": {"type": "string"}},
+          "confidence": {"enum": ["high", "medium", "low"]}
+        }
+      }
+    }
+  }
+}

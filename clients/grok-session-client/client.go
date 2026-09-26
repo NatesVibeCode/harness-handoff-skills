@@ -52,16 +52,16 @@ func (c Client) Start(ctx context.Context, prompt string) (Result, error) {
 
 // Resume continues exactly the supplied session ID and sends a prompt.
 func (c Client) Resume(ctx context.Context, sessionID, prompt string) (Result, error) {
-	if sessionID == "" {
-		return Result{}, fmt.Errorf("%w: session ID is required", ErrInvalidArgument)
+	if !validSessionID(sessionID) {
+		return Result{}, fmt.Errorf("%w: exact session ID is required", ErrInvalidArgument)
 	}
 	return c.runJSON(ctx, prompt, sessionID, false)
 }
 
 // Fork branches the supplied session ID and sends a prompt on the new branch.
 func (c Client) Fork(ctx context.Context, sessionID, prompt string) (Result, error) {
-	if sessionID == "" {
-		return Result{}, fmt.Errorf("%w: session ID is required", ErrInvalidArgument)
+	if !validSessionID(sessionID) {
+		return Result{}, fmt.Errorf("%w: exact session ID is required", ErrInvalidArgument)
 	}
 	return c.runJSON(ctx, prompt, sessionID, true)
 }
@@ -75,8 +75,8 @@ func (c Client) Stream(ctx context.Context, sessionID string, fork bool, prompt 
 	if prompt == "" {
 		return fmt.Errorf("%w: prompt is required", ErrInvalidArgument)
 	}
-	if fork && sessionID == "" {
-		return fmt.Errorf("%w: fork requires an explicit session ID", ErrInvalidArgument)
+	if (sessionID != "" || fork) && !validSessionID(sessionID) {
+		return fmt.Errorf("%w: exact session ID is required", ErrInvalidArgument)
 	}
 	return c.runPrompt(ctx, prompt, sessionID, fork, "streaming-json", dst)
 }
@@ -97,8 +97,8 @@ func (c Client) List(ctx context.Context, limit int) ([]byte, error) {
 
 // Inspect exports the selected session transcript as Markdown, verbatim.
 func (c Client) Inspect(ctx context.Context, sessionID string) ([]byte, error) {
-	if sessionID == "" {
-		return nil, fmt.Errorf("%w: session ID is required", ErrInvalidArgument)
+	if !validSessionID(sessionID) {
+		return nil, fmt.Errorf("%w: exact session ID is required", ErrInvalidArgument)
 	}
 	return c.capture(ctx, []string{"export", sessionID})
 }
@@ -107,8 +107,8 @@ func (c Client) runJSON(ctx context.Context, prompt, sessionID string, fork bool
 	if prompt == "" {
 		return Result{}, fmt.Errorf("%w: prompt is required", ErrInvalidArgument)
 	}
-	if fork && sessionID == "" {
-		return Result{}, fmt.Errorf("%w: fork requires an explicit session ID", ErrInvalidArgument)
+	if (sessionID != "" || fork) && !validSessionID(sessionID) {
+		return Result{}, fmt.Errorf("%w: exact session ID is required", ErrInvalidArgument)
 	}
 	var output limitedBuffer
 	output.limit = c.outputLimit()
@@ -134,8 +134,8 @@ func (c Client) runPrompt(ctx context.Context, prompt, sessionID string, fork bo
 	if prompt == "" {
 		return fmt.Errorf("%w: prompt is required", ErrInvalidArgument)
 	}
-	if fork && sessionID == "" {
-		return fmt.Errorf("%w: fork requires an explicit session ID", ErrInvalidArgument)
+	if (sessionID != "" || fork) && !validSessionID(sessionID) {
+		return fmt.Errorf("%w: exact session ID is required", ErrInvalidArgument)
 	}
 	promptPath, err := writePromptFile(prompt)
 	if err != nil {
@@ -152,6 +152,20 @@ func (c Client) runPrompt(ctx context.Context, prompt, sessionID string, fork bo
 	}
 	args = append(args, "--prompt-file", promptPath)
 	return c.run(ctx, args, dst)
+}
+
+func validSessionID(id string) bool {
+	if id == "" || len(id) > 128 || id[0] == '-' || id == "latest" || id == "last" || id == "newest" || id == "continue" {
+		return false
+	}
+	for i := 0; i < len(id); i++ {
+		ch := id[i]
+		if ch >= 'a' && ch <= 'z' || ch >= 'A' && ch <= 'Z' || ch >= '0' && ch <= '9' || ch == '-' || ch == '_' {
+			continue
+		}
+		return false
+	}
+	return true
 }
 
 func (c Client) capture(ctx context.Context, args []string) ([]byte, error) {

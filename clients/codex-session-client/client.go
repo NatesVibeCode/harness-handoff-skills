@@ -21,10 +21,7 @@ import (
 
 const defaultMaxOutputBytes int64 = 16 << 20
 
-// maxWalkFiles bounds session-store scans; maxMetaBytes bounds the first
-// line read from each stored session file.
-const maxWalkFiles = 5000
-
+// maxMetaBytes bounds the first line read from each stored session file.
 const maxMetaBytes = 1 << 20
 
 var (
@@ -43,6 +40,9 @@ type Client struct {
 	// WorkingDirectory selects the workspace and session store context. Empty
 	// inherits the caller's current directory.
 	WorkingDirectory string
+	// SkipGitRepoCheck allows execution outside a Git repository only when the
+	// caller has deliberately selected that exception. The default is false.
+	SkipGitRepoCheck bool
 	// Stderr receives CLI diagnostics. A nil writer discards them.
 	Stderr io.Writer
 	// MaxOutputBytes limits buffered JSON, list, and transcript output.
@@ -78,8 +78,8 @@ func (c Client) Start(ctx context.Context, prompt string) (Result, error) {
 // It is outside the fresh-only codex-harness-handoff contract, which
 // forbids continuation: handoff lanes must use Start only.
 func (c Client) Resume(ctx context.Context, sessionID, prompt string) (Result, error) {
-	if sessionID == "" {
-		return Result{}, fmt.Errorf("%w: session ID is required", ErrInvalidArgument)
+	if !validSessionID(sessionID) {
+		return Result{}, fmt.Errorf("%w: an exact session ID is required", ErrInvalidArgument)
 	}
 	return c.runJSON(ctx, prompt, sessionID, false, true)
 }
@@ -89,8 +89,8 @@ func (c Client) Resume(ctx context.Context, sessionID, prompt string) (Result, e
 // outside the fresh-only codex-harness-handoff contract: handoff lanes must
 // use Start only.
 func (c Client) Fork(ctx context.Context, sessionID, prompt string) (Result, error) {
-	if sessionID == "" {
-		return Result{}, fmt.Errorf("%w: session ID is required", ErrInvalidArgument)
+	if !validSessionID(sessionID) {
+		return Result{}, fmt.Errorf("%w: an exact session ID is required", ErrInvalidArgument)
 	}
 	return c.runJSON(ctx, prompt, sessionID, true, true)
 }
@@ -151,9 +151,9 @@ func (c Client) List(ctx context.Context, limit int) ([]SessionEntry, error) {
 	return out, nil
 }
 
-// Inspect returns the stored JSONL transcript for the selected session ID,
-// verbatim. The ID must be a plain token (letters, digits, hyphen,
-// underscore); anything else is rejected without touching the filesystem.
+// Inspect returns the stored JSONL transcript for an exact session ID in the
+// selected workspace, verbatim. The ID must be a plain token (letters, digits,
+// hyphen, underscore); anything else is rejected before filesystem access.
 func (c Client) Inspect(ctx context.Context, sessionID string) ([]byte, error) {
 	if !validSessionID(sessionID) {
 		return nil, fmt.Errorf("%w: session ID is required and must be a plain token", ErrInvalidArgument)
@@ -166,14 +166,13 @@ func (c Client) Inspect(ctx context.Context, sessionID string) ([]byte, error) {
 		return nil, err
 	}
 	var found string
+	keys := c.workspaceKeys()
 	err = walkSessionFiles(dir, func(path string, _ fs.FileInfo) error {
-		if strings.Contains(filepath.Base(path), sessionID) {
-			found = path
-			return errStopWalk
-		}
-		if id, _, ok := readSessionMeta(path); ok && id == sessionID {
-			found = path
-			return errStopWalk
+		if id, cwd, ok := readSessionMeta(path); ok && id == sessionID {
+			if matchWorkspace(cwd, keys) || matchAnyWorkspace(readSessionRoots(path), keys) {
+				found = path
+				return errStopWalk
+			}
 		}
 		return nil
 	})
@@ -271,26 +270,31 @@ func (c Client) runPrompt(ctx context.Context, prompt, sessionID string, fork, r
 	if prompt == "" {
 		return fmt.Errorf("%w: prompt is required", ErrInvalidArgument)
 	}
-	if fork && sessionID == "" {
-		return fmt.Errorf("%w: fork requires an explicit session ID", ErrInvalidArgument)
+	if (fork || resume) && !validSessionID(sessionID) {
+		return fmt.Errorf("%w: resume or fork requires an exact session ID", ErrInvalidArgument)
 	}
 	args := c.argv(sessionID, fork, resume)
 	return c.run(ctx, args, prompt, dst)
 }
 
 func (c Client) argv(sessionID string, fork, resume bool) []string {
+	var args []string
 	switch {
 	case fork:
-		return []string{"exec", "fork", sessionID, "--json", "--skip-git-repo-check", "-"}
+		args = []string{"exec", "fork", sessionID}
 	case resume:
-		return []string{"exec", "resume", sessionID, "--json", "--skip-git-repo-check", "-"}
+		args = []string{"exec", "resume", sessionID}
 	default:
-		args := []string{"exec"}
+		args = []string{"exec"}
 		if c.WorkingDirectory != "" {
 			args = append(args, "-C", c.WorkingDirectory)
 		}
-		return append(args, "--json", "--skip-git-repo-check", "-")
 	}
+	args = append(args, "-c", `sandbox_mode="workspace-write"`, "-c", `approval_policy="never"`, "--json")
+	if c.SkipGitRepoCheck {
+		args = append(args, "--skip-git-repo-check")
+	}
+	return append(args, "-")
 }
 
 func (c Client) run(ctx context.Context, args []string, prompt string, stdout io.Writer) error {
@@ -351,7 +355,6 @@ var errStopWalk = errors.New("stop walk")
 // walkSessionFiles visits *.jsonl files under dir without assuming any
 // deeper layout. A missing store yields no files and no error.
 func walkSessionFiles(dir string, visit func(path string, fi fs.FileInfo) error) error {
-	count := 0
 	err := filepath.WalkDir(dir, func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			if os.IsNotExist(err) {
@@ -359,12 +362,8 @@ func walkSessionFiles(dir string, visit func(path string, fi fs.FileInfo) error)
 			}
 			return err
 		}
-		if d.IsDir() || !strings.HasSuffix(d.Name(), ".jsonl") {
+		if d.IsDir() || d.Type()&os.ModeSymlink != 0 || !strings.HasSuffix(d.Name(), ".jsonl") {
 			return nil
-		}
-		count++
-		if count > maxWalkFiles {
-			return errStopWalk
 		}
 		fi, err := d.Info()
 		if err != nil {
@@ -463,6 +462,9 @@ func matchAnyWorkspace(values, keys []string) bool {
 
 func validSessionID(id string) bool {
 	if id == "" || len(id) > 128 {
+		return false
+	}
+	if id[0] == '-' || strings.EqualFold(id, "latest") || strings.EqualFold(id, "last") || strings.EqualFold(id, "newest") || strings.EqualFold(id, "continue") {
 		return false
 	}
 	for i := 0; i < len(id); i++ {

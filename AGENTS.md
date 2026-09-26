@@ -1,7 +1,7 @@
 # Agent instructions — harness-handoff
 
-Portable handoff skills for fourteen coding-agent harnesses. One authored source,
-fourteen **generated** skill trees.
+Portable handoff skills for fourteen coding-agent harnesses, plus a standalone
+session-review skill. Authored sources generate the skill trees.
 
 ```text
 skills-src/contracts.json          per-harness execution contract (machine-readable)
@@ -13,11 +13,15 @@ skills-src/harnesses/<h>.md        the authored remainder of that skill's body
 <harness>-harness-handoff/SKILL.md      GENERATED — never hand-edit
 <harness>-harness-handoff/contract.json GENERATED — never hand-edit
 <harness>-harness-handoff/references/*  authored prose, verified against the contract
+skills-src/session-review.md             authored review workflow
+scripts/session_review.py                authored local review helper
+harness-session-review/*                 GENERATED — never hand-edit
 ```
 
 ## The one rule
 
-**Edit `skills-src/`, then regenerate. Never hand-edit a generated tree.**
+**Edit `skills-src/` or the authored `scripts/session_review.py`, then regenerate.
+Never hand-edit a generated tree.**
 
 Commit `9322d55` pasted the same `## Direct lane spawning` block into every file
 five or six times because there was nothing to stop it. The generator exists to
@@ -62,6 +66,7 @@ pins it.
 | Path | Notes |
 | --- | --- |
 | `scripts/build_skills.py` | the generator (the only thing that writes trees) |
+| `scripts/session_review.py` | authored review helper, copied into the generated review skill |
 | `scripts/extract_skill_sources.py` | one-time provenance: how `skills-src/` was derived. **Not** part of the build; re-running it against generated output would strip the lane block |
 | `scripts/codex-task-bridge` | helper for the Codex handoff |
 | `tests/` | pytest; every fixture works in a temp dir, never in the trees |

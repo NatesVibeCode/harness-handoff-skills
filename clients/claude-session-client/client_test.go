@@ -165,6 +165,33 @@ func TestListAndInspect(t *testing.T) {
 			t.Fatal("expected error for missing transcript")
 		}
 	})
+
+	t.Run("symlinked transcript is excluded", func(t *testing.T) {
+		client := setupStore(t)
+		dir, err := client.projectDir()
+		if err != nil {
+			t.Fatal(err)
+		}
+		outside := filepath.Join(t.TempDir(), "outside.jsonl")
+		if err := os.WriteFile(outside, []byte("private transcript"), 0o600); err != nil {
+			t.Fatal(err)
+		}
+		if err := os.Symlink(outside, filepath.Join(dir, "outside-id.jsonl")); err != nil {
+			t.Fatal(err)
+		}
+		if _, err := client.Inspect(context.Background(), "outside-id"); !errors.Is(err, os.ErrNotExist) {
+			t.Fatalf("Inspect symlink error = %v", err)
+		}
+		entries, err := client.List(context.Background(), 0)
+		if err != nil {
+			t.Fatal(err)
+		}
+		for _, entry := range entries {
+			if entry.ID == "outside-id" {
+				t.Fatal("List exposed a symlinked transcript")
+			}
+		}
+	})
 }
 
 func TestProjectDirEncoding(t *testing.T) {
@@ -208,6 +235,11 @@ func TestRefusesMissingIdentifiers(t *testing.T) {
 	}
 	if _, err := client.Fork(context.Background(), "", "prompt"); !errors.Is(err, ErrInvalidArgument) {
 		t.Fatalf("Fork error = %v", err)
+	}
+	for _, id := range []string{"--last", "latest", "../other"} {
+		if _, err := client.Resume(context.Background(), id, "prompt"); !errors.Is(err, ErrInvalidArgument) {
+			t.Fatalf("Resume(%q) error = %v", id, err)
+		}
 	}
 	if err := client.Stream(context.Background(), "", true, "prompt", &bytes.Buffer{}); !errors.Is(err, ErrInvalidArgument) {
 		t.Fatalf("Stream error = %v", err)

@@ -1,6 +1,6 @@
 # Conformance
 
-**Checked:** 2026-09-25  
+**Checked:** 2026-09-26
 **Installed CLI:** `codex-cli 0.157.0`  
 **Implementation route:** documented `codex exec` subprocess surface
 (`exec -C … --json`, `exec resume`, `exec fork`, stdin prompt via `-`)
@@ -11,9 +11,9 @@ list/inspect. No Codex SDK or app-server client is included.
 
 | Capability | Implemented surface | Verification status |
 | --- | --- | --- |
-| Fresh session | `codex exec -C <dir> --json --skip-git-repo-check -` with prompt on stdin | Argument construction, stdin delivery, and JSONL decoding are covered by offline wrapper tests. Flags, event shapes, and a live fresh run were verified against the installed CLI before package-level live checks were deferred (see below). |
-| Explicit-ID resume | `codex exec resume <id> --json --skip-git-repo-check -` with prompt on stdin | Argument construction is covered offline; a live explicit-ID resume was verified against the installed CLI (same thread ID returned). |
-| Deliberate fork | `codex exec fork <id> --json --skip-git-repo-check -` with prompt on stdin | Argument construction is covered offline; flags confirmed in installed help. No live fork was run. |
+| Fresh session | `codex exec -C <dir> -c sandbox_mode=workspace-write -c approval_policy=never --json -` with prompt on stdin | Current autonomous argument construction and stdin delivery are covered by offline wrapper tests. The earlier live fresh run used `--skip-git-repo-check`; no provider run was made for this control change. |
+| Explicit-ID resume | `codex exec resume <id>` with safe config overrides, JSON output, and stdin prompt | Exact-ID validation and argument construction are covered offline. The earlier live resume used the previous arguments; no provider run was made for this control change. |
+| Deliberate fork | `codex exec fork <id>` with safe config overrides, JSON output, and stdin prompt | Exact-ID validation and argument construction are covered offline. No live fork was run. |
 | Streaming output | Same `exec --json` argv with raw JSONL pass-through | Raw byte pass-through is covered offline. No live stream was run through the package. |
 | Session list | Walk `$CODEX_HOME/sessions` (or `~/.codex/sessions`) `*.jsonl`, parse leading `session_meta` | Store walking, metadata parsing, and workspace filtering are covered offline against a temp store. Layout and metadata shape were verified against real stored files. |
 | Session inspect | Return the stored JSONL file matching the session ID | File matching and pass-through are covered offline. Transcript layout was verified against real stored files. |
@@ -80,8 +80,8 @@ the local session store.
 - Documented failure events (`turn.failed`, `error`) are converted to
   errors carrying the raw event; their exact field shapes were not observed
   live and are not parsed beyond the event type.
-- Store scans are capped at 5000 files and the metadata line read at 1
-  MiB; larger stores may list incompletely.
+- Store scans have no session-count cap; a malformed or oversized leading
+  metadata line is skipped.
 - Package-level live calls (one program exercising all six methods) were
   deferred at the operator's request on 2026-09-25: all further CLI
   execution was suspended. The recon probes above predate the suspension.
@@ -105,7 +105,7 @@ program using each method:
    appear.
 6. `Inspect` the fork ID and confirm stored JSONL output is returned.
 
-The client does not change sandbox, approval, or model settings, delete
-sessions, or modify workspace files itself. Recon probe sessions from
+The client now pins workspace-write sandboxing and disables per-action approval prompts. It does
+not select a model, delete sessions, or modify workspace files itself. Recon probe sessions from
 2026-09-25 remain in the local store; remove them with `codex delete <id>`
 once CLI execution is re-allowed.

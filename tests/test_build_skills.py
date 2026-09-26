@@ -1,4 +1,4 @@
-"""The generator that makes fourteen skill trees out of one source.
+"""The generator for fourteen handoff trees and one standalone review skill.
 
 Before it existed the trees were hand-maintained copies, and commit 9322d55 pasted
 the same ``## Direct lane spawning`` block into every file five or six times
@@ -103,6 +103,15 @@ def scratch_repo(tmp_path: Path, harnesses: dict, *, lane=None, body=None, write
     source = root / "skills-src"
     (source / "lane-spawning").mkdir(parents=True)
     (source / "harnesses").mkdir(parents=True)
+    (source / "session-review.md").write_text(
+        "---\nname: harness-session-review\ndescription: Review sessions.\n---\n\nReview them.\n",
+        encoding="utf-8",
+    )
+    (source / "session-review-output.schema.json").write_text(
+        json.dumps({"type": "object", "required": ["schema_version"]}), encoding="utf-8"
+    )
+    (root / "scripts").mkdir(parents=True, exist_ok=True)
+    (root / "scripts" / "session_review.py").write_text("#!/usr/bin/env python3\n# review helper\n", encoding="utf-8")
     document = {"version": build_skills.CONTRACT_VERSION, "harnesses": harnesses, "advisory_vocabulary": {"status": ["done"]}}
     (source / "contracts.json").write_text(json.dumps(document, indent=2), encoding="utf-8")
     for name, entry in harnesses.items():
@@ -214,6 +223,13 @@ def test_file_flag_delivery_without_a_flag_is_refused(tmp_path):
     assert "prompt_file_flag" in result.stdout
 
 
+def test_workdir_placeholder_requires_staging_directory(tmp_path):
+    root = scratch_repo(tmp_path, {"demo": _entry(oneshot_argv=["--output", "<workdir>/final.md"], call_workdir=False)})
+    result = run_build(root, "--check")
+    assert result.returncode == 2
+    assert "<workdir>" in result.stdout and "call_workdir" in result.stdout
+
+
 def test_a_missing_sdk_binding_is_named(tmp_path):
     entry = _entry()
     del entry["sdk"]
@@ -313,6 +329,19 @@ def test_a_skill_path_that_escapes_the_repository_is_refused(tmp_path):
     assert not (tmp_path / "ESCAPED").exists(), "and nothing above that either"
 
 
+def test_symlinked_generated_directory_cannot_redirect_writes(tmp_path):
+    root = scratch_repo(tmp_path, {"demo": _entry()})
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    skill_dir = root / "demo-harness-handoff"
+    skill_dir.rmdir()
+    skill_dir.symlink_to(outside, target_is_directory=True)
+    result = run_build(root)
+    assert result.returncode == 2
+    assert "symlinked generated output path" in result.stdout
+    assert not (outside / "SKILL.md").exists()
+
+
 @pytest.mark.parametrize("skill", ["/absolute/tree", "a/b", "..", ".", ""])
 def test_other_unusable_skill_values_are_refused(tmp_path, skill):
     root = scratch_repo(tmp_path, {"demo": _entry(skill=skill)})
@@ -389,7 +418,7 @@ def test_regenerating_writes_nothing_and_check_is_clean(tmp_path):
     """Byte-exact on a second pass: the trees are derived, so they are stable."""
     root = scratch_repo(tmp_path, {"demo": _entry()})
     first = run_build(root)
-    assert first.returncode == 0 and "wrote 2 file(s)" in first.stdout
+    assert first.returncode == 0 and "wrote 5 file(s)" in first.stdout
 
     skill_before = (root / "demo-harness-handoff" / "SKILL.md").read_text(encoding="utf-8")
     second = run_build(root)
@@ -399,6 +428,28 @@ def test_regenerating_writes_nothing_and_check_is_clean(tmp_path):
     checked = run_build(root, "--check")
     assert checked.returncode == 0
     assert "match skills-src/" in checked.stdout
+
+
+def test_the_review_skill_and_schema_are_generated_from_their_sources(tmp_path):
+    root = scratch_repo(tmp_path, {"demo": _entry()})
+    built = run_build(root)
+    assert built.returncode == 0
+    output = root / "harness-session-review"
+    assert (output / "SKILL.md").read_text(encoding="utf-8").startswith("---\nname: harness-session-review\n")
+    assert json.loads((output / "review-output.schema.json").read_text(encoding="utf-8"))["required"] == ["schema_version"]
+    assert (output / "session_review.py").read_text(encoding="utf-8") == (root / "scripts" / "session_review.py").read_text(encoding="utf-8")
+    (root / "skills-src" / "session-review.md").write_text(
+        "---\nname: harness-session-review\ndescription: Review sessions.\n---\n\nChanged prose.\n",
+        encoding="utf-8",
+    )
+    checked = run_build(root, "--check")
+    assert checked.returncode == 1
+    assert "harness-session-review/SKILL.md" in checked.stdout
+
+    (root / "harness-session-review" / "session_review.py").write_text("operator edit\n", encoding="utf-8")
+    checked = run_build(root, "--check")
+    assert checked.returncode == 1
+    assert "harness-session-review/session_review.py" in checked.stdout
 
 
 def test_check_reports_drift_without_writing(tmp_path):
@@ -548,7 +599,7 @@ def test_the_real_harness_onboarding_vocabulary_is_closed():
         for key in ("credential_channel", "credential_auth"):
             assert entry[key] in ("env", "stdin", "file", "keychain", "native-session"), f"{name}: {key}"
     assert document["harnesses"]["codex"]["interactivity"] == "non_interactive", (
-        "codex exec is the non-interactive pinned invocation; a change here changes parking behavior"
+        "the dispatched Codex lane runs autonomously without per-action approval prompts"
     )
 
 
