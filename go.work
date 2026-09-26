@@ -1,0 +1,9 @@
+go 1.22
+
+use ./clients/antigravity-session-client
+use ./clients/claude-session-client
+use ./clients/codex-session-client
+use ./clients/cursor-session-client
+use ./clients/grok-session-client
+use ./clients/muse-session-client
+use ./clients/opencode-session-client
