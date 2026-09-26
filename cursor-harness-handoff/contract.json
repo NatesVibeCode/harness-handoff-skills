@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "harness": "cursor",
   "skill": "cursor-harness-handoff",
   "generated_by": "scripts/build_skills.py",
@@ -8,6 +8,62 @@
   "prompt_delivery": "argv_last",
   "prompt_file_flag": null,
   "parser": "json_object",
+  "sdk": {
+    "kind": "library",
+    "status": "stable",
+    "languages": [
+      "typescript",
+      "python"
+    ],
+    "packages": {
+      "typescript": "@cursor/sdk",
+      "python": "cursor-sdk"
+    },
+    "entrypoints": {
+      "typescript": "Agent",
+      "python": "Agent"
+    },
+    "command": null,
+    "repositories": {
+      "typescript": "https://github.com/cursor/cursor",
+      "python": "https://github.com/cursor/cursor"
+    },
+    "docs": "https://cursor.com/docs/sdk/typescript",
+    "runtimes": {
+      "typescript": "node>=22.13",
+      "python": "python>=3.10"
+    },
+    "session": "cursor-agent",
+    "ownership": "mixed",
+    "surface": "mixed",
+    "fresh": "sdk-or-cli",
+    "continuation": "sdk-or-cli",
+    "history": "sdk",
+    "history_scope": "either",
+    "continuation_scope": "either",
+    "stream": "sdk-events",
+    "id_namespaces": [
+      "cli-chat",
+      "sdk-local-agent",
+      "sdk-cloud-agent",
+      "editor-session"
+    ],
+    "forbidden_operations": [
+      "team-admin-key-for-sdk",
+      "editor-takeover",
+      "newest-as-exact"
+    ],
+    "auth_channel": "api-key",
+    "auth": "mixed",
+    "auth_notes": "Use a user or service-account API key supplied as CURSOR_API_KEY or per-call configuration. Team Admin API keys are unsupported. Local CLI, SDK local/cloud, editor, and cloud IDs are separate namespaces.",
+    "approval_notes": "Apply sandbox, workspace trust, tool allowlists, and approval controls explicitly for the selected local or cloud runtime. CLI chat continuation does not prove delivery into a busy editor agent.",
+    "evidence": {
+      "docs_checked": true,
+      "registry_checked": true,
+      "cli_present": true,
+      "sdk_smoke_passed": false
+    }
+  },
   "model_from_route": true,
   "discovery_argv": [
     "models"

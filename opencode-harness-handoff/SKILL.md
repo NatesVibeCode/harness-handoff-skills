@@ -7,7 +7,35 @@ description: Hand off work to an existing OpenCode session, or prepare a portabl
 
 ## Direct lane spawning
 
-For a new handoff, spawn the requested number of independent `opencode run` CLI processes directly. Each lane gets its own prompt, process handle, and result. Do not use a lane manager, leader, coordinator, relay, server, background task manager, or parent agent to fan out or run the lanes. Existing-session continuation is allowed only when the operator explicitly asks to continue that exact session.
+For a new handoff, spawn the requested number of independent caller-owned OpenCode executions directly through the contract-authorized SDK or CLI route. Each lane gets its own prompt, owned session/server/process handle, and result. A per-lane owned SDK server is that lane's execution handle, not a shared backend. Do not use a lane manager, leader, coordinator, relay, shared server, shared backend, background task manager, or parent agent to fan out or run the lanes. Existing-session continuation is allowed only when the operator explicitly asks to continue that exact session.
+
+## SDK route
+
+Contract source: https://docs.opencode.ai/docs/sdk
+
+Prefer the official stable OpenCode TypeScript SDK when Node execution is available. It can create a caller-owned server/client for the lane or attach to an explicitly selected existing server. A per-lane owned SDK server is the lane's execution handle, not a shared backend.
+
+```sh
+npm install @opencode-ai/sdk
+```
+
+```ts
+import { createOpencode } from "@opencode-ai/sdk";
+
+const opencode = await createOpencode();
+const session = await opencode.client.session.create({
+  body: { title: "Handoff lane" },
+});
+await opencode.client.session.prompt({
+  path: { id: session.id },
+  body: {
+    model: { providerID: "PROVIDER_ID", modelID: "MODEL_ID" },
+    parts: [{ type: "text", text: "Perform the scoped handoff task." }],
+  },
+});
+```
+
+Retain the owned server handle and its actual URL, session ID, selected provider/model, streamed events, approval configuration, and artifact checks. Use the SDK default server binding or explicitly assign a free per-lane port; do not assume port 4096 is available. Continue or fork only with the exact retained session ID; the newest session is not an explicit resume. For attachment, use only the operator-selected server URL and remember that remote directory arguments are evaluated on that server. Check provider authentication separately from server authentication. If the SDK route is unavailable, use the pinned CLI fallback below.
 
 ## CLI command reference
 
@@ -49,7 +77,7 @@ opencode run --session SESSION_ID --fork --format json 'Explore this alternative
 
 ### Independent local launches
 
-When the operator requests a **new independent local task**, create one fresh `opencode run` process for the selected `--dir` and prompt file. The launching harness must retain a real process handle for that process; an executor-owned background job, a `nohup` child whose parent will exit, a session record, or a launch acknowledgment is not a running task. Use a user-visible terminal or an installed local process supervisor only after checking that it is available, and keep its process/session identifier with the task. Do not substitute `--session`, `--attach`, or a server-backed task for a requested fresh local run. Before reporting a launch, confirm both the process/session is alive and OpenCode emitted its initial event.
+When the operator requests a **new independent local task**, create one fresh SDK-owned OpenCode server/session or `opencode run` process for the selected `--dir` and prompt. The launching harness must retain a real execution handle for that lane; an executor-owned background job, a `nohup` child whose parent will exit, a session record, or a launch acknowledgment is not a running task. Use a user-visible terminal or an installed local process supervisor only after checking that it is available, and keep its process/session identifier with the task. Do not substitute `--session`, `--attach`, or a server-backed task for a requested fresh local run. Before reporting a launch, confirm both the process/session is alive and OpenCode emitted its initial event.
 
 A historical OpenCode worker returned the requested smoke marker and exited zero. A separate provider route failed authentication. Those are separate outcomes: a successful direct provider API call cannot validate the failed OpenCode route. Check binary resolution, selected provider/model, and `auth list` in the worker's execution context before changing anything.
 
@@ -75,6 +103,10 @@ When the user redirects this task here, stop advancing the superseded attempt an
 6. Return a receipt that states what was selected and how it was delivered. If no native bridge is available, provide a ready-to-paste packet and name the missing capability; do not substitute another harness.
 
 Progress advisories. While running, a lane may report milestones against the packet's expected result as advisory messages carrying an optional status: `started`, `milestone`, `blocked`, or `done`. Status is self-reported presence, never proof of completion — the activating agent reads it to understand progress without parsing prose, and verifies the result itself. This shared advisory vocabulary carries no control state and never blocks the lane. A spawner that wants these reports subscribes to the lane; `blocked` and `done` reports fan out to subscribers, and anyone may subscribe.
+
+## Programmatic execution
+
+For driving sessions from code, prefer the repo's Go client over re-implementing CLI argv and parsers: `clients/opencode-session-client/` (`github.com/NatesVibeCode/harness-handoff-skills/clients/opencode-session-client`). It covers Start, Resume, Fork, Stream, List, and Inspect over the CLI route with stdlib-only dependencies; run results carry raw event bytes because envelope field names are outside the consulted docs. It never attaches remotely or shares. The recipes elsewhere in this skill remain authoritative for interactive use, discovery, and the SDK/server API.
 
 ## OpenCode-specific boundaries
 

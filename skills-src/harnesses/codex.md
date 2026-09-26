@@ -1,8 +1,32 @@
-Use this skill only when the operator explicitly selects a **new Codex CLI handoff**. It creates one fresh CLI session in the operator-selected workspace. The fresh session, not the sending harness, continues the task.
+Use this skill only when the operator explicitly selects a **new Codex handoff**. It creates one fresh Codex thread in the operator-selected workspace. The fresh thread, not the sending harness, continues the task.
 
-Create more than one session only when the operator explicitly asks for a count, parallel lanes, or equivalent—for example, “spawn four lanes to attack this in parallel.” Do not infer parallelism from task size. Every requested lane is a separate fresh `codex exec` process with its own prompt file, output file, and retained process identity.
+Create more than one thread only when the operator explicitly asks for a count, parallel lanes, or equivalent—for example, “spawn four lanes to attack this in parallel.” Do not infer parallelism from task size. Every requested lane is a separate fresh thread with its own prompt, output, and retained execution handle: either a TypeScript SDK thread handle or a `codex exec` process handle.
 
-Do not inspect or attach to existing Codex sessions. Do not use `codex agents`, `codex queue`, `codex resume`, `codex exec resume`, `codex exec fork`, `codex app-server`, a browser, or an app-server protocol. Those are existing-session or server routes, not this handoff.
+Do not inspect or attach to existing Codex sessions. Do not use `codex agents`, `codex queue`, `codex resume`, `codex exec resume`, `codex exec fork`, `codex app-server`, the Python SDK, a browser, or an app-server protocol. Those are existing-session, management, or server routes, not this fresh-only handoff.
+
+Contract source: https://developers.openai.com/codex/sdk
+
+## Fresh SDK route
+
+Prefer the authorized TypeScript SDK for a new thread when Node execution is available. It controls a local Codex thread; it does not authorize resume, fork, thread listing, or app-server management.
+
+```sh
+npm install @openai/codex-sdk
+```
+
+```ts
+import { Codex } from "@openai/codex-sdk";
+
+const codex = new Codex();
+const thread = codex.startThread({
+  workingDirectory: "/absolute/workspace",
+  skipGitRepoCheck: true,
+});
+const result = await thread.run("Perform the scoped handoff task.");
+console.log(result.finalResponse);
+```
+
+Retain the SDK thread handle, streamed or buffered events, final response, workspace, approval/sandbox selection, and artifact checks. History for this skill means that owned fresh thread's output—not lookup, listing, resume, or export of unrelated existing sessions. Use `runStreamed` only for live observation; buffering events does not change the fresh-only boundary. If the SDK route is unavailable, use the pinned CLI fallback below.
 
 ## Handoff packet
 
@@ -19,7 +43,7 @@ Keep the operator's wording and scope. Do not include secrets, private transcrip
 
 Progress advisories. While running, a lane may report milestones against the packet's expected result as advisory messages carrying an optional status: `started`, `milestone`, `blocked`, or `done`. Status is self-reported presence, never proof of completion — the activating agent reads it to understand progress without parsing prose, and verifies the result itself. This shared advisory vocabulary carries no control state and never blocks the lane. A spawner that wants these reports subscribes to the lane; `blocked` and `done` reports fan out to subscribers, and anyone may subscribe.
 
-## Launch exactly one new session
+## CLI fallback: launch exactly one new session
 
 Resolve the installed `codex` executable and use `codex exec` with the selected absolute workspace. Pass the complete handoff packet through stdin and keep the process handle, JSONL output, and final-message path.
 
@@ -36,6 +60,10 @@ Use `--dangerously-bypass-approvals-and-sandbox` by default for this handoff. Om
 This command starts a new persisted Codex CLI thread. Confirm its initial JSON event and retain its process identity before reporting a launch. A process exit, final-message file, or JSON event alone does not prove the delegated work succeeded; inspect the requested result before reporting completion.
 
 Do not create a worktree, clone a repository, start a background daemon, or launch a second writer unless the operator explicitly requests that separate action.
+
+## Programmatic execution
+
+For driving sessions from code, prefer the repo's Go client over re-implementing CLI argv and parsers: `clients/codex-session-client/` (`github.com/NatesVibeCode/harness-handoff-skills/clients/codex-session-client`). Under this fresh-only skill use only its Start (fresh `codex exec`) path, with stdlib-only dependencies. The client also implements Resume, Fork, Stream, List, and Inspect over `codex exec` plus the documented session store, but continuation is forbidden here — the contract sets `continuation: forbidden`, this skill's lane block forbids `codex exec resume` / `codex exec fork`, and the bridge refuses codex continuation without executing. The client does not cover the TypeScript/Python SDKs, the app-server protocol, or approval/sandbox/model flags — the recipes elsewhere in this skill remain authoritative for interactive use, discovery, and those surfaces.
 
 ## MCP tools (optional)
 

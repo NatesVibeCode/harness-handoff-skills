@@ -1,0 +1,78 @@
+{
+  "version": 2,
+  "harness": "gemini",
+  "skill": "gemini-harness-handoff",
+  "generated_by": "scripts/build_skills.py",
+  "generated_from": "skills-src/contracts.json",
+  "binary": "gemini",
+  "prompt_delivery": "argv_last",
+  "prompt_file_flag": null,
+  "parser": "json_object",
+  "sdk": {
+    "kind": "none",
+    "status": "stable",
+    "languages": [],
+    "packages": {},
+    "entrypoints": {},
+    "command": null,
+    "repositories": {},
+    "runtimes": {},
+    "docs": "https://www.geminicli.com/docs/cli/headless",
+    "session": "cli-session",
+    "ownership": "native-owned",
+    "surface": "local",
+    "fresh": "cli",
+    "continuation": "cli",
+    "history": "cli",
+    "history_scope": "native-existing-only",
+    "continuation_scope": "native-existing-only",
+    "stream": "cli-json",
+    "id_namespaces": [
+      "gemini-session"
+    ],
+    "forbidden_operations": [
+      "antigravity-substitution",
+      "latest-resume-for-exact",
+      "gemini-api-as-session-control"
+    ],
+    "auth_channel": "native-session",
+    "auth": "native-session",
+    "auth_notes": "Consumer free and Pro/Ultra tiers were replaced by Antigravity CLI in June 2026; enterprise and API-key use remains on Gemini CLI. Verify the installed auth surface and never treat Antigravity as the same session store.",
+    "approval_notes": "Use the installed CLI's explicit approval, sandbox, checkpoint, and worktree controls. Do not invent headless, resume, or model flags.",
+    "evidence": {
+      "docs_checked": true,
+      "registry_checked": false,
+      "cli_present": true,
+      "sdk_smoke_passed": false
+    }
+  },
+  "model_from_route": false,
+  "discovery_argv": null,
+  "call_workdir": false,
+  "task_config_strategy": "none",
+  "oneshot_argv": [
+    "-p",
+    "<prompt>",
+    "--output-format",
+    "json"
+  ],
+  "interactivity": "prompts",
+  "credential_channel": "native-session",
+  "credential_auth": "native-session",
+  "references": [],
+  "advisory_vocabulary": {
+    "status": [
+      "started",
+      "milestone",
+      "blocked",
+      "done"
+    ],
+    "fan_out": [
+      "blocked",
+      "done"
+    ],
+    "semantics": "self-reported presence, never proof of completion; carries no control state and never blocks the lane",
+    "implemented_by": "work-coordination"
+  },
+  "adapter": "harness_fleet/providers/gemini.py"
+}

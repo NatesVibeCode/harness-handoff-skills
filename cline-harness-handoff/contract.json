@@ -1,0 +1,85 @@
+{
+  "version": 2,
+  "harness": "cline",
+  "skill": "cline-harness-handoff",
+  "generated_by": "scripts/build_skills.py",
+  "generated_from": "skills-src/contracts.json",
+  "binary": "cline",
+  "prompt_delivery": "argv_last",
+  "prompt_file_flag": null,
+  "parser": "cline_jsonl",
+  "sdk": {
+    "kind": "library",
+    "status": "beta",
+    "languages": [
+      "typescript"
+    ],
+    "packages": {
+      "typescript": "@cline/sdk"
+    },
+    "entrypoints": {
+      "typescript": "Agent"
+    },
+    "command": null,
+    "repositories": {
+      "typescript": "https://github.com/cline/cline"
+    },
+    "docs": "https://docs.cline.bot/sdk/overview",
+    "runtimes": {
+      "typescript": "node>=22"
+    },
+    "session": "cline-session",
+    "ownership": "mixed",
+    "surface": "local",
+    "fresh": "sdk-or-cli",
+    "continuation": "sdk-or-cli",
+    "history": "sdk",
+    "history_scope": "either",
+    "continuation_scope": "either",
+    "stream": "sdk-events",
+    "id_namespaces": [
+      "cline-session"
+    ],
+    "forbidden_operations": [
+      "latest-session-for-exact",
+      "auto-approve-by-default"
+    ],
+    "auth_channel": "mixed",
+    "auth": "mixed",
+    "auth_notes": "Use Cline sign-in, ChatGPT subscription through openai-codex where supported, or BYOK provider keys. Re-provide provider configuration when resuming across processes.",
+    "approval_notes": "Auto-approval and command permissions must be explicit. Use a clean branch and review results for unattended runs.",
+    "evidence": {
+      "docs_checked": true,
+      "registry_checked": true,
+      "cli_present": false,
+      "sdk_smoke_passed": false
+    }
+  },
+  "model_from_route": true,
+  "discovery_argv": null,
+  "call_workdir": false,
+  "task_config_strategy": "none",
+  "oneshot_argv": [
+    "--json",
+    "<prompt>"
+  ],
+  "interactivity": "prompts",
+  "credential_channel": "native-session",
+  "credential_auth": "native-session",
+  "references": [],
+  "advisory_vocabulary": {
+    "status": [
+      "started",
+      "milestone",
+      "blocked",
+      "done"
+    ],
+    "fan_out": [
+      "blocked",
+      "done"
+    ],
+    "semantics": "self-reported presence, never proof of completion; carries no control state and never blocks the lane",
+    "implemented_by": "work-coordination"
+  },
+  "adapter": "harness_fleet/providers/cline.py"
+}

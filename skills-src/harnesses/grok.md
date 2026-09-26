@@ -6,6 +6,18 @@ Read [history and continuation](references/history-and-continuation.md) before s
 
 Search in order: native history/index, configured data root, documented storage candidates, then the identified client's relevant application-data directory. Inspect filenames and metadata before reading message contents. An unavailable CLI alone is not grounds to stop discovery. Report the roots/surfaces checked and any remaining gap before offering manual handoff.
 
+## Protocol route
+
+Contract source: https://docs.x.ai/build/cli/headless-scripting
+
+There is no official library package for native Grok Build sessions. For programmatic control, implement a JSON-RPC ACP client around the installed CLI transport:
+
+```sh
+grok agent stdio --help
+```
+
+Use the installed transport's `initialize`, `authenticate`, `session/new`, and `session/prompt` sequence, then read assistant text from `session/update` chunks. Retain the returned session handle, authentication method, workspace, approval/sandbox selection, and artifact checks. Resume only with the exact native session ID. Do not use the separate xAI model API as a substitute for Grok Build session history, resume, tools, billing, or privacy behavior. If the installed ACP transport is unavailable, use the pinned CLI fallback below.
+
 ## Grok Build CLI recipes
 
 These commands belong to the checked Grok Build CLI, not the Grok website or an arbitrary third-party executable named `grok`.
@@ -73,7 +85,7 @@ A historical run returned its artifact while a process remained alive; another r
 
 ### Independent local launches
 
-When the operator requests a **new independent local task**, create one fresh Grok Build CLI process in the selected `--cwd` with its prompt file. The launching harness must retain a real process handle for that process; an executor-owned background job, a `nohup` child whose parent will exit, a session record, or a launch acknowledgment is not a running task. Use a user-visible terminal or an installed local process supervisor only after checking that it is available, and keep its process/session identifier with the task. Do not substitute `--resume`, a leader, or an agent relay for a requested fresh local run. Before reporting a launch, confirm both the process/session is alive and Grok emitted its initial event.
+When the operator requests a **new independent local task**, create one fresh protocol-owned ACP session or Grok Build CLI process in the selected `--cwd` with its prompt supplied through the authorized route. The launching harness must retain a real execution handle for that lane; an executor-owned background job, a `nohup` child whose parent will exit, a session record, or a launch acknowledgment is not a running task. Use a user-visible terminal or an installed local process supervisor only after checking that it is available, and keep its process/session identifier with the task. Do not substitute `--resume`, a leader, or an agent relay for a requested fresh local run. Before reporting a launch, confirm both the process/session is alive and Grok emitted its initial event.
 
 ## Handoff workflow
 
@@ -87,6 +99,10 @@ When the user redirects this task here, stop advancing the superseded attempt an
 6. Report delivery only when the native surface returns a usable receipt or visible confirmation. Otherwise provide a ready-to-paste packet and the exact limitation; never claim that Grok received it.
 
 Progress advisories. While running, a lane may report milestones against the packet's expected result as advisory messages carrying an optional status: `started`, `milestone`, `blocked`, or `done`. Status is self-reported presence, never proof of completion — the activating agent reads it to understand progress without parsing prose, and verifies the result itself. This shared advisory vocabulary carries no control state and never blocks the lane. A spawner that wants these reports subscribes to the lane; `blocked` and `done` reports fan out to subscribers, and anyone may subscribe.
+
+## Programmatic execution
+
+For driving sessions from code, prefer the repo's Go client over re-implementing CLI argv and parsers: `clients/grok-session-client/` (`github.com/NatesVibeCode/harness-handoff-skills/clients/grok-session-client`). It covers Start, Resume, Fork, Stream, List, and Inspect over the CLI route with stdlib-only dependencies. It does not cover the ACP protocol route, leader/shared backend use, or approval-mode selection — the recipes elsewhere in this skill remain authoritative for interactive use, discovery, and those surfaces.
 
 ## Grok-specific boundaries
 

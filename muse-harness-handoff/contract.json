@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "harness": "muse",
   "skill": "muse-harness-handoff",
   "generated_by": "scripts/build_skills.py",
@@ -8,6 +8,59 @@
   "prompt_delivery": "file_flag",
   "prompt_file_flag": "--prompt-file",
   "parser": "muse_jsonl",
+  "sdk": {
+    "kind": "library",
+    "status": "preview",
+    "languages": [
+      "typescript",
+      "python"
+    ],
+    "packages": {
+      "typescript": "@muse-code/sdk",
+      "python": "muse-code-sdk"
+    },
+    "entrypoints": {
+      "typescript": "MuseClient",
+      "python": "MuseClient"
+    },
+    "command": null,
+    "repositories": {
+      "typescript": "https://github.com/meta-models/muse-code-sdk",
+      "python": "https://github.com/meta-models/muse-code-sdk"
+    },
+    "docs": "https://meta-models.github.io/muse-code-sdk/next/",
+    "runtimes": {
+      "typescript": "node>=20",
+      "python": "python>=3.10"
+    },
+    "session": "msp-session",
+    "ownership": "mixed",
+    "surface": "local",
+    "fresh": "sdk-or-cli",
+    "continuation": "sdk-or-cli",
+    "history": "sdk",
+    "history_scope": "either",
+    "continuation_scope": "either",
+    "stream": "sdk-events",
+    "id_namespaces": [
+      "msp-session"
+    ],
+    "forbidden_operations": [
+      "shared-host-fanout",
+      "cross-host-takeover",
+      "latest-as-exact"
+    ],
+    "auth_channel": "mixed",
+    "auth": "mixed",
+    "auth_notes": "Use Meta browser credentials or META_API_KEY according to the local Muse installation. Verify SDK/host schema compatibility before relying on preview behavior.",
+    "approval_notes": "Decide approvals through the owning SDK session or explicit CLI approval and sandbox flags. A per-lane owned SDK host is not a shared server; cross-session delivery requires the separately authorized peer route.",
+    "evidence": {
+      "docs_checked": true,
+      "registry_checked": true,
+      "cli_present": true,
+      "sdk_smoke_passed": false
+    }
+  },
   "model_from_route": false,
   "discovery_argv": null,
   "call_workdir": true,

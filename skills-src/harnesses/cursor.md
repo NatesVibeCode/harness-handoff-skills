@@ -1,3 +1,41 @@
+## SDK route
+
+Contract source: https://cursor.com/docs/sdk/typescript
+
+Prefer the official Cursor SDK for TypeScript or Python execution. It wraps local and cloud runtimes behind one agent interface, with explicit create, resume, run, stream, usage, conversation, list, and retrieval operations.
+
+```sh
+npm install @cursor/sdk
+python3 -m pip install cursor-sdk
+export CURSOR_API_KEY="private-key-not-logged"
+```
+
+```ts
+import { Agent } from "@cursor/sdk";
+
+const agent = await Agent.create({
+  apiKey: process.env.CURSOR_API_KEY!,
+  model: { id: "MODEL_ID" },
+  local: { cwd: process.cwd() },
+});
+const run = await agent.send("Perform the scoped handoff task.");
+await run.wait();
+```
+
+```python
+from cursor_sdk import Agent, LocalAgentOptions
+
+with Agent.create(
+    model="MODEL_ID",
+    api_key="private-key-not-logged",
+    local=LocalAgentOptions(cwd="."),
+) as agent:
+    run = agent.send("Perform the scoped handoff task.")
+    run.wait()
+```
+
+Discover the model ID before hard-coding one. Resume only with the exact SDK agent ID; local SDK, cloud SDK, CLI chat, editor, and cloud conversation IDs are separate namespaces. Re-pass model and non-persistent runtime configuration when resuming. For cloud-only HTTP work, use the Cloud Agents API. For languages without a first-party SDK, use the supported SDK Bridge to build a thin adapter—not an unofficial wrapper—or use the pinned CLI fallback below. An SDK agent does not take over an already-open editor agent.
+
 ## CLI command reference
 
 Checked against installed help on 2026-09-09. Resolve `command -v cursor-agent` and `cursor-agent --version`; an executable named `agent` needs provenance checking because other products use that name too.
@@ -41,7 +79,7 @@ A recorded continuation failed with `SecItemCopyMatching failed -50`. That is cr
 
 ## Independent local launches
 
-When the operator requests a **new independent local task**, create one fresh Cursor CLI process in the selected workspace/worktree with the complete prompt from a file. The launching harness must retain a real process handle for that process; an executor-owned background job, a `nohup` child whose parent will exit, a session record, or a launch acknowledgment is not a running task. Use a user-visible terminal or an installed local process supervisor only after checking that it is available, and keep its process/session identifier with the task. Do not substitute a continuation, editor task, or remote bridge for a requested fresh local run. Before reporting a launch, confirm both the process/session is alive and Cursor emitted its initial event.
+When the operator requests a **new independent local task**, create one fresh SDK-owned Cursor agent or Cursor CLI process in the selected workspace/worktree with the complete prompt supplied through the authorized route. The launching harness must retain a real execution handle for that lane; an executor-owned background job, a `nohup` child whose parent will exit, a session record, or a launch acknowledgment is not a running task. Use a user-visible terminal or an installed local process supervisor only after checking that it is available, and keep its process/session identifier with the task. Do not substitute a continuation, editor task, or remote bridge for a requested fresh local run. Before reporting a launch, confirm both the process/session is alive and Cursor emitted its initial event.
 
 Keep the subprocess handle, stream output and stderr, and inspect the final result and requested artifacts. Quiet output does not prove a hang. A new CLI resume is a new process continuing history; it does not establish delivery into an already busy editor agent. For a selected running editor agent, use its available native control surface and verify the selected workspace before sending.
 
@@ -65,6 +103,10 @@ When the user redirects this task here, stop advancing the superseded attempt an
 6. Report the workspace, branch or session reference when known, the delivery mechanism, and any receipt. If direct delivery is unavailable, return a ready-to-paste packet and do not switch to another harness.
 
 Progress advisories. While running, a lane may report milestones against the packet's expected result as advisory messages carrying an optional status: `started`, `milestone`, `blocked`, or `done`. Status is self-reported presence, never proof of completion — the activating agent reads it to understand progress without parsing prose, and verifies the result itself. This shared advisory vocabulary carries no control state and never blocks the lane. A spawner that wants these reports subscribes to the lane; `blocked` and `done` reports fan out to subscribers, and anyone may subscribe.
+
+## Programmatic execution
+
+For driving sessions from code, prefer the repo's Go client over re-implementing CLI argv and parsers: `clients/cursor-session-client/` (`github.com/NatesVibeCode/harness-handoff-skills/clients/cursor-session-client`). It covers Start, Resume, Stream, and List (raw bytes) over the CLI route with stdlib-only dependencies. Fork and Inspect are unsupported — no documented surface exists — as are the TS/Python SDKs, the Bridge, cloud REST, and approval/mode flags. The recipes elsewhere in this skill remain authoritative for interactive use, discovery, and those surfaces.
 
 ## Cursor-specific boundaries
 

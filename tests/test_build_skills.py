@@ -1,4 +1,4 @@
-"""The generator that makes seven skill trees out of one source.
+"""The generator that makes fourteen skill trees out of one source.
 
 Before it existed the trees were hand-maintained copies, and commit 9322d55 pasted
 the same ``## Direct lane spawning`` block into every file five or six times
@@ -31,6 +31,43 @@ import build_skills  # noqa: E402  (the module under test, by path)
 CONTRACT_KEYS = list(build_skills.CONTRACT_KEYS)
 
 
+def _sdk(**overrides):
+    sdk = {
+        "kind": "library",
+        "status": "stable",
+        "languages": ["python"],
+        "packages": {"python": "demo-sdk"},
+        "entrypoints": {"python": "DemoClient"},
+        "command": None,
+        "repositories": {"python": "https://example.com/demo-sdk"},
+        "docs": "https://example.com/docs/sdk",
+        "runtimes": {"python": "python>=3.10"},
+        "session": "demo-session",
+        "ownership": "sdk-owned",
+        "surface": "local",
+        "fresh": "sdk-or-cli",
+        "continuation": "sdk-or-cli",
+        "history": "sdk",
+        "history_scope": "either",
+        "continuation_scope": "either",
+        "stream": "sdk-events",
+        "id_namespaces": ["demo-session"],
+        "forbidden_operations": ["demo-forbidden-route"],
+        "auth_channel": "api-key",
+        "auth": "api-key",
+        "auth_notes": "Use the provisioned demo API key; never log it.",
+        "approval_notes": "Pass explicit approval options on every SDK call.",
+        "evidence": {
+            "docs_checked": True,
+            "registry_checked": True,
+            "cli_present": True,
+            "sdk_smoke_passed": False,
+        },
+    }
+    sdk.update(overrides)
+    return sdk
+
+
 def _entry(**overrides):
     entry = {
         "skill": "demo-harness-handoff",
@@ -40,6 +77,7 @@ def _entry(**overrides):
         "prompt_delivery": "argv",
         "prompt_file_flag": None,
         "parser": "plain",
+        "sdk": _sdk(),
         "model_from_route": False,
         "discovery_argv": ["demo", "--version"],
         "call_workdir": False,
@@ -65,7 +103,7 @@ def scratch_repo(tmp_path: Path, harnesses: dict, *, lane=None, body=None, write
     source = root / "skills-src"
     (source / "lane-spawning").mkdir(parents=True)
     (source / "harnesses").mkdir(parents=True)
-    document = {"version": 1, "harnesses": harnesses, "advisory_vocabulary": {"status": ["done"]}}
+    document = {"version": build_skills.CONTRACT_VERSION, "harnesses": harnesses, "advisory_vocabulary": {"status": ["done"]}}
     (source / "contracts.json").write_text(json.dumps(document, indent=2), encoding="utf-8")
     for name, entry in harnesses.items():
         (source / "lane-spawning" / f"{name}.md").write_text(
@@ -174,6 +212,90 @@ def test_file_flag_delivery_without_a_flag_is_refused(tmp_path):
     result = run_build(root, "--check")
     assert result.returncode == 2
     assert "prompt_file_flag" in result.stdout
+
+
+def test_a_missing_sdk_binding_is_named(tmp_path):
+    entry = _entry()
+    del entry["sdk"]
+    root = scratch_repo(tmp_path, {"demo": entry})
+    result = run_build(root, "--check")
+    assert result.returncode == 2
+    assert "sdk" in result.stdout
+
+
+@pytest.mark.parametrize("field", ["kind", "status", "docs", "fresh", "continuation", "history"])
+def test_an_invalid_sdk_route_value_is_refused(tmp_path, field):
+    root = scratch_repo(tmp_path, {"demo": _entry(sdk=_sdk(**{field: "nonsense"}))})
+    result = run_build(root, "--check")
+    assert result.returncode == 2
+    assert field in result.stdout
+
+
+def test_a_library_must_name_matching_packages_and_entrypoints(tmp_path):
+    root = scratch_repo(
+        tmp_path,
+        {"demo": _entry(sdk=_sdk(entrypoints={}))},
+    )
+    result = run_build(root, "--check")
+    assert result.returncode == 2
+    assert "packages and entrypoints" in result.stdout
+
+
+def test_a_protocol_binding_must_name_its_command(tmp_path):
+    sdk = _sdk(
+        kind="protocol",
+        languages=[],
+        packages={},
+        entrypoints={},
+        command=None,
+        repositories={},
+        runtimes={},
+        fresh="protocol-or-cli",
+        continuation="protocol-or-cli",
+        history="protocol",
+        history_scope="native-existing-only",
+        continuation_scope="native-existing-only",
+        stream="protocol-events",
+    )
+    root = scratch_repo(tmp_path, {"demo": _entry(sdk=sdk)})
+    result = run_build(root, "--check")
+    assert result.returncode == 2
+    assert "command" in result.stdout
+
+
+def test_a_valid_protocol_binding_generates(tmp_path):
+    sdk = _sdk(
+        kind="protocol",
+        languages=[],
+        packages={},
+        entrypoints={},
+        command="demo agent stdio",
+        repositories={},
+        runtimes={"protocol": "json-rpc-stdio-client"},
+        fresh="protocol-or-cli",
+        continuation="protocol-or-cli",
+        history="protocol",
+        history_scope="native-existing-only",
+        continuation_scope="native-existing-only",
+        stream="protocol-events",
+    )
+    root = scratch_repo(tmp_path, {"demo": _entry(sdk=sdk)})
+    assert run_build(root).returncode == 0
+    payload = json.loads(
+        (root / "demo-harness-handoff" / "contract.json").read_text(encoding="utf-8")
+    )
+    assert payload["sdk"]["command"] == "demo agent stdio"
+
+
+def test_an_unsupported_contract_version_is_refused(tmp_path):
+    root = scratch_repo(tmp_path, {"demo": _entry()})
+    document_path = root / "skills-src" / "contracts.json"
+    document = json.loads(document_path.read_text(encoding="utf-8"))
+    document["version"] = build_skills.CONTRACT_VERSION + 1
+    document_path.write_text(json.dumps(document, indent=2), encoding="utf-8")
+    result = run_build(root, "--check")
+    assert result.returncode == 2
+    assert "version" in result.stdout
 
 
 def test_a_skill_path_that_escapes_the_repository_is_refused(tmp_path):
@@ -384,8 +506,24 @@ def test_the_checked_in_trees_match_their_source():
 
 def test_every_harness_in_the_contract_has_a_generated_tree():
     document = json.loads((REPO / "skills-src" / "contracts.json").read_text(encoding="utf-8"))
+    assert document["version"] == build_skills.CONTRACT_VERSION
     harnesses = document["harnesses"]
-    assert len(harnesses) == 7, "seven harnesses ship; a silent drop is not a refactor"
+    assert set(harnesses) == {
+        "amp",
+        "antigravity",
+        "claude",
+        "cline",
+        "codex",
+        "copilot",
+        "cursor",
+        "droid",
+        "gemini",
+        "grok",
+        "junie",
+        "muse",
+        "opencode",
+        "openhands",
+    }, "adding or dropping a harness must be an explicit contract change"
 
     for name, entry in harnesses.items():
         skill_dir = REPO / entry["skill"]
@@ -412,6 +550,43 @@ def test_the_real_harness_onboarding_vocabulary_is_closed():
     assert document["harnesses"]["codex"]["interactivity"] == "non_interactive", (
         "codex exec is the non-interactive pinned invocation; a change here changes parking behavior"
     )
+
+
+def test_the_real_sdk_routes_match_policy():
+    """SDK bindings must preserve fresh-only Codex and Grok's protocol-only reality."""
+    document = json.loads((REPO / "skills-src" / "contracts.json").read_text(encoding="utf-8"))
+    harnesses = document["harnesses"]
+    assert harnesses["codex"]["sdk"]["continuation"] == "forbidden"
+    assert harnesses["codex"]["sdk"]["continuation_scope"] == "none"
+    assert harnesses["grok"]["sdk"]["kind"] == "protocol"
+    assert harnesses["grok"]["sdk"]["packages"] == {}
+    assert harnesses["antigravity"]["sdk"]["continuation"] == "cli"
+    assert harnesses["antigravity"]["sdk"]["continuation_scope"] == "native-existing-only"
+    assert harnesses["gemini"]["sdk"]["kind"] == "none"
+    assert harnesses["junie"]["sdk"]["kind"] == "none"
+    assert harnesses["openhands"]["interactivity"] == "non_interactive"
+    assert harnesses["copilot"]["sdk"]["status"] == "preview"
+    for name, entry in harnesses.items():
+        sdk = entry["sdk"]
+        assert sdk["docs"].startswith("https://"), name
+        assert sdk["auth_notes"] and sdk["approval_notes"], name
+        assert sdk["id_namespaces"], name
+        if name != "codex":
+            assert sdk["continuation"] != "forbidden", name
+
+
+def test_skill_prose_names_the_contract_sdk_surface():
+    """The machine contract and the human prose must not drift apart."""
+    document = json.loads((REPO / "skills-src" / "contracts.json").read_text(encoding="utf-8"))
+    for name, entry in document["harnesses"].items():
+        skill = (REPO / entry["skill"] / "SKILL.md").read_text(encoding="utf-8")
+        sdk = entry["sdk"]
+        assert sdk["docs"] in skill, f"{name}: contract docs URL missing from prose"
+        if sdk["kind"] == "library":
+            for package in sdk["packages"].values():
+                assert package in skill, f"{name}: contract package {package} missing from prose"
+        if sdk["kind"] == "protocol":
+            assert sdk["command"] in skill, f"{name}: contract command missing from prose"
 
 
 def test_one_lane_block_source_per_harness_and_no_extras():

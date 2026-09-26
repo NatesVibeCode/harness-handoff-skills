@@ -1,5 +1,46 @@
 Read [history and continuation](references/history-and-continuation.md) before discovery or execution. The user's request selects the workspace, task, and whether to inspect, send, continue, or create a session.
 
+Contract source: https://code.claude.com/docs/en/agent-sdk/overview
+
+## SDK route
+
+Prefer the official Claude Agent SDK for Python or TypeScript execution. It provides the same agent loop with explicit fresh, resume, fork, streaming, session-listing, and transcript-retrieval operations.
+
+```sh
+npm install @anthropic-ai/claude-agent-sdk
+python3 -m pip install claude-agent-sdk
+```
+
+```ts
+import { query } from "@anthropic-ai/claude-agent-sdk";
+
+let sessionId: string | undefined;
+for await (const message of query({
+  prompt: "Perform the scoped handoff task.",
+  options: { allowedTools: ["Read", "Edit", "Glob"] },
+})) {
+  if (message.type === "result") sessionId = message.session_id;
+}
+```
+
+```python
+from claude_agent_sdk import query, ClaudeAgentOptions, ResultMessage, SystemMessage
+
+session_id: str | None = None
+async for message in query(
+    prompt="Perform the scoped handoff task.",
+    options=ClaudeAgentOptions(allowed_tools=["Read", "Edit", "Glob"]),
+):
+    if isinstance(message, SystemMessage) and message.subtype == "init":
+        session_id = message.data["session_id"]
+    elif isinstance(message, ResultMessage):
+        session_id = message.session_id
+```
+
+Capture the returned session ID from initialization or result envelopes. Resume or fork only with that exact ID. Use `continue`/`continue_conversation` only for a single-conversation application that has already selected the most recent session; it is not an explicit-resume substitute. Use SDK session listing and message retrieval for passive inspection. For languages without a first-party SDK, use the pinned CLI fallback below.
+
+## CLI recipes
+
 ## CLI recipes
 
 Run these from the selected workspace. Replace `SESSION_ID` with a verified conversation UUID and `BACKGROUND_ID` with the short ID printed by the background launcher; they are different identifiers.
@@ -88,7 +129,7 @@ Keep the selected auth path. `--bare` skips OAuth/keychain and auto-discovered c
 
 ### Independent local launches
 
-When the operator requests a **new independent local task**, create one fresh Claude CLI process in the selected checkout with its complete prompt supplied from a file. The launching harness must retain a real process handle for that process; an executor-owned background job, a `nohup` child whose parent will exit, a conversation record, or a background-ID acknowledgment alone is not a running task. Use a user-visible terminal or an installed local process supervisor only after checking that it is available, and keep its process/session identifier with the task. Do not substitute `--resume`, cloud messaging, or an app task for a requested fresh local run. Before reporting a launch, confirm both the process/session is alive and Claude emitted its initial event.
+When the operator requests a **new independent local task**, create one fresh SDK-owned Claude session or Claude CLI process in the selected checkout with its complete prompt supplied through the authorized route. The launching harness must retain a real execution handle for that lane; an executor-owned background job, a `nohup` child whose parent will exit, a conversation record, or a background-ID acknowledgment alone is not a running task. Use a user-visible terminal or an installed local process supervisor only after checking that it is available, and keep its process/session identifier with the task. Do not substitute `--resume`, cloud messaging, or an app task for a requested fresh local run. Before reporting a launch, confirm both the process/session is alive and Claude emitted its initial event.
 
 Optional task controls: `--model MODEL`, `--effort LEVEL`, `--max-budget-usd AMOUNT` for print mode, and `--json-schema SCHEMA` for structured output. Preserve configured defaults unless requested. Record result errors as failures; parseable JSON and a printed background ID establish neither task success nor artifact correctness.
 
@@ -104,6 +145,10 @@ When the user redirects this task here, stop advancing the superseded attempt an
 6. If one route fails, inspect other supported routes and report the exact limitation. Supply a manual packet only after applicable native discovery paths have been checked.
 
 Progress advisories. While running, a lane may report milestones against the packet's expected result as advisory messages carrying an optional status: `started`, `milestone`, `blocked`, or `done`. Status is self-reported presence, never proof of completion — the activating agent reads it to understand progress without parsing prose, and verifies the result itself. This shared advisory vocabulary carries no control state and never blocks the lane. A spawner that wants these reports subscribes to the lane; `blocked` and `done` reports fan out to subscribers, and anyone may subscribe.
+
+## Programmatic execution
+
+For driving sessions from code, prefer the repo's Go client over re-implementing CLI argv and parsers: `clients/claude-session-client/` (`github.com/NatesVibeCode/harness-handoff-skills/clients/claude-session-client`). It covers Start, Resume, Fork, Stream, List, and Inspect over the CLI route plus the documented transcript store, with stdlib-only dependencies. It does not cover the TypeScript/Python Agent SDKs, permission modes, or background agents — the recipes elsewhere in this skill remain authoritative for interactive use, discovery, and those surfaces.
 
 ## Portability
 

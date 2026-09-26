@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "harness": "antigravity",
   "skill": "antigravity-harness-handoff",
   "generated_by": "scripts/build_skills.py",
@@ -8,6 +8,55 @@
   "prompt_delivery": "argv_last",
   "prompt_file_flag": null,
   "parser": "json_object",
+  "sdk": {
+    "kind": "library",
+    "status": "preview",
+    "languages": [
+      "python"
+    ],
+    "packages": {
+      "python": "google-antigravity"
+    },
+    "entrypoints": {
+      "python": "Agent"
+    },
+    "command": null,
+    "repositories": {
+      "python": "https://github.com/google-antigravity/antigravity-sdk-python"
+    },
+    "docs": "https://antigravity.google/docs/sdk/overview/",
+    "runtimes": {
+      "python": "python>=3.10"
+    },
+    "session": "agent-conversation",
+    "ownership": "mixed",
+    "surface": "local",
+    "fresh": "sdk-or-cli",
+    "continuation": "cli",
+    "history": "sdk-or-cli",
+    "history_scope": "either",
+    "continuation_scope": "native-existing-only",
+    "stream": "sdk-events",
+    "id_namespaces": [
+      "agy-conversation",
+      "sdk-conversation"
+    ],
+    "forbidden_operations": [
+      "sdk-takeover-of-native-conversation",
+      "gemini-api-as-session-control",
+      "newest-as-exact"
+    ],
+    "auth_channel": "api-key",
+    "auth": "mixed",
+    "auth_notes": "SDK-owned agents use GEMINI_API_KEY or enterprise ADC/provider configuration. An existing agy/IDE conversation remains native-session and is not addressable with an SDK-owned conversation ID.",
+    "approval_notes": "Use SDK policies, hooks, and capability controls for SDK-owned agents. Use CLI approval and sandbox flags for CLI continuation. Permission approval is not proof that sandboxing is off.",
+    "evidence": {
+      "docs_checked": true,
+      "registry_checked": true,
+      "cli_present": true,
+      "sdk_smoke_passed": false
+    }
+  },
   "model_from_route": false,
   "discovery_argv": [
     "models"

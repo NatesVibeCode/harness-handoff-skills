@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "harness": "opencode",
   "skill": "opencode-harness-handoff",
   "generated_by": "scripts/build_skills.py",
@@ -8,6 +8,54 @@
   "prompt_delivery": "argv_last",
   "prompt_file_flag": null,
   "parser": "opencode_jsonl",
+  "sdk": {
+    "kind": "library",
+    "status": "stable",
+    "languages": [
+      "typescript"
+    ],
+    "packages": {
+      "typescript": "@opencode-ai/sdk"
+    },
+    "entrypoints": {
+      "typescript": "createOpencode"
+    },
+    "command": null,
+    "repositories": {
+      "typescript": "https://github.com/anomalyco/opencode"
+    },
+    "docs": "https://docs.opencode.ai/docs/sdk",
+    "runtimes": {
+      "typescript": "node"
+    },
+    "session": "server-session",
+    "ownership": "mixed",
+    "surface": "mixed",
+    "fresh": "sdk-or-cli",
+    "continuation": "sdk-or-cli",
+    "history": "sdk",
+    "history_scope": "either",
+    "continuation_scope": "either",
+    "stream": "sdk-events",
+    "id_namespaces": [
+      "opencode-session"
+    ],
+    "forbidden_operations": [
+      "shared-backend-fanout",
+      "newest-as-exact",
+      "share-for-private-handoff"
+    ],
+    "auth_channel": "mixed",
+    "auth": "mixed",
+    "auth_notes": "Provider/model credentials are separate from OpenCode server authentication. Check auth list and model routing in the worker context; do not log server credentials.",
+    "approval_notes": "Use explicit SDK session options or CLI approval controls for the selected owned or attached server. A per-lane owned SDK server is not a shared backend; attachment paths on remote servers are server-local.",
+    "evidence": {
+      "docs_checked": true,
+      "registry_checked": true,
+      "cli_present": true,
+      "sdk_smoke_passed": false
+    }
+  },
   "model_from_route": true,
   "discovery_argv": [
     "models",

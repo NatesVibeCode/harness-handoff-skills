@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "harness": "codex",
   "skill": "codex-harness-handoff",
   "generated_by": "scripts/build_skills.py",
@@ -8,6 +8,56 @@
   "prompt_delivery": "stdin",
   "prompt_file_flag": null,
   "parser": "codex_jsonl",
+  "sdk": {
+    "kind": "library",
+    "status": "stable",
+    "languages": [
+      "typescript"
+    ],
+    "packages": {
+      "typescript": "@openai/codex-sdk"
+    },
+    "entrypoints": {
+      "typescript": "Codex"
+    },
+    "command": null,
+    "repositories": {
+      "typescript": "https://github.com/openai/codex"
+    },
+    "docs": "https://developers.openai.com/codex/sdk",
+    "runtimes": {
+      "typescript": "node>=18"
+    },
+    "session": "codex-thread",
+    "ownership": "mixed",
+    "surface": "local",
+    "fresh": "sdk-or-cli",
+    "continuation": "forbidden",
+    "history": "cli",
+    "history_scope": "sdk-owned-only",
+    "continuation_scope": "none",
+    "stream": "sdk-events",
+    "id_namespaces": [
+      "codex-thread"
+    ],
+    "forbidden_operations": [
+      "resume",
+      "fork",
+      "thread-listing",
+      "app-server",
+      "python-sdk"
+    ],
+    "auth_channel": "native-session",
+    "auth": "native-session",
+    "auth_notes": "The SDK reuses the operator's existing Codex authentication. SDK execution does not create credential isolation by itself.",
+    "approval_notes": "Map sandbox and approval posture explicitly on every fresh SDK thread or CLI turn. History means the owned fresh thread's process output and final-message file, not lookup of unrelated existing sessions. The Python SDK and direct app-server routes remain forbidden because they use the app-server protocol.",
+    "evidence": {
+      "docs_checked": true,
+      "registry_checked": true,
+      "cli_present": true,
+      "sdk_smoke_passed": false
+    }
+  },
   "model_from_route": false,
   "discovery_argv": null,
   "call_workdir": true,

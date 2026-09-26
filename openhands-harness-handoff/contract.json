@@ -1,0 +1,87 @@
+{
+  "version": 2,
+  "harness": "openhands",
+  "skill": "openhands-harness-handoff",
+  "generated_by": "scripts/build_skills.py",
+  "generated_from": "skills-src/contracts.json",
+  "binary": "openhands",
+  "prompt_delivery": "file_flag",
+  "prompt_file_flag": "--file",
+  "parser": "openhands_jsonl",
+  "sdk": {
+    "kind": "library",
+    "status": "stable",
+    "languages": [
+      "python"
+    ],
+    "packages": {
+      "python": "openhands-sdk"
+    },
+    "entrypoints": {
+      "python": "Conversation"
+    },
+    "command": null,
+    "repositories": {
+      "python": "https://github.com/OpenHands/software-agent-sdk"
+    },
+    "docs": "https://docs.openhands.dev/sdk",
+    "runtimes": {
+      "python": "python>=3.12"
+    },
+    "session": "openhands-conversation",
+    "ownership": "mixed",
+    "surface": "mixed",
+    "fresh": "sdk-or-cli",
+    "continuation": "sdk-or-cli",
+    "history": "sdk",
+    "history_scope": "either",
+    "continuation_scope": "either",
+    "stream": "sdk-events",
+    "id_namespaces": [
+      "openhands-conversation"
+    ],
+    "forbidden_operations": [
+      "headless-approval-override",
+      "cross-backend-session-reuse"
+    ],
+    "auth_channel": "mixed",
+    "auth": "mixed",
+    "auth_notes": "Use LLM_API_KEY, LLM_MODEL, and LLM_BASE_URL overrides, stored provider settings, or OpenHands Cloud login according to the selected backend. Local, Docker, and cloud backends are separate execution surfaces.",
+    "approval_notes": "Headless CLI mode always runs with always-approve and cannot be changed; use it only with explicit unattended authorization. Interactive mode supports explicit always-approve or LLM-based approval.",
+    "evidence": {
+      "docs_checked": true,
+      "registry_checked": true,
+      "cli_present": false,
+      "sdk_smoke_passed": false
+    }
+  },
+  "model_from_route": false,
+  "discovery_argv": null,
+  "call_workdir": true,
+  "task_config_strategy": "none",
+  "oneshot_argv": [
+    "--headless",
+    "--json",
+    "--file",
+    "<prompt-file>"
+  ],
+  "interactivity": "non_interactive",
+  "credential_channel": "native-session",
+  "credential_auth": "native-session",
+  "references": [],
+  "advisory_vocabulary": {
+    "status": [
+      "started",
+      "milestone",
+      "blocked",
+      "done"
+    ],
+    "fan_out": [
+      "blocked",
+      "done"
+    ],
+    "semantics": "self-reported presence, never proof of completion; carries no control state and never blocks the lane",
+    "implemented_by": "work-coordination"
+  },
+  "adapter": "harness_fleet/providers/openhands.py"
+}

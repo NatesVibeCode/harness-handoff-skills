@@ -1,0 +1,86 @@
+{
+  "version": 2,
+  "harness": "droid",
+  "skill": "droid-harness-handoff",
+  "generated_by": "scripts/build_skills.py",
+  "generated_from": "skills-src/contracts.json",
+  "binary": "droid",
+  "prompt_delivery": "argv_last",
+  "prompt_file_flag": null,
+  "parser": "plain",
+  "sdk": {
+    "kind": "library",
+    "status": "beta",
+    "languages": [
+      "typescript"
+    ],
+    "packages": {
+      "typescript": "@factory/droid-sdk"
+    },
+    "entrypoints": {
+      "typescript": "createSession"
+    },
+    "command": null,
+    "repositories": {
+      "typescript": "https://github.com/Factory-AI/droid-sdk-typescript"
+    },
+    "docs": "https://docs.factory.ai/sdk/typescript",
+    "runtimes": {
+      "typescript": "node>=18"
+    },
+    "session": "droid-session",
+    "ownership": "mixed",
+    "surface": "mixed",
+    "fresh": "sdk-or-cli",
+    "continuation": "sdk-or-cli",
+    "history": "sdk",
+    "history_scope": "either",
+    "continuation_scope": "either",
+    "stream": "sdk-events",
+    "id_namespaces": [
+      "droid-session"
+    ],
+    "forbidden_operations": [
+      "daemon-takeover-without-selection",
+      "selected-org-api-assumption",
+      "latest-for-exact"
+    ],
+    "auth_channel": "mixed",
+    "auth": "mixed",
+    "auth_notes": "Use authenticated local Droid CLI credentials or FACTORY_API_KEY. Daemon, REST, and cloud session APIs are separate surfaces with their own availability rules.",
+    "approval_notes": "Set autonomy level, reasoning effort, and tool allowlists explicitly per session. Headless exec work needs explicit unattended authorization; spec mode and missions are separate workflows.",
+    "evidence": {
+      "docs_checked": true,
+      "registry_checked": true,
+      "cli_present": false,
+      "sdk_smoke_passed": false
+    }
+  },
+  "model_from_route": true,
+  "discovery_argv": null,
+  "call_workdir": false,
+  "task_config_strategy": "none",
+  "oneshot_argv": [
+    "exec",
+    "<prompt>"
+  ],
+  "interactivity": "prompts",
+  "credential_channel": "native-session",
+  "credential_auth": "native-session",
+  "references": [],
+  "advisory_vocabulary": {
+    "status": [
+      "started",
+      "milestone",
+      "blocked",
+      "done"
+    ],
+    "fan_out": [
+      "blocked",
+      "done"
+    ],
+    "semantics": "self-reported presence, never proof of completion; carries no control state and never blocks the lane",
+    "implemented_by": "work-coordination"
+  },
+  "adapter": "harness_fleet/providers/droid.py"
+}

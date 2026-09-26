@@ -1,0 +1,77 @@
+{
+  "version": 2,
+  "harness": "junie",
+  "skill": "junie-harness-handoff",
+  "generated_by": "scripts/build_skills.py",
+  "generated_from": "skills-src/contracts.json",
+  "binary": "junie",
+  "prompt_delivery": "argv_last",
+  "prompt_file_flag": null,
+  "parser": "plain",
+  "sdk": {
+    "kind": "none",
+    "status": "preview",
+    "languages": [],
+    "packages": {},
+    "entrypoints": {},
+    "command": null,
+    "repositories": {},
+    "runtimes": {},
+    "docs": "https://junie.jetbrains.com/docs/",
+    "session": "junie-session",
+    "ownership": "native-owned",
+    "surface": "local",
+    "fresh": "cli",
+    "continuation": "cli",
+    "history": "cli",
+    "history_scope": "native-existing-only",
+    "continuation_scope": "native-existing-only",
+    "stream": "cli-text",
+    "id_namespaces": [
+      "junie-session"
+    ],
+    "forbidden_operations": [
+      "latest-resume-for-exact",
+      "auth-flag-with-logged-token",
+      "ide-session-takeover"
+    ],
+    "auth_channel": "mixed",
+    "auth": "mixed",
+    "auth_notes": "Use JetBrains account login, JUNIE_API_KEY, or BYOK provider keys per the installed CLI. Never log tokens passed through --auth.",
+    "approval_notes": "Use explicit brave, plan, model, and project controls. Junie CLI is in early access; verify installed flags before relying on headless behavior.",
+    "evidence": {
+      "docs_checked": true,
+      "registry_checked": false,
+      "cli_present": false,
+      "sdk_smoke_passed": false
+    }
+  },
+  "model_from_route": true,
+  "discovery_argv": null,
+  "call_workdir": false,
+  "task_config_strategy": "none",
+  "oneshot_argv": [
+    "--project",
+    "<workspace>",
+    "<prompt>"
+  ],
+  "interactivity": "prompts",
+  "credential_channel": "native-session",
+  "credential_auth": "native-session",
+  "references": [],
+  "advisory_vocabulary": {
+    "status": [
+      "started",
+      "milestone",
+      "blocked",
+      "done"
+    ],
+    "fan_out": [
+      "blocked",
+      "done"
+    ],
+    "semantics": "self-reported presence, never proof of completion; carries no control state and never blocks the lane",
+    "implemented_by": "work-coordination"
+  },
+  "adapter": "harness_fleet/providers/junie.py"
+}

@@ -1,0 +1,93 @@
+{
+  "version": 2,
+  "harness": "copilot",
+  "skill": "copilot-harness-handoff",
+  "generated_by": "scripts/build_skills.py",
+  "generated_from": "skills-src/contracts.json",
+  "binary": "copilot",
+  "prompt_delivery": "argv_last",
+  "prompt_file_flag": null,
+  "parser": "plain",
+  "sdk": {
+    "kind": "library",
+    "status": "preview",
+    "languages": [
+      "typescript",
+      "python"
+    ],
+    "packages": {
+      "typescript": "@github/copilot-sdk",
+      "python": "github-copilot-sdk"
+    },
+    "entrypoints": {
+      "typescript": "CopilotClient",
+      "python": "CopilotClient"
+    },
+    "command": null,
+    "repositories": {
+      "typescript": "https://github.com/github/copilot-sdk",
+      "python": "https://github.com/github/copilot-sdk"
+    },
+    "docs": "https://docs.github.com/en/copilot/how-tos/copilot-sdk/sdk-getting-started",
+    "runtimes": {
+      "typescript": "node>=20.19",
+      "python": "python>=3.11"
+    },
+    "session": "copilot-session",
+    "ownership": "mixed",
+    "surface": "mixed",
+    "fresh": "sdk-or-cli",
+    "continuation": "sdk-or-cli",
+    "history": "sdk",
+    "history_scope": "either",
+    "continuation_scope": "either",
+    "stream": "sdk-events",
+    "id_namespaces": [
+      "copilot-session",
+      "cli-session"
+    ],
+    "forbidden_operations": [
+      "team-admin-key-for-sdk",
+      "approve-all-by-default",
+      "cross-surface-session-reuse"
+    ],
+    "auth_channel": "mixed",
+    "auth": "mixed",
+    "auth_notes": "Use stored Copilot CLI login, OAuth/GitHub identity, service tokens, or BYOK provider keys per the installed SDK. Premium-request billing applies; API keys are never persisted when resuming BYOK sessions.",
+    "approval_notes": "Pass explicit permission handlers or tool allow/deny rules on every SDK session. approveAll-style helpers apply only when managed settings are disabled. CLI --allow-all/--yolo applies only with explicit operator authorization.",
+    "evidence": {
+      "docs_checked": true,
+      "registry_checked": true,
+      "cli_present": false,
+      "sdk_smoke_passed": false
+    }
+  },
+  "model_from_route": true,
+  "discovery_argv": null,
+  "call_workdir": false,
+  "task_config_strategy": "none",
+  "oneshot_argv": [
+    "-s",
+    "-p",
+    "<prompt>"
+  ],
+  "interactivity": "prompts",
+  "credential_channel": "native-session",
+  "credential_auth": "native-session",
+  "references": [],
+  "advisory_vocabulary": {
+    "status": [
+      "started",
+      "milestone",
+      "blocked",
+      "done"
+    ],
+    "fan_out": [
+      "blocked",
+      "done"
+    ],
+    "semantics": "self-reported presence, never proof of completion; carries no control state and never blocks the lane",
+    "implemented_by": "work-coordination"
+  },
+  "adapter": "harness_fleet/providers/copilot.py"
+}

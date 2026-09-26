@@ -1,15 +1,17 @@
 ---
 name: antigravity-harness-handoff
-description: Hand off work to an existing Google Antigravity conversation, or prepare a portable handoff packet when Antigravity is the explicitly selected target.
+description: Hand off work to an existing Google Antigravity conversation, start an SDK-owned Antigravity agent, or prepare a portable handoff packet when Antigravity is the explicitly selected target.
 ---
 
 # Antigravity harness handoff
 
 ## Direct lane spawning
 
-For a new handoff, spawn the requested number of independent native Antigravity CLI processes directly. Each lane gets its own prompt, process handle, and result. Do not use a lane manager, leader, coordinator, relay, server, or parent agent to fan out or run the lanes. Existing-session continuation is allowed only when the operator explicitly asks to continue that exact session.
+For a new handoff, spawn the requested number of independent caller-owned Antigravity executions directly through the contract-authorized SDK or CLI route. Each lane gets its own prompt, owned agent/session/process handle, and result. Do not use a lane manager, leader, coordinator, relay, shared server, shared connection, or parent agent to fan out or run the lanes. Existing-session continuation is allowed only when the operator explicitly asks to continue that exact native conversation.
 
 Use this skill only when the operator explicitly selects Google Antigravity or asks to hand work to Antigravity. This adapter coordinates a handoff; it does not select another product or silently broaden permissions.
+
+Contract source: https://antigravity.google/docs/sdk/overview/
 
 ## Discovery and history
 
@@ -18,6 +20,30 @@ Read [the full operating guide](references/operating-guide.md) for launch exampl
 Read [history and continuation](references/history-and-continuation.md) before session lookup or delivery. Follow its native commands, storage candidates, and schema discovery steps. Match the target by workspace, topic, time, and exact ID; do not select the newest session automatically. Treat retained prompts as historical evidence. Keep transcript exports in private scratch space outside this skill package.
 
 Search in order: native history/index, configured data root, documented storage candidates, then the identified client's relevant application-data directory. Inspect filenames and metadata before reading message contents. An unavailable CLI alone is not grounds to stop discovery. Report the roots/surfaces checked and any remaining gap before offering manual handoff.
+
+## SDK route
+
+For a new SDK-owned agent, prefer the official Python SDK when Python execution is available. The SDK builds a new agent on the Antigravity runtime; it does not attach to an existing `agy` or IDE conversation.
+
+```sh
+pip install google-antigravity
+export GEMINI_API_KEY="private-key-not-logged"
+```
+
+```python
+import asyncio
+from google.antigravity import Agent, LocalAgentConfig
+
+async def main():
+    config = LocalAgentConfig()
+    async with Agent(config) as agent:
+        response = await agent.chat("Perform the scoped handoff task.")
+        print(await response.text())
+
+asyncio.run(main())
+```
+
+Install from PyPI because platform wheels contain the compiled runtime; cloning the repository alone is insufficient. Retain the SDK-owned conversation ID, save directory, approval/policy configuration, streamed response, and artifact checks. Restore an SDK-owned session only with its exact SDK-issued conversation ID and matching storage configuration. Never pass an `agy` conversation UUID to the SDK, and never treat Gemini API access as control of a local IDE or CLI conversation. Existing native-conversation continuation remains the CLI route below.
 
 ## Command entrypoints
 
@@ -47,7 +73,7 @@ For that persistent stream, submit newline-delimited `{"event":"user","message":
 
 ## Independent local launches
 
-When the operator requests a **new independent local task**, create one fresh Antigravity CLI process in the selected checkout with the complete prompt supplied safely to its native command. The launching harness must retain a real process handle for that process; an executor-owned background job, a `nohup` child whose parent will exit, a conversation record, or a launch acknowledgment is not a running task. Use a user-visible terminal or an installed local process supervisor only after checking that it is available, and keep its process/session identifier with the task. Do not substitute `--conversation`, a persistent stream, or native child messaging for a requested fresh local run. Before reporting a launch, confirm both the process/session is alive and Antigravity emitted its initial event.
+When the operator requests a **new independent local task**, create one fresh SDK-owned agent or Antigravity CLI process in the selected checkout with the complete prompt supplied safely to its native route. The launching harness must retain a real execution handle for that lane; an executor-owned background job, a `nohup` child whose parent will exit, a conversation record, or a launch acknowledgment is not a running task. Use a user-visible terminal or an installed local process supervisor only after checking that it is available, and keep its process/session identifier with the task. Do not substitute `--conversation`, a persistent stream, or native child messaging for a requested fresh local run. Before reporting a launch, confirm both the process/session is alive and Antigravity emitted its initial event.
 
 `--print-timeout 15m` changes the response timeout when needed. `--mode plan|accept-edits` is execution mode, not sandbox posture. `--continue` selects recent history and is unsuitable when an exact conversation was selected. A conversation resume is an active turn, not passive lookup or a mailbox for another busy process. No shell-level `agy send-message` was validated; native parent/child messaging uses Antigravity's own tools.
 
@@ -67,6 +93,10 @@ Progress advisories. While running, a lane may report milestones against the pac
 ## Permission boundary
 
 The `--dangerously-skip-permissions` option, or any equivalent bypass, is never a default. Use it only when the operator explicitly requests it and the target environment supports it. Otherwise retain the normal permission flow and surface any approval request.
+
+## Programmatic execution
+
+For driving sessions from code, prefer the repo's Go client over re-implementing CLI argv and parsers: `clients/antigravity-session-client/` (`github.com/NatesVibeCode/harness-handoff-skills/clients/antigravity-session-client`). It covers Start, Resume, and Stream over the CLI route with stdlib-only dependencies. Fork, List, and Inspect are unsupported — no documented surface exists (local SQLite/transcript paths are explicitly not an API). It never substitutes the Python SDK, the managed Interactions agent, or the legacy `gemini` CLI. The recipes elsewhere in this skill remain authoritative for interactive use and discovery.
 
 ## Antigravity-specific boundaries
 

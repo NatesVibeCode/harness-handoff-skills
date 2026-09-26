@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "harness": "grok",
   "skill": "grok-harness-handoff",
   "generated_by": "scripts/build_skills.py",
@@ -8,6 +8,46 @@
   "prompt_delivery": "file_flag",
   "prompt_file_flag": "--prompt-file",
   "parser": "json_object",
+  "sdk": {
+    "kind": "protocol",
+    "status": "stable",
+    "languages": [],
+    "packages": {},
+    "entrypoints": {},
+    "command": "grok agent stdio",
+    "repositories": {},
+    "runtimes": {
+      "protocol": "json-rpc-stdio-client"
+    },
+    "docs": "https://docs.x.ai/build/cli/headless-scripting",
+    "session": "native-session",
+    "ownership": "native-owned",
+    "surface": "local",
+    "fresh": "protocol-or-cli",
+    "continuation": "protocol-or-cli",
+    "history": "protocol-or-cli",
+    "history_scope": "native-existing-only",
+    "continuation_scope": "native-existing-only",
+    "stream": "protocol-events",
+    "id_namespaces": [
+      "grok-session"
+    ],
+    "forbidden_operations": [
+      "xai-api-substitution",
+      "session-id-without-fork-as-resume",
+      "newest-as-exact"
+    ],
+    "auth_channel": "mixed",
+    "auth": "mixed",
+    "auth_notes": "Use locally cached Grok login or XAI_API_KEY according to the installed CLI's supported transport. The separate xAI model API SDK is not native Grok Build session control.",
+    "approval_notes": "Use the installed CLI's explicit approval, permission-mode, allow/deny, sandbox, turn, and worktree controls. Do not invent prompt-file, transport, or model behavior.",
+    "evidence": {
+      "docs_checked": true,
+      "registry_checked": false,
+      "cli_present": true,
+      "sdk_smoke_passed": false
+    }
+  },
   "model_from_route": false,
   "discovery_argv": [
     "models"

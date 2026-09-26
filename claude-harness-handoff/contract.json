@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "harness": "claude",
   "skill": "claude-harness-handoff",
   "generated_by": "scripts/build_skills.py",
@@ -8,6 +8,60 @@
   "prompt_delivery": "stdin",
   "prompt_file_flag": null,
   "parser": "json_object",
+  "sdk": {
+    "kind": "library",
+    "status": "stable",
+    "languages": [
+      "typescript",
+      "python"
+    ],
+    "packages": {
+      "typescript": "@anthropic-ai/claude-agent-sdk",
+      "python": "claude-agent-sdk"
+    },
+    "entrypoints": {
+      "typescript": "query",
+      "python": "query"
+    },
+    "command": null,
+    "repositories": {
+      "typescript": "https://github.com/anthropics/claude-agent-sdk-typescript",
+      "python": "https://github.com/anthropics/claude-agent-sdk-python"
+    },
+    "docs": "https://code.claude.com/docs/en/agent-sdk/overview",
+    "runtimes": {
+      "typescript": "node>=18",
+      "python": "python>=3.10"
+    },
+    "session": "agent-session",
+    "ownership": "mixed",
+    "surface": "local",
+    "fresh": "sdk-or-cli",
+    "continuation": "sdk-or-cli",
+    "history": "sdk",
+    "history_scope": "either",
+    "continuation_scope": "either",
+    "stream": "sdk-events",
+    "id_namespaces": [
+      "claude-session",
+      "background-session"
+    ],
+    "forbidden_operations": [
+      "continue-as-exact-resume",
+      "concurrent-resume",
+      "subscription-oauth-reuse"
+    ],
+    "auth_channel": "env",
+    "auth": "api-key",
+    "auth_notes": "The SDK reads ANTHROPIC_API_KEY from the host process environment or uses the selected provider credential path. Do not carry subscription OAuth credentials into another product.",
+    "approval_notes": "Pass explicit allowed, disallowed, and permission-mode options on every SDK call. Resume only the exact retained session ID; continue/newest selection is not an explicit resume.",
+    "evidence": {
+      "docs_checked": true,
+      "registry_checked": true,
+      "cli_present": true,
+      "sdk_smoke_passed": false
+    }
+  },
   "model_from_route": false,
   "discovery_argv": null,
   "call_workdir": false,
