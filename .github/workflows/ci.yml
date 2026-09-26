@@ -70,6 +70,26 @@ jobs:
             *"Traceback"*) echo "::error::a bad source must not traceback"; exit 1 ;;
           esac
 
+  go:
+    runs-on: ubuntu-latest
+    name: go clients
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.work
+
+      # Every client module must be formatted, vetted, and green on its
+      # offline fixture tests. No step here invokes a harness CLI.
+      - name: Format, vet, and test each client
+        run: |
+          set -euo pipefail
+          for d in clients/*-session-client; do
+            echo "== $d"
+            test -z "$(gofmt -l "$d")" || { echo "::error::gofmt issues in $d"; exit 1; }
+            (cd "$d" && go vet ./... && go test -count=1 ./...)
+          done
+
   wheel:
     runs-on: ubuntu-latest
     name: installable wheel
@@ -109,7 +129,7 @@ jobs:
               if n.split(marker, 1)[1].count("/") >= 1
           }
           skills = sorted(t for t in trees if t.endswith("-harness-handoff"))
-          assert len(skills) == 7, f"expected the seven skill trees, found {skills}"
+          assert len(skills) == 14, f"expected the fourteen skill trees, found {skills}"
 
           # Every generated tree must ship its entry point and its contract.
           for skill in skills:
@@ -117,5 +137,5 @@ jobs:
               has(f"{skill}/contract.json")
 
           assert "harness_handoff_skills.py" in names, "the module itself must ship"
-          print(f"wheel carries the module and 7 skill trees ({len(names)} entries): {wheel}")
+          print(f"wheel carries the module and 14 skill trees ({len(names)} entries): {wheel}")
           PY

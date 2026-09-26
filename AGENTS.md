@@ -1,10 +1,10 @@
 # Agent instructions — harness-handoff
 
-Portable handoff skills for seven coding-agent harnesses. One authored source,
-seven **generated** skill trees.
+Portable handoff skills for fourteen coding-agent harnesses. One authored source,
+fourteen **generated** skill trees.
 
 ```text
-skills-src/contracts.json          per-harness CLI contract (machine-readable)
+skills-src/contracts.json          per-harness execution contract (machine-readable)
 skills-src/lane-spawning/<h>.md    the one authoritative lane-spawning block
 skills-src/harnesses/<h>.md        the authored remainder of that skill's body
         │
@@ -26,7 +26,7 @@ make that impossible, and `--check` is what makes it stick.
 ```sh
 python3 scripts/build_skills.py            # write the trees
 python3 scripts/build_skills.py --check    # fail if a tree is stale (exit 1)
-python3 -m pytest                          # 22 tests: the generator's rules
+python3 -m pytest                          # the generator's rules, plus the real-tree gates
 ```
 
 `--check` compares every generated file byte-for-byte. Run it before committing;

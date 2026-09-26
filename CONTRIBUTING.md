@@ -1,6 +1,6 @@
 # Contributing
 
-One authored source, seven generated skill trees. The single rule:
+One authored source, fourteen generated skill trees. The single rule:
 
 **Edit `skills-src/`, then regenerate. Never hand-edit a generated tree.**
 

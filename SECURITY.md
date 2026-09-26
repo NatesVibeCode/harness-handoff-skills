@@ -2,7 +2,7 @@
 
 ## What this repository is
 
-A generator and seven skill trees. It ships **markdown and JSON** that an agent
+A generator and fourteen skill trees. It ships **markdown and JSON** that an agent
 harness reads as instructions, plus three Python scripts. There is no network
 code, no service, no runtime dependency, and nothing that executes on behalf of a
 user.

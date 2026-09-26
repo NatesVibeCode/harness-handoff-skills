@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "harness-handoff-skills"
 version = "0.2.0"
-description = "Portable direct-CLI handoff skills for coding-agent harnesses"
+description = "Portable SDK/protocol/CLI handoff skills for coding-agent harnesses"
 readme = "README.md"
 requires-python = ">=3.9"
 authors = [{name = "Nate's Vibe Code"}]
@@ -18,28 +18,36 @@ classifiers = [
 [tool.setuptools]
 py-modules = ["harness_handoff_skills"]
 
-# The seven <harness>-harness-handoff/SKILL.md trees and their contract.json files are
+# The fourteen <harness>-harness-handoff/SKILL.md trees and their contract.json files are
 # GENERATED from skills-src/ by scripts/build_skills.py. Do not hand-edit them; edit the
 # source and re-run the generator, then `--check` to prove the trees are current.
 [tool.setuptools.data-files]
 "share/harness-handoff-skills" = ["README.md", "EVIDENCE.md"]
-"share/harness-handoff-skills/scripts" = ["scripts/codex-task-bridge", "scripts/build_skills.py", "scripts/extract_skill_sources.py"]
+"share/harness-handoff-skills/scripts" = ["scripts/codex-task-bridge", "scripts/build_skills.py", "scripts/check_harness_sources.py", "scripts/extract_skill_sources.py"]
+"share/harness-handoff-skills/mcp_bridge" = ["mcp_bridge/__init__.py", "mcp_bridge/contracts.py", "mcp_bridge/cli_executor.py", "mcp_bridge/sdk_executors.py", "mcp_bridge/server.py"]
 "share/harness-handoff-skills/skills-src" = ["skills-src/contracts.json"]
-"share/harness-handoff-skills/skills-src/harnesses" = ["skills-src/harnesses/antigravity.md", "skills-src/harnesses/claude.md", "skills-src/harnesses/codex.md", "skills-src/harnesses/cursor.md", "skills-src/harnesses/grok.md", "skills-src/harnesses/muse.md", "skills-src/harnesses/opencode.md"]
-"share/harness-handoff-skills/skills-src/lane-spawning" = ["skills-src/lane-spawning/antigravity.md", "skills-src/lane-spawning/claude.md", "skills-src/lane-spawning/codex.md", "skills-src/lane-spawning/cursor.md", "skills-src/lane-spawning/grok.md", "skills-src/lane-spawning/muse.md", "skills-src/lane-spawning/opencode.md"]
+"share/harness-handoff-skills/skills-src/harnesses" = ["skills-src/harnesses/amp.md", "skills-src/harnesses/antigravity.md", "skills-src/harnesses/claude.md", "skills-src/harnesses/cline.md", "skills-src/harnesses/codex.md", "skills-src/harnesses/copilot.md", "skills-src/harnesses/cursor.md", "skills-src/harnesses/droid.md", "skills-src/harnesses/gemini.md", "skills-src/harnesses/grok.md", "skills-src/harnesses/junie.md", "skills-src/harnesses/muse.md", "skills-src/harnesses/opencode.md", "skills-src/harnesses/openhands.md"]
+"share/harness-handoff-skills/skills-src/lane-spawning" = ["skills-src/lane-spawning/amp.md", "skills-src/lane-spawning/antigravity.md", "skills-src/lane-spawning/claude.md", "skills-src/lane-spawning/cline.md", "skills-src/lane-spawning/codex.md", "skills-src/lane-spawning/copilot.md", "skills-src/lane-spawning/cursor.md", "skills-src/lane-spawning/droid.md", "skills-src/lane-spawning/gemini.md", "skills-src/lane-spawning/grok.md", "skills-src/lane-spawning/junie.md", "skills-src/lane-spawning/muse.md", "skills-src/lane-spawning/opencode.md", "skills-src/lane-spawning/openhands.md"]
+"share/harness-handoff-skills/amp-harness-handoff" = ["amp-harness-handoff/SKILL.md", "amp-harness-handoff/contract.json"]
 "share/harness-handoff-skills/antigravity-harness-handoff" = ["antigravity-harness-handoff/SKILL.md", "antigravity-harness-handoff/contract.json"]
 "share/harness-handoff-skills/antigravity-harness-handoff/references" = ["antigravity-harness-handoff/references/history-and-continuation.md", "antigravity-harness-handoff/references/operating-guide.md"]
 "share/harness-handoff-skills/claude-harness-handoff" = ["claude-harness-handoff/SKILL.md", "claude-harness-handoff/contract.json"]
 "share/harness-handoff-skills/claude-harness-handoff/references" = ["claude-harness-handoff/references/history-and-continuation.md"]
+"share/harness-handoff-skills/cline-harness-handoff" = ["cline-harness-handoff/SKILL.md", "cline-harness-handoff/contract.json"]
+"share/harness-handoff-skills/copilot-harness-handoff" = ["copilot-harness-handoff/SKILL.md", "copilot-harness-handoff/contract.json"]
 "share/harness-handoff-skills/codex-harness-handoff" = ["codex-harness-handoff/SKILL.md", "codex-harness-handoff/contract.json"]
 "share/harness-handoff-skills/cursor-harness-handoff" = ["cursor-harness-handoff/SKILL.md", "cursor-harness-handoff/contract.json"]
 "share/harness-handoff-skills/cursor-harness-handoff/references" = ["cursor-harness-handoff/references/history-and-continuation.md"]
+"share/harness-handoff-skills/droid-harness-handoff" = ["droid-harness-handoff/SKILL.md", "droid-harness-handoff/contract.json"]
+"share/harness-handoff-skills/gemini-harness-handoff" = ["gemini-harness-handoff/SKILL.md", "gemini-harness-handoff/contract.json"]
 "share/harness-handoff-skills/grok-harness-handoff" = ["grok-harness-handoff/SKILL.md", "grok-harness-handoff/contract.json"]
 "share/harness-handoff-skills/grok-harness-handoff/references" = ["grok-harness-handoff/references/history-and-continuation.md"]
+"share/harness-handoff-skills/junie-harness-handoff" = ["junie-harness-handoff/SKILL.md", "junie-harness-handoff/contract.json"]
 "share/harness-handoff-skills/muse-harness-handoff" = ["muse-harness-handoff/SKILL.md", "muse-harness-handoff/contract.json"]
 "share/harness-handoff-skills/muse-harness-handoff/references" = ["muse-harness-handoff/references/history-and-continuation.md", "muse-harness-handoff/references/operating-guide.md"]
 "share/harness-handoff-skills/opencode-harness-handoff" = ["opencode-harness-handoff/SKILL.md", "opencode-harness-handoff/contract.json"]
 "share/harness-handoff-skills/opencode-harness-handoff/references" = ["opencode-harness-handoff/references/history-and-continuation.md"]
+"share/harness-handoff-skills/openhands-harness-handoff" = ["openhands-harness-handoff/SKILL.md", "openhands-harness-handoff/contract.json"]
 
 [project.optional-dependencies]
 dev = ["pytest>=7"]

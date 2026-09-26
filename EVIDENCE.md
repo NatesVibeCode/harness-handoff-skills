@@ -1,6 +1,70 @@
 # Evidence and limits
 
-Reviewed 2026-09-08; command and approval-control recovery expanded 2026-09-09. Installed CLI help was checked without launching new model work. Historical records informed the portable lessons below; private transcripts, paths, session IDs, and project-specific configuration are not distributed.
+Reviewed 2026-09-08; command and approval-control recovery expanded 2026-09-09. Contract version 2 added SDK/protocol bindings on 2026-09-25. Installed CLI help was checked without launching new model work. Historical records informed the portable lessons below; private transcripts, paths, session IDs, and project-specific configuration are not distributed.
+
+## Contract version 2 verification — 2026-09-25
+
+`python3 scripts/build_skills.py` wrote 28 files across fourteen skill trees. `python3 scripts/build_skills.py --check` reported that all fourteen skill trees match `skills-src/`. `python3 -m pytest` passed 55 tests. `python3 scripts/check_harness_sources.py` reports installed binaries without launching model work; `git diff --check` is clean.
+
+Installed CLIs observed without launching model work:
+
+| Harness | Installed version |
+| --- | --- |
+| Antigravity | `agy 1.2.5` |
+| Claude Code | `2.1.270` |
+| Codex CLI | `codex-cli 0.156.1` |
+| Cursor | `2026.07.23-e383d2b` |
+| Gemini CLI | `0.56.0` |
+| Grok Build | `grok 1.0.41` |
+| Muse Code | `Muse Code 1.4.0` |
+| OpenCode | `1.18.32` |
+| Amp, Cline, Copilot, Droid, Junie, OpenHands | not installed on this machine |
+
+Public registry-index observations, checked without installing packages or using credentials:
+
+| SDK | Registry observation |
+| --- | --- |
+| `google-antigravity` | PyPI index listed `0.1.18` |
+| `@anthropic-ai/claude-agent-sdk` | npm view listed `0.3.282`, engines `node>=18` |
+| `claude-agent-sdk` | PyPI index listed `0.2.159` |
+| `@openai/codex-sdk` | npm view listed `0.157.0`, engines `node>=18` |
+| `openai-codex` | PyPI index listed `0.157.0`; available but intentionally unauthorized for this fresh-only Codex skill because it drives the app-server protocol |
+| `@cursor/sdk` | npm view listed `1.0.32`, engines `node>=22.13` |
+| `cursor-sdk` | PyPI index listed `1.0.32` |
+| `@muse-code/sdk` | npm view listed `1.3.0`, engines `node>=20` |
+| `muse-code-sdk` and `muse-code-msp` | PyPI index listed `1.3.1`; package metadata identifies the official Muse SDK repository and preview status |
+| `@opencode-ai/sdk` | npm view listed `1.18.32` |
+| `xai-sdk` | PyPI index listed `1.20.0`; this is a separate xAI model API SDK, not native Grok Build session control |
+| `@github/copilot-sdk` | npm view listed `1.0.14`, engines `node>=20.19`; official docs mark the SDK family technical preview |
+| `github-copilot-sdk` | PyPI index listed `1.0.14`, requires Python 3.11+ |
+| `@cline/sdk` | npm view listed `0.0.86`, engines `node>=22` |
+| `cline` CLI | npm view listed `3.0.65` |
+| `@factory/droid-sdk` | npm view listed `0.8.0`, engines `node>=18` |
+| `droid-sdk` | PyPI index listed `0.5.0`, described as the Factory Droid Python SDK; the TypeScript SDK is the authorized binding until the Python surface is verified |
+| `openhands-sdk` | PyPI index listed `1.49.6` |
+| `@ampcode/sdk` | npm view listed a dated `0.1.0` build, engines `node>=18` |
+| `amp-sdk` | PyPI index listed a dated `0.1.2026` build |
+| `@google/gemini-cli-sdk` | not found on npm; Gemini CLI ships as CLI-only in this contract until a published SDK is verified |
+
+Popularity triangulation used the JetBrains Developer Ecosystem Survey 2026 (May–July 2026, 15,000+ professional developers) for work-use ranking, Stack Overflow 2025 for baseline adoption and trust, and GitHub stars, CLI directories, registries, and vendor docs for implementation availability only. The survey's top tier is Claude Code 39%, GitHub Copilot 21%, Codex 16%, Cursor 12%, JetBrains AI/Junie 9%, OpenCode 7%, and Antigravity 6%.
+
+No SDK package was installed in the working environment, and no SDK session was executed with credentials. The installed Python and Node environments did not resolve the contract's SDK imports at check time. Registry versions are observations only and are not pinned in `contracts.json`.
+
+Official SDK/protocol sources consulted for the version-2 bindings:
+
+- Antigravity SDK overview
+- Claude Agent SDK overview and session documentation
+- OpenAI Codex SDK documentation
+- Cursor TypeScript/Python SDK and bridge documentation
+- xAI Grok Build headless-scripting and ACP documentation
+- Muse SDK repository, quickstart, and Python package metadata
+- OpenCode SDK and server documentation
+
+Remaining live-test gaps: per-harness SDK smoke runs, exact session-ID capture/resume/fork behavior, SDK/host schema compatibility for Muse preview, owned-versus-shared server behavior for OpenCode, and busy-session behavior for Cursor and Muse. The new Amp, Cline, Copilot, Droid, Gemini, Junie, and OpenHands trees are docs- and registry-checked only; none of those six binaries is installed here and no SDK session was executed. Downstream consumers of `contract.json` must handle contract version 2 themselves; the separate harness-fleet refactor is out of scope for this package.
+
+## MCP bridge verification — 2026-09-25
+
+`mcp_bridge/` is operator-side tooling, not a generated skill. `python3 -m pytest tests/test_mcp_bridge.py` passes 19 offline tests: mocked subprocesses, fake SDK module probes, contract-driven route selection, Codex continuation refusal, exact-ID requirements, secret redaction, and refusal of unverified CLI continuation shapes. The FastMCP server boots and lists five tools (`list_harnesses`, `get_contract`, `handoff_fresh`, `handoff_continue`, `session_history`). No live harness was launched, no SDK session executed, and no credentials used; every contract entry still carries `sdk_smoke_passed: false`.
 
 | Harness | Evidence used | What it supports | Remaining limit |
 | --- | --- | --- | --- |
