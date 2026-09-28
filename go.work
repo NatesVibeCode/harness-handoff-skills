@@ -7,3 +7,5 @@ use ./clients/cursor-session-client
 use ./clients/grok-session-client
 use ./clients/muse-session-client
 use ./clients/opencode-session-client
+
+use ./tools/harnessprobe
