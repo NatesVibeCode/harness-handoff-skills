@@ -55,6 +55,24 @@ observations from human/model judgments and reports gaps explicitly.
 
 ## Usage
 
+### Shared settings and access policy
+
+`python3 scripts/harness-control describe` lists the initial saved launch-profile
+controls for Codex, Muse and Claude. The companion `get`, `plan` and `apply`
+commands and MCP tools use the standalone ABAC evaluator with explicit host
+identity and repository mapping. Batch plans bind the exact proposed changes.
+`resolve --request request.json` adds optional bounded Jev interpretation for
+ambiguous settings. Exact requests and denials stay deterministic; reviewer
+failure returns a deterministic recovery task and never grants access.
+`recover --request request.json` / MCP `control_recover` handles broader unclear
+or unsupported requests and alternative proposals, then returns work to the
+current harness under its existing authority.
+See [harness control](docs/harness-control.md) for setup, enforcement limits and
+the native approval-hook roadmap. Native global and running-session settings
+are not implemented; no policy is installed automatically.
+
+### Handoffs
+
 Ask your agent: "Use the Cursor handoff skill to hand this work to my selected Cursor workspace. Include the current state, relevant files, constraints, and next action."
 
 The instructions guide the agent to discover available native capabilities, select the intended destination, and transfer a concise handoff packet. When direct delivery is unavailable, they produce text for manual pasting.

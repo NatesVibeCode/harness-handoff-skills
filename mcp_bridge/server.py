@@ -26,7 +26,7 @@ from pathlib import Path
 
 from mcp.server.fastmcp import FastMCP
 
-from mcp_bridge import cli_executor, contracts, sdk_executors
+from mcp_bridge import cli_executor, contracts, sdk_executors, control
 
 mcp = FastMCP("harness-sdk-bridge")
 
@@ -98,6 +98,70 @@ def get_contract(harness: str) -> dict:
 
 
 @mcp.tool()
+def settings_describe() -> dict:
+    """Describe supported settings and scopes; does not read user configuration."""
+    return control.describe()
+
+
+@mcp.tool()
+async def control_recover(request: dict) -> dict:
+    """Catch-all recovery for unclear/unsupported requests within a selected target.
+
+    Optional Jev chooses a useful next step; deterministic fallback works offline.
+    Returns a bounded task to the current harness, never bypasses access control.
+    """
+    from mcp_bridge.ambiguity import recover
+    try:
+        return await asyncio.to_thread(recover, request)
+    except (ValueError, OSError, KeyError, TypeError, subprocess.SubprocessError) as exc:
+        return _refuse(cli_executor.redact(str(exc)))
+
+
+@mcp.tool()
+async def settings_resolve(request: dict) -> dict:
+    """Resolve bounded settings interpretations; optional Jev, final ABAC gate.
+
+    Returns a plan or focused question, never executes or changes permissions.
+    Runs off the event loop so unrelated authorized work remains responsive.
+    """
+    from mcp_bridge.ambiguity import resolve
+    try:
+        return await asyncio.to_thread(resolve, request)
+    except (ValueError, OSError, KeyError, TypeError, subprocess.SubprocessError) as exc:
+        return _refuse(cli_executor.redact(str(exc)))
+
+
+@mcp.tool()
+def settings_get(harness: str, profile: str, repo: str) -> dict:
+    """Read one ABAC-authorized saved launch profile, not live session state."""
+    try:
+        return control.get(harness, profile, repo)
+    except (ValueError, OSError, KeyError, TypeError, subprocess.SubprocessError) as exc:
+        return _refuse(cli_executor.redact(str(exc)))
+
+
+@mcp.tool()
+def settings_plan(changes: list[dict]) -> dict:
+    """Preview a batch of saved launch setting changes and all ABAC decisions."""
+    try:
+        return control.plan(changes)
+    except (ValueError, OSError, KeyError, TypeError, subprocess.SubprocessError) as exc:
+        return _refuse(cli_executor.redact(str(exc)))
+
+
+@mcp.tool()
+def settings_apply(changes: list[dict], expected_digest: str) -> dict:
+    """Apply exactly the reviewed plan to saved launch profiles in one write.
+
+    Rechecks ABAC. Changes neither global native settings nor running sessions.
+    """
+    try:
+        return control.apply(changes, expected_digest)
+    except (ValueError, OSError, KeyError, TypeError, subprocess.SubprocessError) as exc:
+        return _refuse(cli_executor.redact(str(exc)))
+
+
+@mcp.tool()
 async def handoff_fresh(
     harness: str,
     prompt: str,
@@ -105,6 +169,7 @@ async def handoff_fresh(
     model: str | None = None,
     approval: str = "default",
     use: str = "auto",
+    settings_profile: str | None = None,
 ) -> dict:
     """Start one fresh execution in the selected harness and return its receipt.
 
@@ -118,6 +183,15 @@ async def handoff_fresh(
     """
     entry = contracts.get_harness(harness)
     short = _short_name(entry)
+    profile_argv, profile_receipt = [], None
+    if settings_profile is not None:
+        if use not in {"auto", "cli"} or approval != "default" or model is not None:
+            return _refuse("saved settings use the CLI route and cannot be combined with model/approval overrides")
+        try:
+            profile_argv, profile_receipt = await asyncio.to_thread(control.launch_settings, short, settings_profile, workspace or "")
+        except (ValueError, OSError, KeyError, TypeError, subprocess.SubprocessError) as exc:
+            return _refuse(cli_executor.redact(str(exc)))
+        use = "cli"
     try:
         route = _choose_route(entry, use)
     except RuntimeError as exc:
@@ -164,7 +238,11 @@ async def handoff_fresh(
         except Exception as exc:  # noqa: BLE001 — receipt, not traceback
             return {"harness": short, "route": "sdk", "error": cli_executor.redact(str(exc))}
     extra, extra_at = ([], 0)
-    if short == "codex":
+    if profile_receipt is not None:
+        # Preserve contract-owned prompt/workspace argv. Never append a second
+        # approval override or the default full-access Codex recipe here.
+        extra, extra_at = profile_argv, (1 if short in {"codex", "muse"} else 0)
+    elif short == "codex":
         controls = CODEX_RESTRICTED_ARGV if approval == "restricted" else CODEX_AUTONOMOUS_ARGV
         extra, extra_at = (list(controls), 1)
         if model:
@@ -176,6 +254,9 @@ async def handoff_fresh(
         )
     except cli_executor.ExecutionError as exc:
         return {"harness": short, "route": "cli", "error": cli_executor.redact(str(exc))}
+    if profile_receipt is not None:
+        receipt["settings_control"] = profile_receipt
+        receipt["effective_settings_verified"] = False
     return receipt
 
 

@@ -1,5 +1,42 @@
 # Evidence and limits
 
+## Optional Jev recovery — 2026-09-26
+
+Added `resolve` and catch-all `recover` commands, asynchronous MCP wrappers,
+an optional bounded Decisions worker, and offline recovery tasks. Reviewer
+configuration is opt-in. Ordinary settings operations have no reviewer
+dependency. The transport follows the existing local Jev Decisions client
+shape; no provider calls, credential reads or live permission changes were made
+during initial implementation. Initial evidence was compilation and generated
+tree integrity only. The subsequent operator-requested review added 25 focused
+offline regressions covering outages, malformed responses, exact-request bypass,
+final ABAC denial, immediate contention, persistent episode bounds, independent
+work and event-loop responsiveness. The full repository suite passes: 155 tests
+in 4.52 seconds. Valid recovery receipts also exit the CLI successfully, so
+callers can branch on status rather than retrying them as process failures.
+The ABAC package suite also passes. Focused checks include real local ABAC
+plan/apply and canonical-path checks against temporary stores. Provider failures
+are injected; real provider acceptance and native approval callbacks remain
+unverified. Per-process review limits are not global spend quotas. Persistent
+recovery accounting bounds router issuance; individual tool actions still need
+the owning native host's enforcement.
+
+## Saved launch settings — 2026-09-26
+
+Added an authored settings catalog, `scripts/harness-control` and MCP
+describe/get/plan/apply tools for saved Codex, Muse and Claude launch profiles.
+The opt-in fresh-handoff profile path evaluates policy using the companion
+ABAC native-request CLI. See [control design and limits](docs/harness-control.md).
+
+Observed locally: Python compilation succeeds; the CLI `describe` command lists
+three supported harnesses and eleven unsupported harnesses; generated-tree
+checking reports `OK 14 handoff skill trees + 1 review skill match skills-src/`;
+the companion ABAC checkout builds with `GOPROXY=off GOSUMDB=off go build ./...`.
+Whitespace checking is clean. These are compilation and source-integrity checks,
+not functional or security acceptance evidence. No automated test suite was run,
+no live profile applied, and no native settings or approval-hook behavior exercised.
+Native approval auto-response and latency targets remain proposed work.
+
 Reviewed 2026-09-08; command and approval-control recovery expanded 2026-09-09. Contract version 2 added SDK/protocol bindings on 2026-09-25. Installed CLI help was checked without launching new model work. Historical records informed the portable lessons below; private transcripts, paths, session IDs, and project-specific configuration are not distributed.
 
 ## Contract version 2 verification — 2026-09-25

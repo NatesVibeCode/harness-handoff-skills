@@ -1,0 +1,27 @@
+{
+  "schema": "harness.settings_catalog.v1",
+  "scope": "handoff_launch_profile",
+  "harnesses": {
+    "codex": {
+      "source": "skills-src/harnesses/codex.md; installed CLI controls recorded 2026-09-26",
+      "model": {"type": "identifier", "argv": ["--model", "{value}"]},
+      "reasoning_effort": {"type": "enum", "values": ["none", "minimal", "low", "medium", "high", "xhigh", "max", "ultra"], "argv": ["-c", "model_reasoning_effort={json}"]},
+      "sandbox": {"type": "enum", "values": ["read-only", "workspace-write", "danger-full-access"], "argv": ["--sandbox", "{value}"]},
+      "approval": {"type": "enum", "values": ["on-request", "never"], "argv": ["-c", "approval_policy={json}"]}
+    },
+    "muse": {
+      "source": "skills-src/harnesses/muse.md; muse-harness-handoff/references/operating-guide.md",
+      "model": {"type": "identifier", "argv": ["--model", "{value}"]},
+      "reasoning_effort": {"type": "enum", "values": ["none", "minimal", "low", "medium", "high", "xhigh", "max", "ultra"], "argv": ["--reasoning-effort", "{value}"]},
+      "disable_approval": {"type": "bool", "argv": ["--disable-approval"]},
+      "disable_sandbox": {"type": "bool", "argv": ["--disable-sandbox"]},
+      "trust_workspace": {"type": "bool", "argv": ["--trust-workspace"]}
+    },
+    "claude": {
+      "source": "skills-src/harnesses/claude.md; installed CLI effort controls recorded 2026-09-26",
+      "model": {"type": "identifier", "argv": ["--model", "{value}"]},
+      "reasoning_effort": {"type": "enum", "values": ["low", "medium", "high", "xhigh", "max"], "argv": ["--effort", "{value}"]},
+      "permission_mode": {"type": "enum", "values": ["acceptEdits", "auto", "bypassPermissions", "manual", "dontAsk", "plan"], "argv": ["--permission-mode", "{value}"]}
+    }
+  }
+}
