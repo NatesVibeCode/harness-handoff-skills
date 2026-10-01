@@ -55,6 +55,10 @@ observations from human/model judgments and reports gaps explicitly.
 
 ## Usage
 
+The current SDK/CLI bridge surface and Handoff-local route restrictions are in
+[route coverage](docs/ROUTE_COVERAGE.md). These describe Handoff behavior and
+do not define another product's SDK integration scope.
+
 ### Shared settings and access policy
 
 Start with [access profiles and governance coverage](docs/access-profiles.md).
