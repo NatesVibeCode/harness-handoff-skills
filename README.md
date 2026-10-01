@@ -57,6 +57,22 @@ observations from human/model judgments and reports gaps explicitly.
 
 ### Shared settings and access policy
 
+Start with [access profiles and governance coverage](docs/access-profiles.md).
+Product access profiles belong to ABAC and the trusted product host; native
+harness settings profiles remain separate. A selected v2 host configuration
+binds product, permission context and realm and gates discovery, launch,
+continuation, history and settings. A saved native settings profile is optional;
+omitting it does not bypass governance. No access profile is selected from the
+current harness or supplied model arguments.
+
+Fresh launches use [one resolved launch plan](docs/launch-plans.md): the actual
+adapter, executable, canonical workspace, native settings and trusted access
+context are bound before ABAC approval and consumed unchanged by the executor.
+
+The proposed [connected access product scope](docs/connected-access-scope.md)
+defines a thin trusted connection host and standalone printed access Processes.
+It is a scoped architecture proposal, separate from implemented bridge behavior.
+
 `python3 scripts/harness-control describe` lists the initial saved launch-profile
 controls for Codex, Muse and Claude. The companion `get`, `plan` and `apply`
 commands and MCP tools use the standalone ABAC evaluator with explicit host
@@ -72,6 +88,15 @@ the native approval-hook roadmap. Native global and running-session settings
 are not implemented; no policy is installed automatically.
 
 ### Handoffs
+
+For an exact Codex model/effort launch, start with the portable
+[model and settings guide](codex-harness-handoff/references/model-and-settings.md).
+The copied skill includes its syntax catalog and a read-only preflight helper.
+`--capabilities /path/to/model-capabilities.json` points the helper at caller-supplied
+native metadata; the CLI bridge accepts the same pointer as `model_capabilities`.
+No fixed model list, private checkout, installed OpenAI Docs skill, or ABAC host
+is required. Explicit effort pairs need fresh exact-model support evidence.
+Receipts distinguish requests, capability validation, and observed runtime values.
 
 Ask your agent: "Use the Cursor handoff skill to hand this work to my selected Cursor workspace. Include the current state, relevant files, constraints, and next action."
 
@@ -103,6 +128,8 @@ Author these instead:
 | `skills-src/session-review.md` | The cross-harness review workflow |
 | `skills-src/session-review-output.schema.json` | The review report's output contract |
 | `scripts/session_review.py` | Metadata inventory and local CLI/auth diagnostics; copied into the review skill |
+| `mcp_bridge/model_settings.py` | Read-only Codex preflight and receipt helper; copied into the Codex skill |
+| `skills-src/settings.json` | Launch syntax catalog; copied into the Codex skill |
 
 The build emits each handoff tree's `SKILL.md` plus a `contract.json` — the same
 contract in machine-readable form, so a tool that drives these harnesses can read
@@ -132,7 +159,9 @@ python3 mcp_bridge/server.py   # stdio transport; wire into your MCP client conf
 python3 -m pytest tests/test_mcp_bridge.py  # offline tests: mocked subprocesses, no credentials
 ```
 
-Tools: `list_harnesses`, `get_contract`, `handoff_fresh`, `handoff_continue`, `session_history`.
+Tools: `list_harnesses`, `get_contract`, `handoff_fresh`, `handoff_continue`,
+`session_history`, `settings_describe`, `settings_profiles`, `settings_get`,
+`settings_plan`, `settings_apply`, `settings_resolve`, `control_recover`.
 
 Routing per call: authorized Python SDK when importable (Claude, Cursor, Copilot, Muse, Antigravity, OpenHands), otherwise the pinned CLI fallback every harness declares. Contract and bridge guards refuse Codex continuation, require exact session IDs, reject newest/continue selectors, redact known secret patterns in receipts, and refuse unverified CLI continuation shapes (Cline, Amp, Copilot). Requires the `mcp` Python package for serving; the contract loader, CLI executor, and tests have no third-party dependencies.
 

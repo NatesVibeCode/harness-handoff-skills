@@ -17,6 +17,7 @@ substitutes another product when the selected one is unavailable.
 from __future__ import annotations
 
 import asyncio
+import json
 import os
 import re
 import shutil
@@ -26,7 +27,7 @@ from pathlib import Path
 
 from mcp.server.fastmcp import FastMCP
 
-from mcp_bridge import cli_executor, contracts, sdk_executors, control
+from mcp_bridge import cli_executor, contracts, sdk_executors, control, launch_plan
 
 mcp = FastMCP("harness-sdk-bridge")
 
@@ -86,21 +87,49 @@ def _short_name(entry: dict) -> str:
 
 
 @mcp.tool()
-def list_harnesses() -> list[dict]:
+def list_harnesses(workspace: str | None = None) -> list[dict] | dict:
     """List all fourteen harnesses with their SDK status and authorized routes."""
-    return contracts.list_harnesses()
+    rows = contracts.list_harnesses()
+    if control.CONFIG_ENV not in os.environ:
+        return rows
+    try:
+        return [row for row in rows if control.project(row["harness"], workspace)["verdict"]["effect"] == "allow"]
+    except (ValueError, OSError, KeyError, TypeError, subprocess.SubprocessError) as exc:
+        return _refuse(cli_executor.redact(str(exc)))
 
 
 @mcp.tool()
-def get_contract(harness: str) -> dict:
+def get_contract(harness: str, workspace: str | None = None) -> dict:
     """Return the full v2 execution contract for one harness."""
+    if control.CONFIG_ENV in os.environ:
+        try:
+            if control.project(harness, workspace)["verdict"]["effect"] != "allow":
+                return _refuse("not available in this session")
+        except (ValueError, OSError, KeyError, TypeError, subprocess.SubprocessError) as exc:
+            return _refuse(cli_executor.redact(str(exc)))
     return contracts.get_harness(harness)
 
 
 @mcp.tool()
-def settings_describe() -> dict:
-    """Describe supported settings and scopes; does not read user configuration."""
-    return control.describe()
+def settings_describe(workspace: str | None = None) -> dict:
+    """Describe settings; a configured host filters by ABAC projection."""
+    result = control.describe()
+    if control.CONFIG_ENV in os.environ:
+        try:
+            result["harnesses"] = {name: row for name, row in result["harnesses"].items()
+                if control.project(name, workspace)["verdict"]["effect"] == "allow"}
+        except (ValueError, OSError, KeyError, TypeError, subprocess.SubprocessError) as exc:
+            return _refuse(cli_executor.redact(str(exc)))
+    return result
+
+
+@mcp.tool()
+async def settings_profiles(harness: str, repo: str) -> dict:
+    """List ABAC-readable profiles for one product adapter and repository."""
+    try:
+        return await asyncio.to_thread(control.profiles, harness, repo)
+    except (ValueError, OSError, KeyError, TypeError, subprocess.SubprocessError) as exc:
+        return _refuse(cli_executor.redact(str(exc)))
 
 
 @mcp.tool()
@@ -170,6 +199,8 @@ async def handoff_fresh(
     approval: str = "default",
     use: str = "auto",
     settings_profile: str | None = None,
+    reasoning_effort: str | None = None,
+    model_capabilities: str | None = None,
 ) -> dict:
     """Start one fresh execution in the selected harness and return its receipt.
 
@@ -180,12 +211,29 @@ async def handoff_fresh(
     Copilot SDK approval bypass requires "unattended"; ordinary Copilot calls
     use the CLI route. Other routes accept only "default" because this bridge
     does not implement their approval controls. use is "auto", "sdk", or "cli".
+    Codex CLI reasoning_effort requires an exact model and fresh capability
+    metadata. model_capabilities points to native-shape JSON instead of the
+    default local cache, and can also be supplied with a saved profile.
+    A selected HARNESS_CONTROL_CONFIG engages ABAC projection and launch gates
+    using the host-bound product access context, independently of settings_profile.
     """
     entry = contracts.get_harness(harness)
     short = _short_name(entry)
+    requested = {"model": model, "reasoning_effort": reasoning_effort, "approval": approval, "use": use}
+    access_receipt = None
+    if control.CONFIG_ENV in os.environ:
+        try:
+            access_receipt = await asyncio.to_thread(control.access_gate, short, workspace or "", action="project",
+                profile=settings_profile, controls=requested)
+        except (ValueError, OSError, KeyError, TypeError, subprocess.SubprocessError) as exc:
+            return _refuse(cli_executor.redact(str(exc)))
+    if (reasoning_effort is not None or model_capabilities is not None) and short != "codex":
+        return _refuse("model capability preflight and reasoning override are implemented only for Codex")
+    if reasoning_effort is not None and model is None:
+        return _refuse("explicit reasoning effort requires an explicit model")
     profile_argv, profile_receipt = [], None
     if settings_profile is not None:
-        if use not in {"auto", "cli"} or approval != "default" or model is not None:
+        if use not in {"auto", "cli"} or approval != "default" or model is not None or reasoning_effort is not None:
             return _refuse("saved settings use the CLI route and cannot be combined with model/approval overrides")
         try:
             profile_argv, profile_receipt = await asyncio.to_thread(control.launch_settings, short, settings_profile, workspace or "")
@@ -232,11 +280,8 @@ async def handoff_fresh(
     if model and route == "cli" and short not in {"codex", "cursor", "opencode"}:
         return _refuse(f"{short} CLI contract cannot bind the selected model")
     if route == "sdk":
-        fn = sdk_executors.EXECUTORS[short]["fresh"]
-        try:
-            return await fn(prompt, workspace, model, approval)
-        except Exception as exc:  # noqa: BLE001 — receipt, not traceback
-            return {"harness": short, "route": "sdk", "error": cli_executor.redact(str(exc))}
+        if reasoning_effort is not None or model_capabilities is not None:
+            return _refuse("model capability preflight requires the Codex CLI route")
     extra, extra_at = ([], 0)
     if profile_receipt is not None:
         # Preserve contract-owned prompt/workspace argv. Never append a second
@@ -247,17 +292,40 @@ async def handoff_fresh(
         extra, extra_at = (list(controls), 1)
         if model:
             extra.extend(["--model", model])
+        if reasoning_effort is not None:
+            extra.extend(["-c", "model_reasoning_effort=" + json.dumps(reasoning_effort)])
+    native = dict(profile_receipt["requested_settings"] if profile_receipt else {
+        "model": model, "reasoning_effort": reasoning_effort,
+        "approval": None, "sandbox": None,
+    })
+    if not profile_receipt and short == "codex":
+        native.update(approval="on-request" if approval == "restricted" else "never",
+                      sandbox="read-only" if approval == "restricted" else "danger-full-access")
+    elif not profile_receipt and short == "cursor" and route == "cli":
+        native["sandbox"] = "enabled"
+    elif not profile_receipt and (short == "openhands" and route == "cli" or short == "copilot" and route == "sdk"):
+        native["approval"] = "always-approve"
+    resolved = None
+    cli_owns_staging = False
     try:
-        receipt = await asyncio.to_thread(
-            cli_executor.run_cli, entry, prompt=prompt, workspace=workspace,
-            model=model, extra_argv=extra, extra_at=extra_at,
-        )
-    except cli_executor.ExecutionError as exc:
-        return {"harness": short, "route": "cli", "error": cli_executor.redact(str(exc))}
-    if profile_receipt is not None:
-        receipt["settings_control"] = profile_receipt
-        receipt["effective_settings_verified"] = False
-    return receipt
+        resolved = await asyncio.to_thread(launch_plan.resolve, entry, route=route,
+            prompt=prompt, workspace=workspace, requested=requested, native_settings=native,
+            extra_argv=extra, extra_at=extra_at, profile=profile_receipt, context=access_receipt,
+            model_capabilities=model_capabilities)
+        authorization = await asyncio.to_thread(control.authorize_launch_plan, resolved)
+        if route == "cli":
+            # The execution thread retains its staging until it finishes, even
+            # when its caller is cancelled. Process cancellation is separate.
+            cli_owns_staging = True
+            return await asyncio.to_thread(cli_executor.run_cli, resolved, authorization=authorization)
+        return await sdk_executors.run_plan(resolved, authorization=authorization)
+    except (ValueError, OSError, KeyError, TypeError, cli_executor.ExecutionError, subprocess.SubprocessError) as exc:
+        return _refuse(cli_executor.redact(str(exc)))
+    except Exception as exc:  # SDK-specific errors are receipts, never retries.
+        return {"harness": short, "route": route, "error": cli_executor.redact(str(exc))}
+    finally:
+        if resolved is not None and not cli_owns_staging:
+            resolved.cleanup()
 
 
 @mcp.tool()
@@ -277,6 +345,7 @@ async def handoff_continue(
     """
     entry = contracts.get_harness(harness)
     short = _short_name(entry)
+    access_receipt = None
     sdk = entry["sdk"]
     if approval not in {"default", "unattended"}:
         return _refuse("continuation approval must be 'default' or 'unattended'")
@@ -290,11 +359,24 @@ async def handoff_continue(
         return _refuse("an exact session ID is required; selectors and option-like values are forbidden")
     if sdk["continuation"] == "forbidden":
         return _refuse(f"{short}: continuation is policy-forbidden for this fresh-only handoff")
+    if control.CONFIG_ENV in os.environ:
+        try:
+            access_receipt = await asyncio.to_thread(control.access_gate, short, workspace or "",
+                action="continue", session_id=session_id, controls={"approval": approval})
+        except (ValueError, OSError, KeyError, TypeError, subprocess.SubprocessError) as exc:
+            return _refuse(cli_executor.redact(str(exc)))
     if short == "antigravity" and save_dir:
         if workspace:
             return _refuse("antigravity SDK restore cannot bind or verify the selected workspace")
         try:
-            return await sdk_executors.antigravity_resume(session_id, prompt, workspace, save_dir=save_dir)
+            if access_receipt is not None:
+                access_receipt = await asyncio.to_thread(control.recheck_access, access_receipt,
+                    harness=short, workspace=workspace or "", action="continue", session_id=session_id,
+                    controls=access_receipt["requested_controls"])
+            receipt = await sdk_executors.antigravity_resume(session_id, prompt, workspace, save_dir=save_dir)
+            if access_receipt is not None:
+                receipt["access_control"] = access_receipt
+            return receipt
         except Exception as exc:  # noqa: BLE001
             return {"harness": short, "route": "sdk", "error": cli_executor.redact(str(exc))}
     executor = sdk_executors.EXECUTORS.get(short, {}).get("resume")
@@ -302,20 +384,29 @@ async def handoff_continue(
         if workspace and short in {"cursor", "muse", "copilot"}:
             return _refuse(f"{short} SDK resume cannot bind or verify the selected workspace")
         try:
+            if access_receipt is not None:
+                access_receipt = await asyncio.to_thread(control.recheck_access, access_receipt,
+                    harness=short, workspace=workspace or "", action="continue", session_id=session_id,
+                    controls=access_receipt["requested_controls"])
             if short == "copilot":
-                return await executor(session_id, prompt, workspace, approval=approval)
-            return await executor(session_id, prompt, workspace)
+                receipt = await executor(session_id, prompt, workspace, approval=approval)
+            else:
+                receipt = await executor(session_id, prompt, workspace)
+            if access_receipt is not None:
+                receipt["access_control"] = access_receipt
+            return receipt
         except Exception as exc:  # noqa: BLE001
             return {"harness": short, "route": "sdk", "error": cli_executor.redact(str(exc))}
     # CLI exact-ID continuation: render the skill's resume shape per harness.
     try:
-        return _cli_continue(entry, short, session_id, prompt, workspace, approval)
+        return _cli_continue(entry, short, session_id, prompt, workspace, approval,
+            **({"access_control": access_receipt} if access_receipt is not None else {}))
     except OSError as exc:
         return {"harness": short, "route": "cli", "error": cli_executor.redact(str(exc))}
 
 
 def _cli_continue(entry: dict, short: str, session_id: str, prompt: str,
-                  workspace: str | None, approval: str = "default") -> dict:
+                  workspace: str | None, approval: str = "default", access_control: dict | None = None) -> dict:
     binary = entry["binary"]
     prompt_file: Path | None = None
     argv: list[str] | None = None
@@ -365,13 +456,16 @@ def _cli_continue(entry: dict, short: str, session_id: str, prompt: str,
         if shutil.which(binary) is None:
             return {"harness": short, "route": "cli", "error": f"{binary} is not installed or not on PATH"}
         try:
+            if access_control is not None:
+                access_control = control.recheck_access(access_control, harness=short, workspace=workspace or "",
+                    action="continue", session_id=session_id, controls=access_control["requested_controls"])
             completed = subprocess.run(
                 [binary, *argv], input=stdin_text, capture_output=True,
                 text=True, timeout=900, cwd=workspace or None,
             )
-        except (OSError, subprocess.SubprocessError) as exc:
+        except (ValueError, OSError, KeyError, TypeError, subprocess.SubprocessError) as exc:
             return {"harness": short, "route": "cli", "error": cli_executor.redact(str(exc))}
-        return {
+        receipt = {
             "harness": short,
             "route": "cli",
             "exit_code": completed.returncode,
@@ -379,6 +473,9 @@ def _cli_continue(entry: dict, short: str, session_id: str, prompt: str,
             "output": cli_executor.redact((completed.stdout or "")[-8000:]),
             "stderr": cli_executor.redact((completed.stderr or "")[-2000:]),
         }
+        if access_control is not None:
+            receipt["access_control"] = access_control
+        return receipt
     finally:
         if prompt_file is not None:
             shutil.rmtree(prompt_file.parent)
@@ -393,12 +490,25 @@ async def session_history(harness: str, session_id: str, workspace: str | None =
         return _refuse("an exact session ID is required for history lookup")
     if not 1 <= limit <= 500:
         return _refuse("history limit must be between 1 and 500")
+    access_receipt = None
+    if control.CONFIG_ENV in os.environ:
+        try:
+            access_receipt = await asyncio.to_thread(control.access_gate, short, workspace or "",
+                action="review", session_id=session_id)
+        except (ValueError, OSError, KeyError, TypeError, subprocess.SubprocessError) as exc:
+            return _refuse(cli_executor.redact(str(exc)))
     executor = sdk_executors.EXECUTORS.get(short, {}).get("history")
     if executor is not None and sdk_executors.available(short):
         if workspace and short == "cursor":
             return _refuse("cursor SDK history cannot verify the selected workspace")
         try:
-            return await executor(session_id, workspace, limit)
+            if access_receipt is not None:
+                access_receipt = await asyncio.to_thread(control.recheck_access, access_receipt,
+                    harness=short, workspace=workspace or "", action="review", session_id=session_id)
+            receipt = await executor(session_id, workspace, limit)
+            if access_receipt is not None:
+                receipt["access_control"] = access_receipt
+            return receipt
         except Exception as exc:  # noqa: BLE001
             return {"harness": short, "route": "sdk", "error": cli_executor.redact(str(exc))}
     return {

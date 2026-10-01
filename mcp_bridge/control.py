@@ -97,6 +97,7 @@ def _settings(harness: str, values: dict) -> dict:
             raise ControlError(f"unsupported setting {harness}.{name}")
         kind = definition["type"]
         valid = (kind == "bool" and type(value) is bool or
+                 kind == "name" and isinstance(value, str) and NAME.fullmatch(value) or
                  kind == "identifier" and isinstance(value, str) and IDENTIFIER.fullmatch(value) or
                  kind == "enum" and isinstance(value, str) and value in definition["values"])
         if not valid:
@@ -112,10 +113,14 @@ class Host:
         self.path = _absolute(selected)
         raw = _bytes(self.path)
         self.config = _object(raw)
-        _closed(self.config, {"schema", "abac_binary", "policy_files", "subject", "repositories", "state_file"}, {"jev_review"})
-        if self.config["schema"] != "harness.control_host.v1":
+        _closed(self.config, {"schema", "abac_binary", "policy_files", "subject", "repositories", "state_file", "access_context"}, {"jev_review"})
+        if self.config["schema"] != "harness.control_host.v2":
             raise ControlError("unsupported host schema")
         _closed(self.config["subject"], {"principal_ref", "altitude"}, {"roles"})
+        context = self.config["access_context"]
+        _closed(context, {"product_ref", "permission_context", "realm"})
+        if any(not isinstance(value, str) or not NAME.fullmatch(value) for value in context.values()):
+            raise ControlError("access context requires exact product, permission context and realm names")
         self.binary = _absolute(self.config["abac_binary"])
         self.state_path = _absolute(self.config["state_file"])
         policies = self.config["policy_files"]
@@ -162,16 +167,53 @@ class Host:
             raise ControlError("selected repository is unavailable")
         labels = {"harness": harness, "repo_id": repo,
                   "repo_path": str(Path(record["path"]).resolve()), "repo_status": record["status"]}
+        labels.update(self.config.get("access_context", {}))
         if setting:
             labels.update(setting=setting, value=json.dumps(value, sort_keys=True, separators=(",", ":")))
         verbs = {"settings.get": "read", "settings.apply": "write", "handoff.launch_settings": "spawn", "ambiguity.review": "call"}
         if operation not in verbs:
             raise ControlError("unsupported authorization operation")
         request = {"subject": self.config["subject"],
-                   "resource": {"kind": "data", "ref": f"harness-settings/{harness}/{profile}", "owner": "app",
+                   "resource": {"kind": "data", "ref": f"harness-settings/{harness}/{profile}", "owner": "harness-handoff",
                                 "labels": labels},
                    "action": {"verb": verbs[operation], "operation": operation},
-                   "environment": {"altitude": "app", "purpose": "harness-control"}}
+                   "environment": {"altitude": "run", "purpose": "harness-control"}}
+        return self.evaluate(request, operation, setting)
+
+    def authorize_surface(self, harness: str, action: str, repo: str | None = None,
+                          profile: str | None = None, session_id: str | None = None,
+                          controls: dict | None = None, resolved: dict | None = None) -> dict:
+        """Ask ABAC's existing handoff vocabulary using host-attested attributes."""
+        contracts.get_harness(harness)
+        verbs = {"project": "read", "launch": "spawn", "continue": "dispatch", "review": "read"}
+        if action not in verbs:
+            raise ControlError("unsupported handoff governance action")
+        labels = {"harness": harness, **self.config.get("access_context", {})}
+        if repo is not None:
+            record = self.config["repositories"].get(repo)
+            if record is None or not Path(record["path"]).is_dir():
+                raise ControlError("selected repository is unavailable or unknown")
+            labels.update(repo_id=repo, repo_path=str(Path(record["path"]).resolve()), repo_status=record["status"])
+        if profile is not None:
+            labels["settings_profile"] = profile
+        if session_id is not None:
+            labels["session_id"] = session_id
+        for key, value in (controls or {}).items():
+            labels["requested_" + key] = json.dumps(value, sort_keys=True, separators=(",", ":"))
+        if resolved is not None:
+            # Only the trusted plan builder supplies these execution attributes.
+            labels.update(resolved)
+        resource = {"kind": "a2a.agent", "ref": "harness-handoff/" + harness,
+                    "owner": "harness-handoff", "labels": labels}
+        if action == "review":
+            resource.update(kind="data", ref="harness-session-review")
+        operation = "handoff." + action
+        return self.evaluate({"subject": self.config["subject"], "resource": resource,
+            "action": {"verb": verbs[action], "operation": operation},
+            "environment": {"altitude": "run", "purpose": "harness-handoff"}}, operation)
+
+    def evaluate(self, request: dict, operation: str, setting: str = "") -> dict:
+        """One policy engine for settings, projection and effect decisions."""
         argv = [str(self.binary), "evaluate", "-request", "-"]
         for path in self.policies:
             argv.extend(["-policy", str(path)])
@@ -301,7 +343,39 @@ def get(harness: str, profile: str, repo: str) -> dict:
             "state_digest": identity, "decision": decision, "effective_runtime_state": "not_observed"}
 
 
+def profiles(harness: str, repo: str) -> dict:
+    """List only readable profiles for one exact product adapter and repository."""
+    contracts.get_harness(harness)
+    if not isinstance(repo, str) or not NAME.fullmatch(repo):
+        raise ControlError("exact repository identity is required")
+    if harness not in _object(_bytes(CATALOG))["harnesses"]:
+        raise ControlError(f"{harness}: saved profile adapter is not implemented")
+    host = Host()
+    if repo not in host.config["repositories"]:
+        raise ControlError("repository is not in the host-owned identity map")
+    state, identity = host.state()
+    rows = []
+    for key, row in sorted(state["profiles"].items()):
+        if not key.startswith(harness + "/") or not isinstance(row, dict) or row.get("repo") != repo:
+            continue
+        profile = key[len(harness) + 1:]
+        if not NAME.fullmatch(profile):
+            raise ControlError("invalid stored profile identity")
+        decision = host.authorize("settings.get", harness, profile, repo)
+        if decision["verdict"]["effect"] != "allow":
+            continue
+        _settings(harness, row["settings"])
+        rows.append({"harness": harness, "profile": profile, "repo": repo,
+                     "settings": dict(row["settings"]), "decision": decision})
+    host.unchanged()
+    if host.state()[1] != identity:
+        raise ControlError("profiles changed while reading")
+    return {"schema": "harness.profile_inventory.v1", "harness": harness, "repo": repo,
+            "scope": "readable_saved_profiles", "profiles": rows, "state_digest": identity}
+
+
 def launch_settings(harness: str, profile: str, workspace: str) -> tuple[list[str], dict]:
+    contracts.get_harness(harness)
     if not isinstance(profile, str) or not NAME.fullmatch(profile):
         raise ControlError("invalid profile")
     host = Host()
@@ -309,9 +383,13 @@ def launch_settings(harness: str, profile: str, workspace: str) -> tuple[list[st
     row = state["profiles"].get(harness + "/" + profile)
     if row is None:
         raise ControlError("unknown saved launch profile")
+    _closed(row, {"repo", "settings"})
     repo = row["repo"]
+    if not isinstance(repo, str) or not NAME.fullmatch(repo) or repo not in host.config["repositories"]:
+        raise ControlError("invalid stored profile repository")
     root = Path(host.config["repositories"][repo]["path"]).resolve()
-    if not workspace or not Path(workspace).resolve().is_relative_to(root):
+    if (not workspace or not Path(workspace).is_absolute() or not Path(workspace).is_dir()
+            or not Path(workspace).resolve().is_relative_to(root)):
         raise ControlError("selected workspace is outside the profile's repository")
     read = host.authorize("settings.get", harness, profile, repo)
     if read["verdict"]["effect"] != "allow":
@@ -333,15 +411,136 @@ def launch_settings(harness: str, profile: str, workspace: str) -> tuple[list[st
     host.unchanged()
     if host.state()[1] != identity:
         raise ControlError("launch profile changed while authorizing")
-    return argv, {"profile": profile, "repo": repo, "state_digest": identity,
-                  "binding": host.binding, "decisions": decisions,
+    profile_binding = {"harness": harness, "profile": profile, "repo": repo,
+                       "settings": dict(row["settings"])}
+    return argv, {"harness": harness, "profile": profile, "repo": repo, "state_digest": identity,
+                  "workspace": str(Path(workspace).resolve()), "route": "cli",
+                  "profile_digest": _digest(profile_binding), "argv_digest": _digest(argv),
+                  "requested_settings": dict(row["settings"]),
+                  "binding": host.binding, "read_decision": read, "decisions": decisions,
                   "enforcement_scope": "selected launch settings; child tool calls require native enforcement"}
+
+
+def recheck_launch(receipt: dict, *, harness: str, workspace: str, argv: list[str]) -> dict:
+    """Reauthorize the same product/profile immediately before native dispatch."""
+    if receipt.get("harness") != harness or receipt.get("workspace") != str(Path(workspace).resolve()):
+        raise ControlError("launch does not match the selected product/profile workspace")
+    fresh_argv, fresh = launch_settings(harness, receipt["profile"], workspace)
+    for key in ("harness", "profile", "repo", "workspace", "route", "profile_digest", "argv_digest", "state_digest", "binding"):
+        if fresh[key] != receipt.get(key):
+            raise ControlError("selected launch profile or host changed before dispatch")
+    if argv != fresh_argv:
+        raise ControlError("native launch arguments differ from the authorized product profile")
+    fresh["rechecked_before_dispatch"] = True
+    return fresh
+
+
+def _workspace_repo(host, workspace: str) -> tuple[str, str]:
+    if not workspace or not Path(workspace).is_absolute() or not Path(workspace).is_dir():
+        raise ControlError("governed handoff requires an existing absolute workspace")
+    selected = Path(workspace).resolve()
+    matches = [name for name, row in host.config["repositories"].items()
+               if selected.is_relative_to(Path(row["path"]).resolve())]
+    if len(matches) != 1:
+        raise ControlError("workspace must match exactly one host-owned repository identity")
+    return matches[0], str(selected)
+
+
+def project(harness: str, workspace: str | None = None) -> dict:
+    host = Host()
+    repo = _workspace_repo(host, workspace)[0] if workspace is not None else None
+    decision = host.authorize_surface(harness, "project", repo)
+    host.unchanged()
+    return decision
+
+
+def access_gate(harness: str, workspace: str, *, action: str = "launch",
+                profile: str | None = None, session_id: str | None = None,
+                controls: dict | None = None) -> dict:
+    """Bind a governed action to one trusted access context and selected workspace."""
+    host = Host()
+    repo, selected = _workspace_repo(host, workspace)
+    projection = host.authorize_surface(harness, "project", repo, profile, session_id, controls)
+    if projection["verdict"]["effect"] != "allow":
+        raise ControlError("not available in this session")
+    effect = host.authorize_surface(harness, action, repo, profile, session_id, controls)
+    if effect["verdict"]["effect"] != "allow":
+        raise ControlError("ABAC denies " + action + ": " + json.dumps(effect["verdict"]))
+    host.unchanged()
+    return {"schema": "harness.access_gate.v1", "harness": harness, "repo": repo,
+            "workspace": str(selected), "action": action, "settings_profile": profile,
+            "session_id": session_id, "access_context": host.config.get("access_context"),
+            "requested_controls": dict(controls or {}),
+            "binding": host.binding, "projection": projection, "effect": effect}
+
+
+def recheck_access(receipt: dict, *, harness: str, workspace: str, action: str,
+                   profile: str | None = None, session_id: str | None = None,
+                   controls: dict | None = None) -> dict:
+    fresh = access_gate(harness, workspace, action=action, profile=profile, session_id=session_id, controls=controls)
+    for key in ("harness", "repo", "workspace", "action", "settings_profile", "session_id", "access_context", "binding", "requested_controls"):
+        if fresh[key] != receipt.get(key):
+            raise ControlError("access profile or governed action changed before dispatch")
+    fresh["rechecked_before_dispatch"] = True
+    return fresh
+
+
+def authorize_launch_plan(plan) -> dict | None:
+    """Authorize the resolved effect; never reconstruct it from receipt claims."""
+    from mcp_bridge.launch_plan import LaunchPlan
+    if not isinstance(plan, LaunchPlan):
+        raise ControlError("a resolved LaunchPlan is required")
+    plan.verify()
+    if not plan.governed:
+        if CONFIG_ENV in os.environ:
+            raise ControlError("portable launch plan cannot bypass a configured governance host")
+        return None
+    host = Host()
+    if host.binding != json.loads(plan.binding_json) or host.config.get("access_context") != json.loads(plan.context_json):
+        raise ControlError("launch access context or host changed; resolve a new plan")
+    repo, workspace = _workspace_repo(host, plan.workspace)
+    settings = None
+    if plan.settings_control is not None:
+        settings = recheck_launch(plan.settings_control, harness=plan.harness, workspace=workspace,
+                                  argv=list(plan.profile_argv))
+    profile = (settings or {}).get("profile")
+    projection = host.authorize_surface(plan.harness, "project", repo, profile,
+        controls=plan.requested, resolved=plan.policy_labels())
+    if projection["verdict"]["effect"] != "allow":
+        raise ControlError("not available in this session")
+    effect = host.authorize_surface(plan.harness, "launch", repo, profile,
+        controls=plan.requested, resolved=plan.policy_labels())
+    if effect["verdict"]["effect"] != "allow":
+        raise ControlError("ABAC denies launch: " + json.dumps(effect["verdict"]))
+    host.unchanged()
+    return {"schema": "harness.launch_authorization.v1", "launch_plan_digest": plan.plan_digest,
+            "harness": plan.harness, "repo": repo, "workspace": workspace,
+            "action": "launch", "settings_profile": profile,
+            "access_context": json.loads(plan.context_json), "requested_controls": plan.requested,
+            "resolved_controls": plan.native_settings, "execution_adapter": plan.adapter,
+            "binding": host.binding, "projection": projection, "effect": effect,
+            "settings_control": settings}
+
+
+def recheck_launch_plan(plan, authorization: dict | None) -> dict | None:
+    if plan.governed:
+        if not isinstance(authorization, dict) or authorization.get("launch_plan_digest") != plan.plan_digest:
+            raise ControlError("authorization does not match the resolved launch plan")
+    elif authorization is not None:
+        raise ControlError("portable plan cannot consume a governed authorization")
+    fresh = authorize_launch_plan(plan)
+    if fresh is not None:
+        fresh["rechecked_before_dispatch"] = True
+    return fresh
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
     sub.add_parser("describe")
+    inventory = sub.add_parser("profiles", help="list readable profiles for one product adapter and repository")
+    inventory.add_argument("--harness", required=True)
+    inventory.add_argument("--repo", required=True)
     review = sub.add_parser("resolve")
     review.add_argument("--request", required=True, help="bounded settings ambiguity JSON file")
     recovery = sub.add_parser("recover")
@@ -358,6 +557,8 @@ def main():
     try:
         if args.command == "describe":
             result = describe()
+        elif args.command == "profiles":
+            result = profiles(args.harness, args.repo)
         elif args.command == "resolve":
             from mcp_bridge.ambiguity import resolve
             result = resolve(_object(_bytes(Path(args.request))))

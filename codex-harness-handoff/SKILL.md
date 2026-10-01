@@ -19,6 +19,21 @@ Do not inspect or attach to existing Codex sessions. Do not use `codex agents`, 
 
 Contract source: https://developers.openai.com/codex/sdk
 
+## Model and settings preflight
+
+Before dispatch with a selected model or reasoning effort, read the bundled
+[model and settings guide](references/model-and-settings.md). It includes the
+native flag recipe, a read-only preflight helper, pointable capability evidence,
+and the launch receipt requirements. The bundled [settings catalog](settings.json)
+is CLI syntax, not a universal model capability list. Preserve exact operator
+choices; inherit native defaults when no override was requested.
+
+The guide works when this folder is copied by itself. It does not depend on an
+installed OpenAI Docs skill, a particular user's home directory, or this repo's
+ABAC host configuration. Consult current official model documentation only
+when current capability evidence is missing or the task asks for model choice,
+pricing, limits, or migration. A docs lookup never authorizes changing the target.
+
 ## Fresh SDK route
 
 Use the authorized TypeScript SDK for a new thread only after verifying its

@@ -1,9 +1,16 @@
 # Harness control and ABAC
 
-Status: initial implementation, 26 September 2026. Saved launch profiles for
-Codex, Muse and Claude are implemented in this checkout. Native approval-hook
+Status: access-profile governance added 30 September 2026. ABAC governs bridge
+projection, fresh launch, continuation, review, and saved settings. Saved launch
+settings for Codex, Muse and Claude are implemented in this checkout. Native approval-hook
 integration, native global settings and running-session settings are not implemented.
 No host configuration or policy is installed by this change.
+
+Start with [access profiles, products, and harness settings](access-profiles.md)
+for the product/access boundary, native control map, and governance coverage.
+An access profile is separate from a saved launch-settings profile.
+Fresh execution uses [resolved launch plans](launch-plans.md), including the
+policy labels, executable pins and SDK boundary described there.
 
 ## Ownership
 
@@ -25,17 +32,30 @@ From this checkout:
 
 ```sh
 python3 scripts/harness-control describe
+python3 scripts/harness-control profiles --harness codex --repo work
 python3 scripts/harness-control get --harness codex --profile build --repo work
 python3 scripts/harness-control plan --changes changes.json
 python3 scripts/harness-control apply --changes changes.json --expected-digest DIGEST_FROM_PLAN
 ```
 
-The MCP bridge exposes the same operations as `settings_describe`, `settings_get`,
+The MCP bridge exposes the same operations as `settings_describe`, `settings_profiles`, `settings_get`,
 `settings_plan` and `settings_apply`. `handoff_fresh(..., settings_profile="build")`
 uses the saved profile through the existing CLI contract and separately evaluates
 permission to use each setting for that launch. Profile use requires an explicitly
 selected workspace. It cannot be combined with the existing model or approval
 override arguments. Codex profiles must contain both `sandbox` and `approval`.
+
+Codex model/effort pairs also undergo the portable
+[capability preflight](../codex-harness-handoff/references/model-and-settings.md)
+before child execution. A profile with `reasoning_effort` must name `model`.
+MCP `handoff_fresh` accepts `model_capabilities` to point at fresh native model
+metadata, including when using a saved profile. Outside profiles, the Codex CLI
+route also accepts an explicit `reasoning_effort` with `model`. Profile receipts
+retain `requested_settings`; CLI model receipts distinguish requested argv,
+capability validation, and native runtime observations. Existing profile
+`effective_settings_verified` remains false for the entire profile because
+sandbox/approval runtime enforcement is not observed. Capability compatibility
+and ABAC permission are separate checks; capability evidence grants no authority.
 
 `plan` evaluates up to 64 explicitly named profiles, returning before/after values,
 policy verdicts and a digest. `apply` reevaluates policy and checks that digest
@@ -80,10 +100,11 @@ The host sets `HARNESS_CONTROL_CONFIG` to an absolute, protected JSON file:
 
 ```json
 {
-  "schema":"harness.control_host.v1",
+  "schema":"harness.control_host.v2",
   "abac_binary":"/absolute/path/abac",
   "policy_files":["/absolute/path/control-policy.json"],
   "subject":{"principal_ref":"authorized-session-principal","altitude":"run"},
+  "access_context":{"product_ref":"PRODUCT_REF","permission_context":"ACCESS_PROFILE_REF","realm":"DEPLOYMENT_REF"},
   "repositories":{
     "work":{"path":"/absolute/path/canonical-work-repo","status":"active"}
   },
@@ -98,10 +119,18 @@ are optional. The host configuration, evaluator, policy and adapter code must be
 outside worker write access. The profile store should be writable only through
 the trusted host.
 
-Requests use resource kind `data`, owner `app`, ref
+Requests use resource kind `data`, owner `harness-handoff`, ref
 `harness-settings/<harness>/<profile>`; labels `harness`, `repo_id`, canonical
 `repo_path`, and `repo_status`. Per-setting decisions also include `setting` and
 `value`, where value is JSON encoded (a string retains its JSON quotes).
+
+All requests also carry trusted `product_ref`, `permission_context`, and `realm`
+from the required v2 host `access_context`. Governance actions use
+`a2a.agent / harness-handoff/<harness>`, owner `harness-handoff`, with
+`handoff.project` (read), `handoff.launch` (spawn), and `handoff.continue`
+(dispatch). History uses `data / harness-session-review`, `handoff.review`
+(read). The environment altitude is `run`. The host supplies these attributes;
+the model cannot select an access profile through launch arguments.
 
 | Operation | Verb | Evaluated before |
 | --- | --- | --- |
@@ -339,9 +368,13 @@ skill's session and transport restrictions.
 
 ## Present enforcement limits
 
-This is an opt-in profile path. Calls without `settings_profile`, continuation,
-session history, direct CLI use and arbitrary shell/filesystem operations are
-not gated by this module. Do not present it as universal repo access control.
+ABAC governance is engaged when `HARNESS_CONTROL_CONFIG` is selected. It then
+gates bridge projection, fresh launch (including omitted `settings_profile`),
+continuation, history, and settings. Missing or malformed v2 host configuration
+fails closed. Without a selected config, portable native handoff retains its
+existing operator-authorized behavior and makes no ABAC enforcement claim.
+Direct CLI use, other local clients and arbitrary shell/filesystem operations
+remain outside this module. Do not present it as universal repo access control.
 No current full-access worker was retroactively sandboxed by these changes.
 
 An unrestricted same-user worker can rewrite configuration or invoke a native

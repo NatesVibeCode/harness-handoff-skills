@@ -13,8 +13,14 @@ from pathlib import Path
 
 import pytest
 
-from mcp_bridge import cli_executor, contracts, sdk_executors
+from mcp_bridge import cli_executor, contracts, sdk_executors, launch_plan
+from plan_helpers import execute_cli
 from mcp_bridge.server import _choose_route, _cli_continue, handoff_continue, handoff_fresh, session_history
+
+
+@pytest.fixture(autouse=True)
+def hermetic_cli_resolution(monkeypatch):
+    monkeypatch.setattr(cli_executor.shutil, "which", lambda _: sys.executable)
 
 
 def _entry(name: str) -> dict:
@@ -101,16 +107,16 @@ class _Completed:
 def test_missing_binary_is_a_clean_error(monkeypatch):
     monkeypatch.setattr(cli_executor.shutil, "which", lambda _: None)
     with pytest.raises(cli_executor.ExecutionError, match="not installed"):
-        cli_executor.run_cli(_entry("amp"), prompt="hi")
+        execute_cli(_entry("amp"), prompt="hi")
 
 
 def test_receipt_redacts_secrets_and_extracts_session_id(monkeypatch):
-    monkeypatch.setattr(cli_executor.shutil, "which", lambda _: "/bin/amp")
+    monkeypatch.setattr(cli_executor.shutil, "which", lambda _: sys.executable)
     stdout = '{"session_id": "ses-123", "answer": "ok"} sk-SECRETSECRETSECRET'
     monkeypatch.setattr(
         cli_executor.subprocess, "run", lambda *a, **k: _Completed(stdout=stdout)
     )
-    receipt = cli_executor.run_cli(_entry("amp"), prompt="hi")
+    receipt = execute_cli(_entry("amp"), prompt="hi")
     assert receipt["session_id"] == "ses-123"
     assert "sk-SECRETSECRETSECRET" not in receipt["output"]
     assert "[redacted-credential]" in receipt["output"]
@@ -118,16 +124,16 @@ def test_receipt_redacts_secrets_and_extracts_session_id(monkeypatch):
 
 
 def test_prompt_text_is_not_echoed_into_the_logged_argv(monkeypatch):
-    monkeypatch.setattr(cli_executor.shutil, "which", lambda _: "/bin/amp")
+    monkeypatch.setattr(cli_executor.shutil, "which", lambda _: sys.executable)
     monkeypatch.setattr(
         cli_executor.subprocess, "run", lambda *a, **k: _Completed(stdout="{}")
     )
-    receipt = cli_executor.run_cli(_entry("amp"), prompt="super secret task wording")
+    receipt = execute_cli(_entry("amp"), prompt="super secret task wording")
     assert "super secret task wording" not in " ".join(receipt["argv"])
 
 
 def test_cli_prompt_file_is_removed_after_execution(monkeypatch):
-    monkeypatch.setattr(cli_executor.shutil, "which", lambda _: "/bin/grok")
+    monkeypatch.setattr(cli_executor.shutil, "which", lambda _: sys.executable)
     staged = {}
 
     def fake_run(argv, **kwargs):
@@ -136,12 +142,12 @@ def test_cli_prompt_file_is_removed_after_execution(monkeypatch):
         return _Completed(stdout="{}")
 
     monkeypatch.setattr(cli_executor.subprocess, "run", fake_run)
-    cli_executor.run_cli(_entry("grok"), prompt="sensitive task", workspace="/w")
+    execute_cli(_entry("grok"), prompt="sensitive task", workspace="/w")
     assert not staged["path"].exists()
 
 
 def test_cli_prompt_file_is_removed_after_launch_failure(monkeypatch):
-    monkeypatch.setattr(cli_executor.shutil, "which", lambda _: "/bin/grok")
+    monkeypatch.setattr(cli_executor.shutil, "which", lambda _: sys.executable)
     staged = {}
 
     def fake_run(argv, **kwargs):
@@ -150,12 +156,12 @@ def test_cli_prompt_file_is_removed_after_launch_failure(monkeypatch):
 
     monkeypatch.setattr(cli_executor.subprocess, "run", fake_run)
     with pytest.raises(cli_executor.ExecutionError, match="failed to launch"):
-        cli_executor.run_cli(_entry("grok"), prompt="sensitive task", workspace="/w")
+        execute_cli(_entry("grok"), prompt="sensitive task", workspace="/w")
     assert not staged["path"].exists()
 
 
 def test_codex_final_message_is_in_receipt_before_cleanup(monkeypatch):
-    monkeypatch.setattr(cli_executor.shutil, "which", lambda _: "/bin/codex")
+    monkeypatch.setattr(cli_executor.shutil, "which", lambda _: sys.executable)
     staged = {}
 
     def fake_run(argv, **kwargs):
@@ -164,7 +170,7 @@ def test_codex_final_message_is_in_receipt_before_cleanup(monkeypatch):
         return _Completed(stdout='{"session_id":"thr-1"}')
 
     monkeypatch.setattr(cli_executor.subprocess, "run", fake_run)
-    receipt = cli_executor.run_cli(_entry("codex"), prompt="task", workspace="/w")
+    receipt = execute_cli(_entry("codex"), prompt="task", workspace="/w")
     assert receipt["final_message"] == "completed outcome"
     assert not staged["path"].exists()
 
@@ -260,7 +266,7 @@ def test_openhands_explicit_unattended_approval_reaches_cli(monkeypatch):
     monkeypatch.setenv(server.UNATTENDED_ALLOWLIST_ENV, "openhands")
 
     def fake_run(entry, **kwargs):
-        called["harness"] = entry["skill"]
+        called["harness"] = entry.harness + "-harness-handoff"
         return {"route": "cli", "exit_code": 0}
 
     monkeypatch.setattr(server.cli_executor, "run_cli", fake_run)
@@ -320,25 +326,25 @@ def test_codex_approval_modes_are_explicit(monkeypatch):
     monkeypatch.setenv(server.UNATTENDED_ALLOWLIST_ENV, "codex")
 
     def fake_run(entry, **kwargs):
-        seen.update(kwargs)
+        seen["argv"] = list(entry.argv)
         return {"route": "cli", "exit_code": 0}
 
     monkeypatch.setattr(server.cli_executor, "run_cli", fake_run)
-    run(handoff_fresh("codex", "task", workspace="/w", approval="restricted", use="cli"))
-    assert seen["extra_argv"] == ["--sandbox", "read-only", "-c", 'approval_policy="on-request"']
-    run(handoff_fresh("codex", "task", workspace="/w", use="cli"))
-    assert seen["extra_argv"] == ["--dangerously-bypass-approvals-and-sandbox"]
-    run(handoff_fresh("codex", "task", workspace="/w", approval="unattended", use="cli"))
-    assert seen["extra_argv"] == ["--dangerously-bypass-approvals-and-sandbox"]
+    run(handoff_fresh("codex", "task", workspace=str(Path.cwd()), approval="restricted", use="cli"))
+    assert seen["argv"][1:5] == ["--sandbox", "read-only", "-c", 'approval_policy="on-request"']
+    run(handoff_fresh("codex", "task", workspace=str(Path.cwd()), use="cli"))
+    assert seen["argv"][1] == "--dangerously-bypass-approvals-and-sandbox"
+    run(handoff_fresh("codex", "task", workspace=str(Path.cwd()), approval="unattended", use="cli"))
+    assert seen["argv"][1] == "--dangerously-bypass-approvals-and-sandbox"
 
 
 def test_codex_selected_model_reaches_cli(monkeypatch):
     from mcp_bridge import server
 
     seen = {}
-    monkeypatch.setattr(server.cli_executor, "run_cli", lambda entry, **kwargs: seen.update(kwargs) or {"route": "cli"})
-    run(handoff_fresh("codex", "task", workspace="/w", model="selected-model", use="cli"))
-    assert seen["extra_argv"][-2:] == ["--model", "selected-model"]
+    monkeypatch.setattr(server.cli_executor, "run_cli", lambda plan, **kwargs: seen.update(argv=list(plan.argv)) or {"route": "cli"})
+    run(handoff_fresh("codex", "task", workspace=str(Path.cwd()), model="selected-model", use="cli"))
+    assert seen["argv"][seen["argv"].index("--model") + 1] == "selected-model"
 
 
 def test_unbindable_workspace_or_model_is_refused(monkeypatch):
@@ -371,9 +377,9 @@ def test_codex_dispatch_does_not_depend_on_unattended_allowlist(monkeypatch):
     from mcp_bridge import server
 
     monkeypatch.delenv(server.UNATTENDED_ALLOWLIST_ENV, raising=False)
-    monkeypatch.setattr(server.cli_executor, "run_cli", lambda entry, **kwargs: {"route": "cli", "extra_argv": kwargs["extra_argv"]})
-    result = run(handoff_fresh("codex", "task", workspace="/w", use="cli"))
-    assert result["extra_argv"] == ["--dangerously-bypass-approvals-and-sandbox"]
+    monkeypatch.setattr(server.cli_executor, "run_cli", lambda plan, **kwargs: {"route": "cli", "argv": list(plan.argv)})
+    result = run(handoff_fresh("codex", "task", workspace=str(Path.cwd()), use="cli"))
+    assert result["argv"][1] == "--dangerously-bypass-approvals-and-sandbox"
 
 
 def test_unknown_approval_is_refused_before_launch(monkeypatch):

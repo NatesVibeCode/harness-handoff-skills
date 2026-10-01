@@ -1,5 +1,71 @@
 # Evidence and limits
 
+## Product access profiles and bridge governance — 2026-09-30
+
+Added a required product/access/realm binding in `harness.control_host.v2`,
+separate from saved harness launch settings and native named configuration.
+ABAC's existing native Request evaluator governs bridge projection, launch,
+continuation, review, and settings. Requests use the existing handoff resource
+vocabulary; the host does not implement a second policy engine or manufacture
+product permissions. The inspected Fact Lens policy's AO-FL-A context remains
+an FL/OE authorization context, not a generic harness grant.
+
+The [access-profile map](docs/access-profiles.md) lists every bridge door,
+current native settings adapters, migration fields, and enforcement limits.
+Added per-harness/repository readable profile inventory, optional Codex native
+profile selection, exact settings/argument/context receipt bindings, and policy
+rechecks before CLI/SDK effects. Direct model overrides and omitted saved
+settings still pass the access gate when a host configuration is selected.
+Projection denies hide unavailable harnesses. Configured governance requires an
+absolute selected workspace with one unambiguous trusted repository mapping.
+
+Validation used the existing local ABAC source through `ABAC_SOURCE`, building
+the evaluator into temporary test directories. `python3 -m pytest` with that
+source selected reported `203 passed in 6.97s`, with no skips. Real evaluator
+checks cover exact model/permission-context/realm isolation, absent host binding,
+and the existing Fact Lens policy refusing Codex projection even with the FL A
+principal, role and AO-FL-A context. Representative local child programs verify
+unchanged native argv and receipts for Codex/Muse/Claude; SDK calls and late
+denials are simulated. These child checks are not native harness/provider
+acceptance tests. No model provider, live access profile, native global config,
+FL policy or external service was changed. `go test ./...` in the ABAC dependency
+also passed.
+
+Generated-tree checking reports all fourteen trees and the review skill match
+their sources; only the Codex generated tree moved. Package manifest paths
+exist and include the public-facing access-profile guide. Whitespace checking
+is clean. Old host configuration schemas deliberately refuse; no live host
+configuration was migrated or activated.
+
+## Portable Codex model/settings preflight — 2026-09-30
+
+The Codex skill now bundles its syntax catalog and standalone read-only helper,
+with a relative [model/settings entrypoint](codex-harness-handoff/references/model-and-settings.md).
+Capability evidence can be selected with `--capabilities` or MCP
+`model_capabilities`. Exact effort pairs require a named model and fresh native
+model-specific support evidence. The bridge validates rendered argv before
+launch and distinguishes requested settings from native observations, including
+the owned fresh thread journal when available. Profile authorization still uses
+the existing ABAC path; capability evidence itself grants no permission.
+
+Observed locally: installed `codex-cli 0.159.2` help exposes `--model` and `-c`;
+the portable helper validated `gpt-6.1-sol` with `high` against current local
+native metadata and rejected that model with `none`, exiting 2. No worker,
+provider inference call, profile update, or external write was made. Current
+official Codex configuration and CLI reference pages were opened to check the
+public reference pointers. Private metadata and identity fields were not copied
+into the skill package.
+
+`python3 scripts/build_skills.py --check` reports
+`OK 14 handoff skill trees + 1 review skill match skills-src/`.
+`python3 -m pytest` reports `165 passed, 4 skipped in 3.25s`.
+The new checks cover copied-skill operation outside the checkout, exact evidence
+binding, unsupported/missing/stale/future/duplicate/malformed evidence, refusal
+before launch, requested-vs-observed receipts, returned-thread journal identity,
+and generated helper/catalog drift. Child launches and native journal metadata
+in these tests are simulated; a new live worker's effective configuration was
+not exercised. `git diff --check` is clean. Only the Codex generated tree changed.
+
 ## Optional Jev recovery — 2026-09-26
 
 Added `resolve` and catch-all `recover` commands, asynchronous MCP wrappers,
@@ -136,3 +202,49 @@ The recovery compared the original authoring record, the Muse and Antigravity op
 Preserved lessons include respecting a redirect immediately, sending outcomes rather than imposing the sender's tool recipe, retaining existing authorization without broadening it, relaying new approval questions, preventing duplicate workers, separating session/process/worktree identity, and independently checking resulting artifacts.
 
 Not carried forward as current facts: universal PTY/tmux requirements, blanket print-mode permission approval, mandatory Git initialization, Claude having no native messaging, treating an agent browser as a JSON session index, fixed historical model/cost defaults, private coordination services, and speculative context-percentage thresholds. Product-specific project policy and unrelated hook/plugin tutorials are not portable handoff mechanics. Discovery paths and schemas remain version-sensitive, and bounded historical retrieval cannot certify that deleted or unindexed records have been recovered.
+
+
+## Resolved launch-plan boundary — 2026-09-30
+
+Fresh CLI and SDK launches resolve one immutable private plan before final ABAC
+approval. Execution consumes the captured adapter, executable, canonical
+workspace and native inputs. Public metadata uses `harness.launch_plan.v1`;
+ABAC receipts use `harness.launch_authorization.v1` and bind the plan digest.
+The internal raw CLI arguments/receipt execution interface was removed.
+
+Validation: `ABAC_SOURCE=... python3 -m pytest -o addopts='' -q` passed **221
+tests** using the real local ABAC evaluator. The 18 launch-plan cases cover a
+representative local child consuming approved argv/cwd, resolved model and route
+policy, immutable snapshots, changed-plan receipt rejection, rehashed mismatched
+model arguments, canonical workspace/executable aliases, changed executable
+bytes, policy changes, held model-evidence freshness, captured SDK dispatch and
+refusal of the former raw interface. Local children and SDK callback fixtures
+exercise the bridge boundary; no vendor inference, credentials or live sessions
+were used.
+
+`python3 scripts/build_skills.py --check` confirmed all fourteen generated
+handoff trees and the review tree match authored sources. This launch-plan
+change required no additional generated skill-tree edits. `git diff --check`
+passed. The package manifest includes the resolver and public launch-plan guide.
+
+SDK pins cover the Python runtime and bridge callable/options, not SDK-managed
+worker binaries or vendor configuration. File identity checks are pre-dispatch
+checks, not an atomic filesystem lock. Session-ID ownership, timeout descendant
+cleanup and per-profile revision isolation remain separate follow-ups. No live
+host configuration or policy was activated or changed.
+
+
+## Connected access product scope — 2026-09-30
+
+`docs/connected-access-scope.md` records the selected thin connection host plus
+standalone printed operation Process architecture. It defines the first-release
+boundary, proposed contracts, reuse map, permission freshness/recovery behavior,
+exclusions and real-use readiness gates. It is a proposal, not implemented or
+admitted access machinery. README and package manifest point to the scope.
+
+Documentation links and packaged-file inclusion checked successfully;
+`git diff --check` passed. `python3 scripts/build_skills.py --check` confirmed
+fourteen handoff trees and the review tree remain current. No generated skill
+files changed for this scope. The existing suite, using the real local ABAC
+source, passed **221 tests in 13.42s**. These checks do not qualify the proposed
+product, authenticate a connection or exercise any live system integration.

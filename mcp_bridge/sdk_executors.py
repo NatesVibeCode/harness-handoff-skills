@@ -48,6 +48,21 @@ def _receipt(harness: str, session_id: str | None, output: str) -> dict:
     return {"harness": harness, "route": "sdk", "session_id": session_id, "output": cli_executor.redact(output[-8000:])}
 
 
+async def run_plan(plan, *, authorization=None):
+    """Invoke only the SDK adapter and native inputs resolved in this plan."""
+    from mcp_bridge import control
+    from mcp_bridge.launch_plan import LaunchPlan
+    if not isinstance(plan, LaunchPlan) or plan.route != "sdk":
+        raise ValueError("a resolved SDK LaunchPlan is required")
+    verified = await asyncio.to_thread(control.recheck_launch_plan, plan, authorization)
+    receipt = await plan.sdk_callable(
+        plan.prompt, plan.sdk_workspace, plan.native_settings.get("model"), plan.requested["approval"])
+    receipt["launch_plan"] = plan.public()
+    if verified is not None:
+        receipt["access_control"] = verified
+    return receipt
+
+
 # --- claude ---------------------------------------------------------------
 
 

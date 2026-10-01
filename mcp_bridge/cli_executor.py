@@ -15,6 +15,7 @@ import shutil
 import subprocess
 import tempfile
 from pathlib import Path
+from mcp_bridge import model_settings, control
 
 SESSION_ID_KEYS = ("session_id", "sessionId", "conversation_id", "conversationId", "thread_id", "id")
 SECRET_PATTERN = re.compile(
@@ -109,49 +110,54 @@ def extract_session_id(stdout: str) -> str | None:
     return None
 
 
-def run_cli(entry: dict, *, prompt: str, workspace: str | None = None, model: str | None = None, timeout: int = 900, extra_argv: list[str] | None = None, extra_at: int = 0) -> dict:
-    """Run the pinned CLI fallback and return a normalized receipt."""
-    binary = entry["binary"]
-    if shutil.which(binary) is None:
-        raise ExecutionError(f"{binary} is not installed or not on PATH")
-    argv, stdin_text, temp_dir = build_argv(entry, prompt=prompt, workspace=workspace, model=model)
-    if extra_argv:
-        argv = [*argv[:extra_at], *extra_argv, *argv[extra_at:]]
+def run_cli(plan, *, authorization: dict | None = None, timeout: int = 900) -> dict:
+    """Consume the exact resolved plan. No route, PATH or argv resolution here."""
+    from mcp_bridge.launch_plan import LaunchPlan
+    if not isinstance(plan, LaunchPlan) or plan.route != "cli":
+        raise ExecutionError("a resolved CLI LaunchPlan is required")
     try:
         try:
+            verified = control.recheck_launch_plan(plan, authorization)
+        except (ValueError, OSError, KeyError, TypeError, subprocess.SubprocessError) as exc:
+            raise ExecutionError(redact(str(exc))) from exc
+        try:
             completed = subprocess.run(
-                [binary, *argv],
-                input=stdin_text,
-                capture_output=True,
-                text=True,
-                timeout=timeout,
-                cwd=workspace or None,
+                [plan.executable.path, *plan.argv], input=plan.stdin_text,
+                capture_output=True, text=True, timeout=timeout, cwd=plan.workspace,
             )
         except (OSError, subprocess.SubprocessError) as exc:
-            raise ExecutionError(f"{binary} failed to launch: {redact(str(exc))}") from exc
+            raise ExecutionError(f"{plan.executable.path} failed to launch: {redact(str(exc))}") from exc
         stdout = completed.stdout or ""
         final_message = None
-        if temp_dir is not None:
-            final_path = temp_dir / "final.md"
+        if plan.temp_dir is not None:
             try:
-                with final_path.open("rb") as final_stream:
-                    final_stream.seek(0, 2)
-                    final_stream.seek(max(0, final_stream.tell() - 32768))
-                    final_message = redact(final_stream.read().decode("utf-8", "replace")[-8000:])
+                with (Path(plan.temp_dir) / "final.md").open("rb") as stream:
+                    stream.seek(0, 2)
+                    stream.seek(max(0, stream.tell() - 32768))
+                    final_message = redact(stream.read().decode("utf-8", "replace")[-8000:])
             except FileNotFoundError:
                 pass
-        return {
-            "harness": entry["skill"],
-            "route": "cli",
-            "binary": binary,
-            "argv": [binary, *[("<prompt>" if a == prompt else a) for a in argv]],
-            "exit_code": completed.returncode,
-            "session_id": extract_session_id(stdout),
-            "output": redact(stdout[-8000:]),
-            "final_message": final_message,
-            "stderr": redact((completed.stderr or "")[-2000:]),
-            "approved": None,
+        receipt = {
+            "harness": plan.harness + "-harness-handoff", "route": "cli",
+            "binary": plan.executable.path,
+            "argv": [plan.executable.path, *[("<prompt>" if a == plan.prompt else a) for a in plan.argv]],
+            "exit_code": completed.returncode, "session_id": extract_session_id(stdout),
+            "output": redact(stdout[-8000:]), "final_message": final_message,
+            "stderr": redact((completed.stderr or "")[-2000:]), "approved": None,
+            "launch_plan": plan.public(),
         }
+        preflight = json.loads(plan.preflight_json)
+        if preflight is not None:
+            receipt["model_preflight"] = preflight
+            context = model_settings.owned_context(receipt["session_id"])
+            receipt["model_settings"] = model_settings.launch_receipt(list(plan.argv), context or stdout)
+            receipt["model_settings"]["observation_source"] = "owned_native_journal" if context else "cli_json_stream"
+            receipt["effective_settings_verified"] = receipt["model_settings"]["effective_settings_verified"]
+        if verified is not None:
+            receipt["access_control"] = verified
+            if verified["settings_control"] is not None:
+                receipt["settings_control"] = verified["settings_control"]
+                receipt["effective_settings_verified"] = False
+        return receipt
     finally:
-        if temp_dir is not None:
-            shutil.rmtree(temp_dir)
+        plan.cleanup()

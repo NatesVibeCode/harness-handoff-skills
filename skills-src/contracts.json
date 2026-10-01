@@ -276,7 +276,11 @@
       "interactivity": "non_interactive",
       "credential_channel": "native-session",
       "credential_auth": "native-session",
-      "references": [],
+      "references": ["references/model-and-settings.md"],
+      "bundled_files": {
+        "model_settings.py": "mcp_bridge/model_settings.py",
+        "settings.json": "skills-src/settings.json"
+      },
       "adapter": "harness_fleet/providers/codex.py"
     },
     "copilot": {

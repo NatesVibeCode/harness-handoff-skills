@@ -13,6 +13,12 @@ skills-src/harnesses/<h>.md        the authored remainder of that skill's body
 <harness>-harness-handoff/SKILL.md      GENERATED — never hand-edit
 <harness>-harness-handoff/contract.json GENERATED — never hand-edit
 <harness>-harness-handoff/references/*  authored prose, verified against the contract
+mcp_bridge/model_settings.py            authored portable Codex preflight helper
+skills-src/settings.json                authored launch syntax catalog
+        │ bundled_files in contracts.json + scripts/build_skills.py
+        ▼
+codex-harness-handoff/model_settings.py  GENERATED — never hand-edit
+codex-harness-handoff/settings.json      GENERATED — never hand-edit
 skills-src/session-review.md             authored review workflow
 scripts/session_review.py                authored local review helper
 harness-session-review/*                 GENERATED — never hand-edit
@@ -20,7 +26,8 @@ harness-session-review/*                 GENERATED — never hand-edit
 
 ## The one rule
 
-**Edit `skills-src/` or the authored `scripts/session_review.py`, then regenerate.
+**Edit `skills-src/`, authored references, `mcp_bridge/`, or the authored
+`scripts/session_review.py`, then regenerate.
 Never hand-edit a generated tree.**
 
 Commit `9322d55` pasted the same `## Direct lane spawning` block into every file

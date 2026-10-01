@@ -358,6 +358,8 @@ def render_contract(name: str, entry: dict, source_document: dict) -> str:
     }
     if "adapter" in entry:
         payload["adapter"] = entry["adapter"]
+    if "bundled_files" in entry:
+        payload["bundled_files"] = entry["bundled_files"]
     return json.dumps(payload, indent=2) + "\n"
 
 
@@ -438,9 +440,27 @@ def main() -> int:
     problems: list[str] = []
     stale: list[str] = []
     written = 0
+    bundles = {}
+    for name, entry in harnesses.items():
+        bundles[name] = []
+        mapping = entry.get("bundled_files", {})
+        if not isinstance(mapping, dict):
+            problems.append(f"{name}: bundled_files must be an object")
+            continue
+        for filename, source in mapping.items():
+            if (not isinstance(filename, str) or Path(filename).name != filename
+                    or filename in {"SKILL.md", "contract.json"} or not isinstance(source, str)):
+                problems.append(f"{name}: invalid bundled file mapping")
+                continue
+            source_path = repo / source
+            try:
+                source_path.resolve().relative_to(repo)
+                bundles[name].append((filename, source_path.read_text(encoding="utf-8")))
+            except (ValueError, OSError) as exc:
+                problems.append(f"{name}: cannot read bundled source {source}: {exc}")
 
-    for entry in harnesses.values():
-        for filename in ("SKILL.md", "contract.json"):
+    for name, entry in harnesses.items():
+        for filename in ("SKILL.md", "contract.json", *(row[0] for row in bundles[name])):
             reason = unsafe_output_reason(repo, repo / entry["skill"] / filename)
             if reason:
                 problems.append(reason)
@@ -482,7 +502,7 @@ def main() -> int:
         contract_text = render_contract(name, entry, document)
         problems.extend(check_references(skill_dir, entry, name))
 
-        for filename, expected in (("SKILL.md", skill_text), ("contract.json", contract_text)):
+        for filename, expected in (("SKILL.md", skill_text), ("contract.json", contract_text), *bundles[name]):
             target = skill_dir / filename
             current = target.read_text(encoding="utf-8") if target.is_file() else None
             if current == expected:

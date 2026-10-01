@@ -218,7 +218,7 @@ def test_profile_preparation_does_not_block_event_loop(monkeypatch):
     def prepare(*args):
         entered.set()
         release.wait(2)
-        return [], {"profile": "build"}
+        return [], {"profile": "build", "requested_settings": {}}
     monkeypatch.setattr(control, "launch_settings", prepare)
     monkeypatch.setattr(server.cli_executor, "run_cli", lambda *a, **kw: {})
     async def scenario():
@@ -249,7 +249,8 @@ def real_host(tmp_path, monkeypatch):
     policy = tmp_path / "policy.json"
     policy.write_text(json.dumps({"schema": "abac.policyfile.v1", "policies": [
         {"id": "temp-allow", "effect": "allow", "priority": 1, "scope": {"resource.labels.repo_id": "work"}}]}))
-    config = {"schema": "harness.control_host.v1", "abac_binary": str(binary), "policy_files": [str(policy)],
+    config = {"schema": "harness.control_host.v2", "abac_binary": str(binary), "policy_files": [str(policy)],
+              "access_context": {"product_ref": "test-product", "permission_context": "test-access", "realm": "test-realm"},
               "subject": {"principal_ref": "offline-integration", "altitude": "run"},
               "repositories": {"work": {"path": str(repo), "status": "active"},
                                "unrelated": {"path": str(tmp_path / "missing"), "status": "superseded"}},
@@ -295,3 +296,56 @@ def test_canonical_root_drift_invalidates_binding(real_host, tmp_path):
     alias.symlink_to(other, target_is_directory=True)
     with pytest.raises(control.ControlError, match="changed"):
         host.unchanged()
+
+
+def test_real_abac_access_context_and_direct_override_isolation(real_host, monkeypatch):
+    config_path, cfg = real_host
+    context = dict(cfg["access_context"])
+    common = {"resource.ref": "harness-handoff/codex", "resource.owner": "harness-handoff",
+              "subject.principal": "offline-integration",
+              "resource.labels.product_ref": context["product_ref"],
+              "resource.labels.permission_context": context["permission_context"]}
+    policy = {"schema": "abac.policyfile.v1", "realm": context["realm"], "policies": [
+        {"id": "project", "effect": "allow", "priority": 1,
+         "scope": dict(common, **{"action.operation": "handoff.project"})},
+        {"id": "launch-exact-model", "effect": "allow", "priority": 1,
+         "scope": dict(common, **{"action.operation": "handoff.launch", "resource.labels.requested_model": '"selected-model"'})}]}
+    Path(cfg["policy_files"][0]).write_text(json.dumps(policy))
+    workspace = cfg["repositories"]["work"]["path"]
+    receipt = control.access_gate("codex", workspace, controls={"model": "selected-model"})
+    assert receipt["effect"]["verdict"]["effect"] == "allow"
+    assert receipt["effect"]["verdict"]["policy_digest"]
+    assert control.recheck_access(receipt, harness="codex", workspace=workspace,
+        action="launch", controls={"model": "selected-model"})["rechecked_before_dispatch"]
+    monkeypatch.setattr(server.cli_executor, "run_cli", lambda *a, **k: pytest.fail("governance denied an override but launched it"))
+    result = asyncio.run(server.handoff_fresh("codex", "task", workspace=workspace, use="cli", model="other-model"))
+    assert result["refused"] and "ABAC denies launch" in result["reason"]
+    cfg["access_context"]["permission_context"] = "different-access"
+    config_path.write_text(json.dumps(cfg))
+    with pytest.raises(control.ControlError, match="not available"):
+        control.access_gate("codex", workspace, controls={"model": "selected-model"})
+    cfg["access_context"]["permission_context"] = context["permission_context"]
+    cfg["access_context"]["realm"] = "different-realm"
+    config_path.write_text(json.dumps(cfg))
+    with pytest.raises(control.ControlError, match="not available"):
+        control.access_gate("codex", workspace, controls={"model": "selected-model"})
+
+
+def test_real_governance_refuses_missing_product_access_binding(real_host):
+    path, cfg = real_host
+    del cfg["access_context"]
+    path.write_text(json.dumps(cfg))
+    with pytest.raises(control.ControlError, match="missing"):
+        control.Host()
+
+
+def test_existing_fl_profile_does_not_automatically_grant_harness_access(real_host):
+    config_path, cfg = real_host
+    source = Path(os.environ["ABAC_SOURCE"])
+    cfg["policy_files"] = [str(source / "policies/factlens-run.policyfile.json")]
+    cfg["subject"] = {"principal_ref": "factlens-aoa-a", "altitude": "run", "roles": ["filler"]}
+    cfg["access_context"] = {"product_ref": "FL", "permission_context": "AO-FL-A", "realm": "factlens"}
+    config_path.write_text(json.dumps(cfg))
+    assert control.project("codex")["verdict"]["effect"] == "deny"
+    with pytest.raises(control.ControlError, match="not available"):
+        control.access_gate("codex", cfg["repositories"]["work"]["path"])

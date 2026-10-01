@@ -74,7 +74,9 @@
   "interactivity": "non_interactive",
   "credential_channel": "native-session",
   "credential_auth": "native-session",
-  "references": [],
+  "references": [
+    "references/model-and-settings.md"
+  ],
   "advisory_vocabulary": {
     "status": [
       "started",
@@ -89,5 +91,9 @@
     "semantics": "self-reported presence, never proof of completion; carries no control state and never blocks the lane",
     "implemented_by": "work-coordination"
   },
-  "adapter": "harness_fleet/providers/codex.py"
+  "adapter": "harness_fleet/providers/codex.py",
+  "bundled_files": {
+    "model_settings.py": "mcp_bridge/model_settings.py",
+    "settings.json": "skills-src/settings.json"
+  }
 }
