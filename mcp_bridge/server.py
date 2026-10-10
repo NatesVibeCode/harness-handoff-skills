@@ -17,12 +17,14 @@ substitutes another product when the selected one is unavailable.
 from __future__ import annotations
 
 import asyncio
+import hashlib
 import json
 import os
 import re
 import shutil
 import subprocess
 import tempfile
+from datetime import datetime, timezone
 from pathlib import Path
 
 from mcp.server.fastmcp import FastMCP
@@ -36,6 +38,8 @@ CODEX_AUTONOMOUS_ARGV = ["--dangerously-bypass-approvals-and-sandbox"]
 EXACT_SESSION_ID = re.compile(r"[A-Za-z0-9][A-Za-z0-9._:-]{0,255}\Z")
 SESSION_SELECTORS = {"latest", "last", "newest", "continue"}
 UNATTENDED_ALLOWLIST_ENV = "HARNESS_HANDOFF_UNATTENDED_HARNESSES"
+MDVIEW_SHA256 = re.compile(r"[a-f0-9]{64}\Z")
+MDVIEW_STABLE_ID = re.compile(r"[A-Za-z0-9._-]+\Z")
 
 
 def _refuse(message: str) -> dict:
@@ -44,6 +48,91 @@ def _refuse(message: str) -> dict:
 
 def _is_exact_session_id(value: str) -> bool:
     return isinstance(value, str) and bool(EXACT_SESSION_ID.fullmatch(value)) and value.lower() not in SESSION_SELECTORS
+
+
+def _is_within(path: Path, root: Path) -> bool:
+    try:
+        path.relative_to(root)
+        return True
+    except ValueError:
+        return False
+
+
+def _validate_mdview_handoff_binding(binding: object, workspace: str) -> str | None:
+    """Validate a v1 source pin and refuse it if any bound source bytes changed."""
+    if not isinstance(workspace, str) or not workspace or not Path(workspace).is_absolute():
+        return "an explicit absolute workspace is required"
+    try:
+        workspace_root = Path(workspace).resolve(strict=True)
+    except OSError:
+        return "the explicit workspace is unavailable"
+    if not workspace_root.is_dir():
+        return "the explicit workspace must be a directory"
+
+    if not isinstance(binding, dict) or set(binding) != {"contract", "schemaVersion", "source", "scope"}:
+        return "Mdviewer handoffBinding fields are malformed"
+    if binding.get("contract") != "mdview.handoff-binding" or binding.get("schemaVersion") != 1:
+        return "Mdviewer handoffBinding contract must be v1"
+    scope = binding.get("scope")
+    if not isinstance(scope, str) or not scope.strip() or "\n" in scope or "\r" in scope:
+        return "Mdviewer handoffBinding scope is malformed"
+
+    source = binding.get("source")
+    source_fields = {"index", "section", "record", "taskId", "taskSha256", "expectedReadSet", "expectedEdition"}
+    if not isinstance(source, dict) or set(source) != source_fields:
+        return "Mdviewer handoffBinding source fields are malformed"
+    if not isinstance(source["section"], str) or not MDVIEW_STABLE_ID.fullmatch(source["section"]):
+        return "Mdviewer handoffBinding section ID is malformed"
+    if not isinstance(source["taskId"], str) or not MDVIEW_STABLE_ID.fullmatch(source["taskId"]):
+        return "Mdviewer handoffBinding task ID is malformed"
+    if not isinstance(source["taskSha256"], str) or not MDVIEW_SHA256.fullmatch(source["taskSha256"]):
+        return "Mdviewer handoffBinding task hash is malformed"
+    edition = source["expectedEdition"]
+    if edition is not None and (not isinstance(edition, str) or not MDVIEW_SHA256.fullmatch(edition)):
+        return "Mdviewer handoffBinding edition is malformed"
+
+    index_text = source["index"]
+    if not isinstance(index_text, str) or not Path(index_text).is_absolute():
+        return "Mdviewer handoffBinding index must be an absolute path"
+    try:
+        index_path = Path(index_text).resolve(strict=True)
+    except OSError:
+        return "Mdviewer handoffBinding is stale: index is unavailable"
+    if str(index_path) != index_text or not index_path.is_file() or not _is_within(index_path, workspace_root):
+        return "Mdviewer handoffBinding index is not the canonical file in the explicit workspace"
+
+    record = source["record"]
+    if (not isinstance(record, str) or not record or "\\" in record
+            or any(part in {"", ".", ".."} for part in record.split("/"))):
+        return "Mdviewer handoffBinding record path is malformed"
+
+    read_set = source["expectedReadSet"]
+    if not isinstance(read_set, dict) or "@index" not in read_set or record not in read_set:
+        return "Mdviewer handoffBinding read set is malformed"
+    if any(not isinstance(value, str) or not MDVIEW_SHA256.fullmatch(value) for value in read_set.values()):
+        return "Mdviewer handoffBinding read set hashes are malformed"
+
+    source_root = index_path.parent.resolve(strict=True)
+    if not _is_within(source_root, workspace_root):
+        return "Mdviewer handoffBinding package is outside the explicit workspace"
+    for name, expected in read_set.items():
+        if name == "@index":
+            path = index_path
+        else:
+            if (not isinstance(name, str) or not name or name.startswith("/") or "\\" in name
+                    or any(part in {"", ".", ".."} for part in name.split("/"))):
+                return "Mdviewer handoffBinding read set contains an unsafe source path"
+            path = source_root.joinpath(*name.split("/"))
+        try:
+            resolved = path.resolve(strict=True)
+            if not resolved.is_file() or not _is_within(resolved, source_root) or not _is_within(resolved, workspace_root):
+                return f"Mdviewer handoffBinding is stale: source is unavailable: {name}"
+            actual = hashlib.sha256(resolved.read_bytes()).hexdigest()
+        except OSError:
+            return f"Mdviewer handoffBinding is stale: source is unavailable: {name}"
+        if actual != expected:
+            return f"Mdviewer handoffBinding is stale: source changed: {name}"
+    return None
 
 
 def _unattended_allowed(harness: str) -> bool:
@@ -497,6 +586,40 @@ async def session_history(harness: str, session_id: str, workspace: str | None =
                 action="review", session_id=session_id)
         except (ValueError, OSError, KeyError, TypeError, subprocess.SubprocessError) as exc:
             return _refuse(cli_executor.redact(str(exc)))
+    if short == "opencode":
+        if not isinstance(workspace, str) or not workspace or not Path(workspace).is_absolute():
+            return _refuse("an explicit absolute workspace is required for OpenCode history")
+        try:
+            workspace_path = Path(workspace).resolve(strict=True)
+        except OSError:
+            return _refuse("the explicit OpenCode workspace is unavailable")
+        if not workspace_path.is_dir():
+            return _refuse("the explicit OpenCode workspace must be a directory")
+        binary = shutil.which(entry["binary"])
+        if binary is None:
+            return _refuse("OpenCode history is unavailable: opencode is not installed or not on PATH")
+        try:
+            completed = await asyncio.to_thread(
+                subprocess.run,
+                [binary, "export", session_id, "--sanitize"],
+                cwd=str(workspace_path),
+                capture_output=True,
+                text=True,
+            )
+        except (OSError, subprocess.SubprocessError):
+            return _refuse("OpenCode history export is unavailable")
+        if completed.returncode != 0:
+            return _refuse("OpenCode history export is unavailable for the selected session")
+        try:
+            native_payload = json.loads(completed.stdout)
+        except (TypeError, json.JSONDecodeError):
+            return _refuse("OpenCode history export did not return valid JSON")
+        return {
+            "harness": "opencode",
+            "route": "cli",
+            "session_id": session_id,
+            "native_payload": native_payload,
+        }
     executor = sdk_executors.EXECUTORS.get(short, {}).get("history")
     if executor is not None and sdk_executors.available(short):
         if workspace and short == "cursor":
@@ -516,6 +639,71 @@ async def session_history(harness: str, session_id: str, workspace: str | None =
         "route": "cli",
         "note": "no authorized SDK history path here; use the skill's native list/export commands",
         "contract_docs": entry["sdk"]["docs"],
+    }
+
+
+@mcp.tool()
+async def opencode_handoff_observation(
+    session_id: str,
+    workspace: str,
+    handoff_binding: dict,
+    attempt_id: str,
+) -> dict:
+    """Return one exact-session OpenCode history observation for a current Mdviewer v1 source binding."""
+    if not _is_exact_session_id(session_id):
+        return _refuse("an exact caller-selected OpenCode session ID is required")
+    if not isinstance(attempt_id, str) or not MDVIEW_STABLE_ID.fullmatch(attempt_id):
+        return _refuse("a caller-supplied attempt ID is required")
+    binding_refusal = _validate_mdview_handoff_binding(handoff_binding, workspace)
+    if binding_refusal:
+        return _refuse(binding_refusal)
+
+    history = await session_history("opencode", session_id, workspace=workspace)
+    if not isinstance(history, dict) or history.get("refused") or history.get("error"):
+        return _refuse("OpenCode history is unavailable for the selected session")
+    if "native_payload" not in history:
+        return _refuse("OpenCode history is unavailable for the selected session")
+    native_payload = history["native_payload"]
+    if history.get("harness") != "opencode" or history.get("session_id") != session_id:
+        return _refuse("OpenCode history did not match the selected session identity")
+    try:
+        json.dumps(native_payload, ensure_ascii=False, allow_nan=False)
+    except (TypeError, ValueError):
+        return _refuse("OpenCode history is not a JSON-native payload")
+
+    source = handoff_binding["source"]
+    observation_key = hashlib.sha256(
+        "\0".join((
+            source["index"],
+            source["section"],
+            source["record"],
+            source["taskId"],
+            session_id,
+            attempt_id,
+        )).encode("utf-8")
+    ).hexdigest()
+    observed_at = datetime.now(timezone.utc).isoformat(timespec="microseconds").replace("+00:00", "Z")
+    return {
+        "contract": "work-coordination.handoff-association",
+        "schemaVersion": 1,
+        "handoffBinding": handoff_binding,
+        "destination": {
+            "selection": "operator-explicit",
+            "surface": "opencode",
+            "sessionId": session_id,
+        },
+        "attempt": {"id": attempt_id},
+        "observations": [{
+            "id": f"opencode-history-{observation_key}",
+            "origin": {
+                "surface": "opencode",
+                "sessionId": session_id,
+                "attemptId": attempt_id,
+            },
+            "observedAt": observed_at,
+            "nativeKind": "opencode.session_history",
+            "nativeValue": native_payload,
+        }],
     }
 
 
