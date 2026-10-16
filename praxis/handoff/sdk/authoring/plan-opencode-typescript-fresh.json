@@ -129,7 +129,7 @@
   "assets": [
     {
       "rel_path": "worker/harness.json",
-      "file": "assets/worker/harness.json"
+      "file": "assets/worker/harness-opencode.json"
     },
     {
       "rel_path": "worker/sdk/typescript/adapters.mjs",

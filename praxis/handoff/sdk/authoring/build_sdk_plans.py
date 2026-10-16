@@ -99,9 +99,9 @@ def receipt_schema_for_language(harness: str, operation: str, contract: dict, pa
         "runner_digest": {"type": "string", "enum": [runner_digest]},
         "contract_digest": {"type": "string", "enum": [raw_sha256((REPO_ROOT / ("mcp_bridge/sdk_contract.mjs" if language == "typescript" else "mcp_bridge/sdk_contract.py")).read_bytes())]},
         "bindings_digest": {"type": "string", "enum": [raw_sha256(BINDINGS_PATH.read_bytes())]},
-        "settings_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
-        "session_id": {"type": "string", "minLength": 1},
-        "output": {"type": "string", "minLength": 1},
+        "settings_digest": {"type": "string"},
+        "session_id": {"type": "string"},
+        "output": {"type": "string"},
     }
     return {
         "type": "object",
@@ -274,7 +274,7 @@ def make_plan(harness: str, operation: str, contract: dict, package_version: str
             "outputs": [{"name": "receipt", "from": {"block": "operation", "port": "receipt"}}],
         },
         "assets": [
-            {"rel_path": "worker/harness.json", "file": "assets/worker/harness.json"},
+            {"rel_path": "worker/harness.json", "file": f"assets/worker/harness-{harness}.json"},
             {"rel_path": "worker/sdk/run.py", "file": os.path.relpath(REPO_ROOT / "mcp_bridge/sdk_runner.py", HERE)},
             {"rel_path": "worker/sdk/mcp_bridge/sdk_operations.py", "file": os.path.relpath(REPO_ROOT / "mcp_bridge/sdk_operations.py", HERE)},
             {"rel_path": "worker/sdk/mcp_bridge/sdk_contract.py", "file": os.path.relpath(REPO_ROOT / "mcp_bridge/sdk_contract.py", HERE)},
@@ -288,7 +288,7 @@ def make_plan(harness: str, operation: str, contract: dict, package_version: str
         plan["blocks"][0]["name"] = f"harness.sdk.typescript.{harness}.{operation}"
         plan["process"]["name"] = f"harness.sdk.typescript.{harness}.{operation}"
         plan["assets"] = [
-            {"rel_path": "worker/harness.json", "file": "assets/worker/harness.json"},
+            {"rel_path": "worker/harness.json", "file": f"assets/worker/harness-{harness}.json"},
             {"rel_path": "worker/sdk/typescript/adapters.mjs", "file": "assets/worker/sdk/typescript/adapters.mjs"},
             {"rel_path": "worker/sdk/typescript/run.mjs", "file": "assets/worker/sdk/typescript/run.mjs"},
             {"rel_path": "worker/sdk/typescript/contract.mjs", "file": os.path.relpath(REPO_ROOT / "mcp_bridge/sdk_contract.mjs", HERE)},
@@ -297,8 +297,13 @@ def make_plan(harness: str, operation: str, contract: dict, package_version: str
     node = node_spec(harness, operation, contract, package_version, adapter_digest, runner_digest, dispatch_source_digest, digest, language=language, module=module, entrypoint=entrypoint, adapter=adapter)
     if language == "typescript":
         node["identity"]["name"] = f"harness.sdk.typescript.{harness}.{operation}"
+    contract_text = (REPO_ROOT / f"{harness}-harness-handoff/contract.json").read_text(encoding="utf-8")
+    write_json(HERE / f"assets/worker/harness-{harness}.json", {"contracts": {harness: contract_text}})
     write_json(HERE / "nodes" / slug / "spec.json", node)
     write_json(HERE / f"plan-{slug}.json", plan)
+    stores = read_json(HERE / "stores.json")
+    stores["contracts"] = [item for item in stores["contracts"] if item["name"] == harness]
+    write_json(HERE / f"stores-{slug}.json", stores)
 
 
 def main() -> None:
@@ -322,7 +327,6 @@ def main() -> None:
     dispatch_source_digest = source_digest(dispatch_raw)
     contracts = {}
     pins_for_atlas = []
-    contract_texts = {}
     for harness, relative in CONTRACTS.items():
         path = REPO_ROOT / relative
         raw = path.read_bytes()
@@ -333,14 +337,12 @@ def main() -> None:
             raise SystemExit(f"{harness} contract has no Python SDK entrypoint")
         digest = contract_digest(raw)
         contracts[harness] = (contract, digest)
-        contract_texts[harness] = raw.decode("utf-8")
         pins_for_atlas.append(
             {"name": harness, "path": os.path.relpath(path, HERE), "digest": digest}
         )
     stores = read_json(SDK_ROOT.parent / "authoring/stores.json")
     stores["contracts"] = pins_for_atlas
     write_json(HERE / "stores.json", stores)
-    write_json(HERE / "assets/worker/harness.json", {"contracts": contract_texts})
 
     for harness, operations in OPERATIONS.items():
         contract, digest = contracts[harness]

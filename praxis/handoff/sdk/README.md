@@ -3,15 +3,16 @@
 This directory contains **eleven authored development plans**. Each plan composes
 one SDK Node into a reusable Block and one-operation Process. All operations start
 a fresh session. The current plans are **unprinted and unadmitted**: the supported
-Forge front door refuses their contract store, and its worker has no SDK executor
-route. Historical experimental prints are not qualification of these sources.
+Forge front door rejects the experimental SDK mechanism declarations. Three
+selected CLI contracts also use unsupported parser names. Historical experimental prints are not qualification of these sources.
 
 ## One declaration
 
 [`mcp_bridge/sdk_bindings.json`](../../../mcp_bridge/sdk_bindings.json) declares
 exact SDK versions, public archive URLs and SHA-256 hashes, licenses, declared
 dependencies, runtime minimums, supported fresh operations, and closed settings
-schemas. Both authoring generators and printed runners consume it. The generated
+schemas. Nonempty settings strings are an explicit binding rule enforced by the
+runners; the emitted field types use Forge’s supported schema vocabulary. Both authoring generators and printed runners consume it. The generated
 `*-sdk-pins.json` files are projections of that declaration.
 
 The Node, Block and Process each expose `prompt`, `workspace` and typed `settings`.
@@ -82,14 +83,19 @@ python3 scripts/fetch_sdk_material.py --out /path/to/sdk-archives
 
 The last command retrieves and checks public SDK archives without installing or
 executing them. The check command captures all eleven native factory results,
-including refusals. These commands never admit, sign or invoke a Node. Local
+including refusals. Each plan uses its own `stores-<capability>.json`, so an
+unrelated harness contract cannot prevent checking that capability. These commands never admit, sign or invoke a Node. Local
 fixtures prove mapping and refusal mechanics; they are not real-use evidence.
 
 ## Work remaining before release
 
 1. A supported factory route must accept and print these project-owned SDK
    implementations, passing typed settings and source pins without choosing
-   harness behavior. The observed current refusal is `harness contract: parser`.
+   harness behavior. The installed command currently rejects `handoff.executor` /
+   `handoff.sdk`, requires an explicit egress declaration, and reports an
+   unsupported compiled mechanism. Amp, Cline and
+   OpenHands also have unsupported CLI parser names. The typed needs themselves
+   pass the native `blank` validation; that does not establish execution support.
    Updating factory transport is a separate owner change, not implemented here.
 2. Freeze and verify each target runtime's complete material, including worker
    executables and dependency licenses. The declaration marks closure unqualified.

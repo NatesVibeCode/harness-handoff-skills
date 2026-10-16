@@ -1,21 +1,22 @@
 import { readFileSync } from 'node:fs';
+import { isDeepStrictEqual } from 'node:util';
 import { createHash } from 'node:crypto';
 
 export const digest = (bytes) => `sha256:${createHash('sha256').update(bytes).digest('hex')}`;
-export function validate(value, schema, path = 'settings') {
+export function validate(value, schema, path = 'settings', nonemptyStrings = false) {
   const kind = Array.isArray(value) ? 'array' : value === null ? 'null' : typeof value;
   if (kind !== schema.type) throw new Error(`${path} must be ${schema.type}`);
-  if (schema.enum && !schema.enum.includes(value)) throw new Error(`${path} is not a declared selection`);
-  if (kind === 'string' && schema.minLength && !value.trim()) throw new Error(`${path} must be nonempty`);
+  if (schema.enum && !schema.enum.some(candidate => isDeepStrictEqual(candidate, value))) throw new Error(`${path} is not a declared selection`);
+  if (kind === 'string' && nonemptyStrings && !value.trim()) throw new Error(`${path} must be nonempty`);
   if (kind === 'object') {
     for (const key of schema.required ?? []) if (!Object.hasOwn(value, key)) throw new Error(`${path}.${key} is required`);
     for (const [key, item] of Object.entries(value)) {
       const child = Object.hasOwn(schema.properties ?? {}, key) ? schema.properties[key] : schema.additionalProperties;
       if (!child) throw new Error(`${path}.${key} is not declared`);
-      validate(item, child, `${path}.${key}`);
+      validate(item, child, `${path}.${key}`, nonemptyStrings);
     }
   }
-  if (kind === 'array') value.forEach((item, index) => validate(item, schema.items, `${path}[${index}]`));
+  if (kind === 'array') value.forEach((item, index) => validate(item, schema.items, `${path}[${index}]`, nonemptyStrings));
 }
 
 export function validateRequest(request, bindingsPath) {
@@ -38,6 +39,6 @@ export function validateRequest(request, bindingsPath) {
   for (const key of ['model', 'approval', 'provider_id', 'session_id', 'session_owner']) {
     if (Object.hasOwn(request, key)) throw new Error(`${key} is not a fresh SDK request field`);
   }
-  validate(request.settings, binding.settings);
+  validate(request.settings, binding.settings, "settings", binding.settings_nonempty_strings);
   return binding;
 }

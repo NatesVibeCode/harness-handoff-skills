@@ -44,10 +44,6 @@ def main() -> None:
     dispatch_raw = (HERE / "assets/sdk_dispatch.go").read_bytes()
     dispatch_digest = common.source_digest(dispatch_raw)
 
-    contract_texts = {
-        harness: (REPO_ROOT / relative).read_text(encoding="utf-8")
-        for harness, relative in {**common.CONTRACTS, **CONTRACTS}.items()
-    }
     pins_for_atlas = []
     records = {}
     for harness, relative in CONTRACTS.items():
@@ -61,12 +57,8 @@ def main() -> None:
             raise SystemExit(f"{harness} TypeScript SDK package differs from the generated contract")
         digest = common.contract_digest(raw)
         records[harness] = (contract, digest)
-        contract_texts[harness] = raw.decode("utf-8")
         pins_for_atlas.append({"name": harness, "path": os.path.relpath(path, HERE), "digest": digest})
 
-    contracts_asset = HERE / "assets/worker/harness.json"
-    contracts_asset.parent.mkdir(parents=True, exist_ok=True)
-    common.write_json(contracts_asset, {"contracts": contract_texts})
     stores_path = HERE / "stores.json"
     stores = common.read_json(stores_path)
     prior = {item["name"]: item for item in stores.get("contracts", [])}

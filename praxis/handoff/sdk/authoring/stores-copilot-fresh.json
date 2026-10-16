@@ -1,0 +1,40 @@
+{
+  "schema": "atlas.forge_stores.v1",
+  "patterns": [
+    {
+      "record": {
+        "kind": "node",
+        "key": "node.v1",
+        "schema_urn": "aeltum.node_spec.v1"
+      },
+      "digest": "144731dd834259d024c98b17ea7e62805ce5af074128133790a5dcdfafa0e24f"
+    }
+  ],
+  "bounds": [
+    {
+      "entry": {
+        "key": "handoff.value.length.nonnegative",
+        "kind": "count",
+        "subject": "length(*)",
+        "params": {
+          "min": 0.0
+        }
+      },
+      "digest": "11ee5a5237e83c31468ee3fc471982ea3e1c80b33ea2444d4429707d945d5196"
+    }
+  ],
+  "nodes": [],
+  "demands": [],
+  "capabilities": [],
+  "pointers": [],
+  "routes": [],
+  "prompts": [],
+  "interpreters": [],
+  "contracts": [
+    {
+      "name": "copilot",
+      "path": "../../../../copilot-harness-handoff/contract.json",
+      "digest": "sha256:d07017ebb95ed103475eec05c337261d6204cb75eb478be24693dba61d882017"
+    }
+  ]
+}

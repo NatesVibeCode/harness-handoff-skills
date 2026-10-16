@@ -17,7 +17,7 @@ BINDINGS = sdk_contract.bindings()
 
 def sample(schema):
     if 'enum' in schema:
-        return schema['enum'][0] if schema['enum'] else None
+        return copy.deepcopy(schema['enum'][0]) if schema['enum'] else None
     if schema['type'] == 'object':
         return {key: sample(schema['properties'].get(key, schema['additionalProperties'])) for key in schema.get('required', [])}
     return {'string': 'selected', 'boolean': False, 'array': []}[schema['type']]
@@ -308,3 +308,59 @@ def test_muse_resolved_awaitable_is_not_necessarily_success(kind, terminal):
             return done()
         async def items(self): yield {'kind': 'agentMessage', 'status': 'completed', 'text': 'partial answer'}
     with pytest.raises(RuntimeError, match='did not complete'): asyncio.run(_muse_completed_text(Turn()))
+
+
+@pytest.mark.parametrize('harness', BINDINGS)
+def test_nonempty_settings_remain_enforced_outside_forge_type_vocabulary(harness, tmp_path):
+    req = request(harness, tmp_path)
+    def string_path(schema):
+        if schema['type'] == 'string' and 'enum' not in schema:
+            return []
+        for key, child in schema.get('properties', {}).items():
+            path = string_path(child)
+            if path is not None:
+                return [key, *path]
+        return None
+    path = string_path(BINDINGS[harness]['settings'])
+    selected = req['settings']
+    for key in path[:-1]: selected = selected[key]
+    selected[path[-1]] = '   '
+    with pytest.raises(ValueError, match='nonempty'):
+        sdk_contract.validate_request(req, BINDINGS[harness]['language'])
+
+
+@pytest.mark.parametrize('harness', BINDINGS)
+def test_supported_forge_entrypoint_accepts_each_typed_need(harness, tmp_path):
+    import shutil
+    executable = shutil.which('forge-author')
+    if not executable:
+        pytest.skip('installed forge-author required for native type-vocabulary regression')
+    binding = BINDINGS[harness]
+    slug = harness + ('-typescript' if binding['language'] == 'typescript' else '') + '-fresh'
+    author = ROOT/'praxis/handoff/sdk/authoring'
+    spec = json.loads((author/'nodes'/slug/'spec.json').read_text())
+    store = json.loads((author/f'stores-{slug}.json').read_text())
+    assert [c['name'] for c in store['contracts']] == [harness]
+    plan = json.loads((author/f'plan-{slug}.json').read_text())
+    contract_asset = next(asset for asset in plan['assets'] if asset['rel_path'] == 'worker/harness.json')
+    assert list(json.loads((author/contract_asset['file']).read_text())['contracts']) == [harness]
+    def ports(side):
+        return [{'name': f['name'], 'type': f['type'], 'semantic': spec['composition'][side+'s'][f['name']]['semantic'], 'required': f['required']}
+                for f in spec['fields'] if f['side'] == side]
+    blank = {'schema': 'atlas.legal_blank.v1', 'id': 'sdk.types.'+harness,
+             'need': {'purpose': 'Check the authored SDK type vocabulary without claiming execution support',
+                      'inputs': ports('input'), 'outputs': ports('output'), 'allowed_effects': ['harness.invoke']},
+             'class': 'missing_implementation', 'probe': {'owner': 'project authoring', 'action': 'Native type validation only'},
+             'expiry': {'scope_digest': '0'*64, 'evidence': []}}
+    path = tmp_path/'need.json'; path.write_text(json.dumps(blank))
+    result = subprocess.run([executable, 'blank', '-input', str(path)], capture_output=True, text=True, timeout=30)
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert json.loads(result.stdout)['status'] == 'ok'
+
+
+def test_openhands_supported_empty_tool_selection_is_not_an_empty_enum(tmp_path):
+    req = request('openhands', tmp_path)
+    assert req['settings']['tools'] == []
+    req['settings']['tools'] = ['unsupported-tool']
+    with pytest.raises(ValueError, match='declared selection'):
+        sdk_contract.validate_request(req, 'python')

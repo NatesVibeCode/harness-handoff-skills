@@ -277,3 +277,28 @@ SDK execution/contract acceptance; sealed target runtime material; authorized
 real-use success, safe-failure and interruption evidence; then exact-source
 admission, release and standalone consumption. Historical experimental prints
 are retained separately and are not qualification of these revised sources.
+
+### Correction using the installed authoring front door
+
+Follow-up checks confirmed that the installed `forge-author` is current. The
+previous common parser refusal hid project authoring defects: unsupported
+`minLength`/`pattern` schema keywords, an empty item enum for OpenHands, and an
+OpenCode required dictionary key absent from its fixed properties. These were
+repaired using the supported type vocabulary. Nonempty settings remain an
+explicit declaration rule enforced by both runners; array enums compare values
+structurally. Each plan now selects only its own contract store and shipped
+contract asset, preventing unrelated CLI parsers from poisoning its diagnostics.
+
+All eleven typed needs pass actual installed `forge-author blank` validation.
+That records missing implementation boundaries and does not assert executable
+Nodes. Independent plan checks now reveal the unsupported experimental
+`handoff.sdk` / `handoff.executor` declarations, missing egress operation
+declarations and unsupported compiled source mechanism.
+Amp, Cline and OpenHands also retain unsupported CLI parser names. No parser was
+renamed to bypass that refusal and no Forge implementation was edited.
+
+The suite passes **346 tests with no skips**, including native type-vocabulary
+checks for all eleven plans and preserved nonempty-setting refusal checks.
+Skill generation and diff checks pass. The package includes a separate store
+and contract asset for each capability. These results supersede the earlier
+shared-store diagnosis; no revised SDK print or real provider run is claimed.

@@ -16,7 +16,7 @@ def bindings() -> dict:
     return json.loads(BINDINGS_PATH.read_text(encoding='utf-8'))['bindings']
 
 
-def validate(value, schema: dict, path: str = 'settings') -> None:
+def validate(value, schema: dict, path: str = 'settings', *, nonempty_strings=False) -> None:
     """Validate the closed JSON-schema subset emitted by this project's author."""
     kind = schema['type']
     valid = {'object': isinstance(value, dict), 'array': isinstance(value, list),
@@ -25,7 +25,7 @@ def validate(value, schema: dict, path: str = 'settings') -> None:
         raise ValueError(f'{path} must be {kind}')
     if 'enum' in schema and value not in schema['enum']:
         raise ValueError(f'{path} is not a declared selection')
-    if kind == 'string' and schema.get('minLength') and not value.strip():
+    if kind == 'string' and nonempty_strings and not value.strip():
         raise ValueError(f'{path} must be nonempty')
     if kind == 'object':
         for key in schema.get('required', []):
@@ -35,10 +35,10 @@ def validate(value, schema: dict, path: str = 'settings') -> None:
             child = schema.get('properties', {}).get(key, schema.get('additionalProperties', False))
             if child is False:
                 raise ValueError(f'{path}.{key} is not declared')
-            validate(item, child, f'{path}.{key}')
+            validate(item, child, f'{path}.{key}', nonempty_strings=nonempty_strings)
     if kind == 'array':
         for index, item in enumerate(value):
-            validate(item, schema['items'], f'{path}[{index}]')
+            validate(item, schema['items'], f'{path}[{index}]', nonempty_strings=nonempty_strings)
 
 
 def validate_request(request: dict, language: str) -> dict:
@@ -74,5 +74,5 @@ def validate_request(request: dict, language: str) -> dict:
     for key in ('model', 'approval', 'provider_id', 'session_id', 'session_owner'):
         if key in request:
             raise ValueError(f'{key} is not a fresh SDK request field')
-    validate(request.get('settings'), binding['settings'])
+    validate(request.get('settings'), binding['settings'], nonempty_strings=binding['settings_nonempty_strings'])
     return binding

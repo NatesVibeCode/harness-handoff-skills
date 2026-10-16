@@ -22,7 +22,8 @@ def main():
     args.out.mkdir(parents=True, exist_ok=False)
     findings = []
     for plan in sorted((root/author).glob('plan-*-fresh.json')):
-        argv = [executable, 'plan', '-check', '-input', str(plan.relative_to(root)), '-stores', str(author/'stores.json')]
+        selected_stores = author/('stores-' + plan.stem.removeprefix('plan-') + '.json')
+        argv = [executable, 'plan', '-check', '-input', str(plan.relative_to(root)), '-stores', str(selected_stores)]
         try:
             result = subprocess.run(argv, cwd=root, capture_output=True, text=True, timeout=args.timeout)
         except subprocess.TimeoutExpired as exc:
@@ -32,11 +33,11 @@ def main():
         (args.out/f'{name}.stdout.json').write_text(result.stdout)
         (args.out/f'{name}.stderr.txt').write_text(result.stderr)
         document = json.loads(plan.read_text())
-        paths = [plan, root/author/'stores.json']
+        paths = [plan, root/selected_stores]
         for node in document['nodes']:
             paths.extend(plan.parent/node[key] for key in ('spec_file', 'source_file') if key in node)
         paths.extend(plan.parent/asset['file'] for asset in document.get('assets', []))
-        store = json.loads((root/author/'stores.json').read_text())
+        store = json.loads((root/selected_stores).read_text())
         paths.extend(root/author/contract['path'] for contract in store.get('contracts', []))
         artifact_pins = {str(path.resolve().relative_to(root)): hashlib.sha256(path.read_bytes()).hexdigest()
                          for path in paths}

@@ -7,7 +7,7 @@ const bindingsPath = new URL('../mcp_bridge/sdk_bindings.json', import.meta.url)
 const bytes = readFileSync(bindingsPath);
 const bindings = JSON.parse(bytes).bindings;
 function sample(schema) {
-  if (schema.enum) return schema.enum[0];
+  if (schema.enum) return structuredClone(schema.enum[0]);
   if (schema.type === 'object') return Object.fromEntries(schema.required.map(key => [key, sample(schema.properties[key] ?? schema.additionalProperties)]));
   return { string: 'selected', boolean: false, array: [] }[schema.type];
 }
@@ -145,3 +145,22 @@ test('Codex never calls an empty result a success', async () => {
   const sdk = { Codex: class { startThread() { return { id: 'id', run: async () => ({ finalResponse: '' }) }; } } };
   await assert.rejects(invoke(request('codex'), sdk), /assistant output/);
 });
+
+test('native array enum uses structural equality', async () => {
+  const { validate } = await import('../mcp_bridge/sdk_contract.mjs');
+  const schema = bindings.openhands.settings.properties.tools;
+  assert.doesNotThrow(() => validate([], schema));
+  assert.throws(() => validate(['unsupported-tool'], schema));
+});
+
+for (const harness of ['amp', 'cline', 'codex', 'droid']) {
+  test(`${harness}: nonempty settings rule survives native schema lowering`, () => {
+    const req = request(harness);
+    const key = Object.keys(bindings[harness].settings.properties).find(k => {
+      const schema = bindings[harness].settings.properties[k];
+      return schema.type === 'string' && !schema.enum;
+    });
+    req.settings[key] = '   ';
+    assert.throws(() => validateRequest(req, bindingsPath), /nonempty/);
+  });
+}
