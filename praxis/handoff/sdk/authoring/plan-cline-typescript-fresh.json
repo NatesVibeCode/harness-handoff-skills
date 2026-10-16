@@ -8,9 +8,9 @@
       "spec_file": "nodes/cline-typescript-fresh/spec.json",
       "source_file": "assets/sdk_dispatch.go",
       "dispatch": {
-        "dir": "invoke",
+        "dir": "sdk/cline-typescript-fresh/1a2ee2447314fb42ad8776a3c8e704d9db8575b54d7e60ab99e3e7002c3e021b",
         "file": "spec.json",
-        "source_file": "entry.go",
+        "source_file": "sdk_dispatch.go",
         "package": "sdkdispatch",
         "symbol": "Run"
       }
@@ -128,23 +128,23 @@
   },
   "assets": [
     {
-      "rel_path": "worker/harness.json",
+      "rel_path": "nodes/sdk/cline-typescript-fresh/1a2ee2447314fb42ad8776a3c8e704d9db8575b54d7e60ab99e3e7002c3e021b/runtime/harness.json",
       "file": "assets/worker/harness-cline.json"
     },
     {
-      "rel_path": "worker/sdk/typescript/adapters.mjs",
+      "rel_path": "nodes/sdk/cline-typescript-fresh/1a2ee2447314fb42ad8776a3c8e704d9db8575b54d7e60ab99e3e7002c3e021b/runtime/typescript/adapters.mjs",
       "file": "assets/worker/sdk/typescript/adapters.mjs"
     },
     {
-      "rel_path": "worker/sdk/typescript/run.mjs",
+      "rel_path": "nodes/sdk/cline-typescript-fresh/1a2ee2447314fb42ad8776a3c8e704d9db8575b54d7e60ab99e3e7002c3e021b/runtime/typescript/run.mjs",
       "file": "assets/worker/sdk/typescript/run.mjs"
     },
     {
-      "rel_path": "worker/sdk/typescript/contract.mjs",
+      "rel_path": "nodes/sdk/cline-typescript-fresh/1a2ee2447314fb42ad8776a3c8e704d9db8575b54d7e60ab99e3e7002c3e021b/runtime/typescript/contract.mjs",
       "file": "../../../../mcp_bridge/sdk_contract.mjs"
     },
     {
-      "rel_path": "worker/sdk/typescript/sdk_bindings.json",
+      "rel_path": "nodes/sdk/cline-typescript-fresh/1a2ee2447314fb42ad8776a3c8e704d9db8575b54d7e60ab99e3e7002c3e021b/runtime/typescript/sdk_bindings.json",
       "file": "../../../../mcp_bridge/sdk_bindings.json"
     }
   ]

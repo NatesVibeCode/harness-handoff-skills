@@ -11,7 +11,7 @@ const raw = await new Promise((resolve, reject) => {
   process.stdin.on("error", reject);
 });
 const request = JSON.parse(raw);
-const adapterPath = process.argv[2];
+const adapterPath = process.argv[2] ?? join(dirname(fileURLToPath(import.meta.url)), "adapters.mjs");
 if (!adapterPath) throw new Error("TypeScript SDK adapter asset missing");
 const rawDigest = (bytes) => `sha256:${createHash("sha256").update(bytes).digest("hex")}`;
 if (rawDigest(readFileSync(adapterPath)) !== request.adapter_digest) throw new Error("TypeScript SDK adapter digest drift");

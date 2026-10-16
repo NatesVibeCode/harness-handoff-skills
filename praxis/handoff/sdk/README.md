@@ -1,10 +1,18 @@
 # Fresh SDK Nodes, Blocks, and Processes
 
-This directory contains **eleven authored development plans**. Each plan composes
-one SDK Node into a reusable Block and one-operation Process. All operations start
-a fresh session. The current plans are **unprinted and unadmitted**: the supported
-Forge front door rejects the experimental SDK mechanism declarations. Three
-selected CLI contracts also use unsupported parser names. Historical experimental prints are not qualification of these sources.
+This directory contains **eleven fresh SDK Nodes and eleven reusable pinned
+Blocks**. Each has passed the native plan checks and built a standalone unsigned
+Process package through the SDK support branch of `forge-author`.
+[`capabilities.json`](capabilities.json) records the exact Node, Block and Process
+revisions; [`blocks/`](blocks/) contains the Forge-produced Block artifacts.
+They are not admitted or qualified against live harness accounts.
+
+The generic SDK executor is implemented in the separate Forge branch
+`codex/harness-sdk-support-20261016`. The globally installed command has not been
+replaced during this isolated build. Use the command built from that branch for
+these declarations. The factory validates package/entrypoint contracts, material
+and interpreter hashes, then launches one project-owned runner. SDK names,
+operations, settings and permission choices remain here.
 
 ## One declaration
 
@@ -46,6 +54,12 @@ profile was applied. Codex uses the caller's thread options, with no hardcoded
 
 ## Completion and integrity
 
+The generic launcher records startup, diagnostics, source/runtime digests and
+unknown effect outcomes on failure. Failure details survive in the printed
+worker's typed failure record; declared credential values are redacted there.
+Each Node has private material paths, so SDK implementations can compose without
+sharing mutable runner files.
+
 A successful receipt requires a fresh session identity and completed assistant
 output. Copilot waits for the root session to become idle; Claude, Cursor, Cline,
 Droid, Muse and OpenHands require their SDK's successful completion signal.
@@ -60,10 +74,13 @@ Receipts preserve assistant output and bind the selected settings with a digest.
 selects a CLI fallback, or resubmits a failed/uncertain invocation.
 
 A minimum runtime version and a package version are **not a sealed runtime**.
+The selected interpreter executable bytes are pinned in `authoring/runtime-pins.json`.
+These are target selections, not a complete interpreter dependency closure.
 The archive pins currently describe the published top-level SDK artifacts (the
 captured binary Python wheels target macOS arm64). Transitive dependencies,
-interpreter/executable bytes, licenses throughout the closure, SDK-managed worker
-binaries and target-specific material still need qualification. Credentials stay
+licenses throughout the closure, SDK-managed worker
+binaries and target-specific material still need qualification. Only the environment names declared per binding are passed alongside the native
+session base environment (`PATH`, `HOME`, `TMPDIR`). Credential values stay
 in the selected runtime's environment; they never enter the public declaration.
 An interrupted invocation can have remote effects: the owning Process must retain
 its original identity and diagnostics and reconcile before deciding recovery.
@@ -87,16 +104,13 @@ including refusals. Each plan uses its own `stores-<capability>.json`, so an
 unrelated harness contract cannot prevent checking that capability. These commands never admit, sign or invoke a Node. Local
 fixtures prove mapping and refusal mechanics; they are not real-use evidence.
 
-## Work remaining before release
+## Qualification and release
 
-1. A supported factory route must accept and print these project-owned SDK
-   implementations, passing typed settings and source pins without choosing
-   harness behavior. The installed command currently rejects `handoff.executor` /
-   `handoff.sdk`, requires an explicit egress declaration, and reports an
-   unsupported compiled mechanism. Amp, Cline and
-   OpenHands also have unsupported CLI parser names. The typed needs themselves
-   pass the native `blank` validation; that does not establish execution support.
-   Updating factory transport is a separate owner change, not implemented here.
+1. Integrate/install the tested Forge SDK support branch through the factory's
+   normal reviewed source path. The Harness kind continues to forbid an HTTP
+   egress dimension: the existing Harness custody boundary owns its network use.
+   Unknown CLI parsers are still refused for CLI execution; they cannot block a
+   separately selected SDK executor.
 2. Freeze and verify each target runtime's complete material, including worker
    executables and dependency licenses. The declaration marks closure unqualified.
 3. Obtain authorized harness account/model scope, then retain representative

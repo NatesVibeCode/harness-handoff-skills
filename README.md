@@ -201,6 +201,8 @@ The [typed packet Process](praxis/handoff/README.md) prepares an explicit portab
 handoff packet and SHA-256 fingerprint. The [fresh SDK operation plans](praxis/handoff/sdk/README.md)
 provide eleven SDK Nodes, reusable Blocks and one-operation Processes with typed
 caller-selected settings. Current sources are development work, not admitted
-capabilities. The SDK plans are blocked at the supported factory front door;
-local adapter tests do not establish real-use readiness. The SDK guide records
-the remaining build, material, account-proof and consumption requirements.
+capabilities. All eleven standalone development packages build with the generic
+SDK support in Forge branch `codex/harness-sdk-support-20261016`. The exact
+Node/Block/Process pins and exported Blocks are included. Live account proof,
+complete dependency closure, admission and consumption are separate requirements
+recorded in the SDK guide.

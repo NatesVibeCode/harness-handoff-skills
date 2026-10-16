@@ -221,7 +221,7 @@
           "bindings_digest": {
             "type": "string",
             "enum": [
-              "sha256:d8d27d1a2a578b38fef151ea73f7f443081600e33f0e28da16ee21525ba6ffc0"
+              "sha256:6c2c77a581018991a6e25e1109d49d1ea63bd6133f33e8123e7b8fc7acc0e05f"
             ]
           },
           "settings_digest": {
@@ -335,8 +335,29 @@
           "adapter_digest": "sha256:7389df391628385d7a8406cc14f6e4e35b0ae4671bb8b9f3152371fd96635e2d",
           "runner_digest": "sha256:1544ed4341fa87faebd2c383ec21450af45519f7bdff5dd404d50108445d7996",
           "contract_digest": "sha256:db640957ec60ef85be3038d48637ff0e357f9426ec18227e2375dd23808c9594",
-          "bindings_digest": "sha256:d8d27d1a2a578b38fef151ea73f7f443081600e33f0e28da16ee21525ba6ffc0",
-          "dispatch_source_digest": "316eebc30b2dceeb2d6bad80b9d323a14871c92aa0cb719b2a6631d20ac0670b"
+          "bindings_digest": "sha256:6c2c77a581018991a6e25e1109d49d1ea63bd6133f33e8123e7b8fc7acc0e05f",
+          "dispatch_source_digest": "316eebc30b2dceeb2d6bad80b9d323a14871c92aa0cb719b2a6631d20ac0670b",
+          "dispatch_pointer": "sdkdispatch.Run",
+          "runner_file": "nodes/sdk/cursor-python-fresh/1892cb9eaefea10e8a5db73ed8e1ae417b0bba6908628ee3bf47de46dd983954/runtime/run.py",
+          "working_directory_slot": "workspace",
+          "files": {
+            "nodes/sdk/cursor-python-fresh/1892cb9eaefea10e8a5db73ed8e1ae417b0bba6908628ee3bf47de46dd983954/runtime/run.py": "sha256:1544ed4341fa87faebd2c383ec21450af45519f7bdff5dd404d50108445d7996",
+            "nodes/sdk/cursor-python-fresh/1892cb9eaefea10e8a5db73ed8e1ae417b0bba6908628ee3bf47de46dd983954/runtime/mcp_bridge/sdk_operations.py": "sha256:7389df391628385d7a8406cc14f6e4e35b0ae4671bb8b9f3152371fd96635e2d",
+            "nodes/sdk/cursor-python-fresh/1892cb9eaefea10e8a5db73ed8e1ae417b0bba6908628ee3bf47de46dd983954/runtime/mcp_bridge/sdk_contract.py": "sha256:db640957ec60ef85be3038d48637ff0e357f9426ec18227e2375dd23808c9594",
+            "nodes/sdk/cursor-python-fresh/1892cb9eaefea10e8a5db73ed8e1ae417b0bba6908628ee3bf47de46dd983954/runtime/mcp_bridge/sdk_bindings.json": "sha256:6c2c77a581018991a6e25e1109d49d1ea63bd6133f33e8123e7b8fc7acc0e05f",
+            "nodes/sdk/cursor-python-fresh/1892cb9eaefea10e8a5db73ed8e1ae417b0bba6908628ee3bf47de46dd983954/runtime/harness.json": "sha256:e75c5096c45c39049f0cc824e73b5fcc608fd15b2d7cd35487e0ea886b5fad47"
+          },
+          "runtime": {
+            "binary": "python3",
+            "sha256": "cbf84109626aa1013bbe408fbb9590bd0f1c1548f038b2221c6b8b87de26ca43",
+            "arguments": [
+              "-I"
+            ]
+          },
+          "environment": [
+            "CURSOR_API_KEY"
+          ],
+          "contract_file": "nodes/sdk/cursor-python-fresh/1892cb9eaefea10e8a5db73ed8e1ae417b0bba6908628ee3bf47de46dd983954/runtime/harness.json"
         }
       }
     },

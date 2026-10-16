@@ -8,9 +8,9 @@
       "spec_file": "nodes/droid-typescript-fresh/spec.json",
       "source_file": "assets/sdk_dispatch.go",
       "dispatch": {
-        "dir": "invoke",
+        "dir": "sdk/droid-typescript-fresh/168586a93f85a7cfb965bee193246b872d9da778a3e9f861cd3545c978e3ef11",
         "file": "spec.json",
-        "source_file": "entry.go",
+        "source_file": "sdk_dispatch.go",
         "package": "sdkdispatch",
         "symbol": "Run"
       }
@@ -128,23 +128,23 @@
   },
   "assets": [
     {
-      "rel_path": "worker/harness.json",
+      "rel_path": "nodes/sdk/droid-typescript-fresh/168586a93f85a7cfb965bee193246b872d9da778a3e9f861cd3545c978e3ef11/runtime/harness.json",
       "file": "assets/worker/harness-droid.json"
     },
     {
-      "rel_path": "worker/sdk/typescript/adapters.mjs",
+      "rel_path": "nodes/sdk/droid-typescript-fresh/168586a93f85a7cfb965bee193246b872d9da778a3e9f861cd3545c978e3ef11/runtime/typescript/adapters.mjs",
       "file": "assets/worker/sdk/typescript/adapters.mjs"
     },
     {
-      "rel_path": "worker/sdk/typescript/run.mjs",
+      "rel_path": "nodes/sdk/droid-typescript-fresh/168586a93f85a7cfb965bee193246b872d9da778a3e9f861cd3545c978e3ef11/runtime/typescript/run.mjs",
       "file": "assets/worker/sdk/typescript/run.mjs"
     },
     {
-      "rel_path": "worker/sdk/typescript/contract.mjs",
+      "rel_path": "nodes/sdk/droid-typescript-fresh/168586a93f85a7cfb965bee193246b872d9da778a3e9f861cd3545c978e3ef11/runtime/typescript/contract.mjs",
       "file": "../../../../mcp_bridge/sdk_contract.mjs"
     },
     {
-      "rel_path": "worker/sdk/typescript/sdk_bindings.json",
+      "rel_path": "nodes/sdk/droid-typescript-fresh/168586a93f85a7cfb965bee193246b872d9da778a3e9f861cd3545c978e3ef11/runtime/typescript/sdk_bindings.json",
       "file": "../../../../mcp_bridge/sdk_bindings.json"
     }
   ]

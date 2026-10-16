@@ -302,3 +302,50 @@ checks for all eleven plans and preserved nonempty-setting refusal checks.
 Skill generation and diff checks pass. The package includes a separate store
 and contract asset for each capability. These results supersede the earlier
 shared-store diagnosis; no revised SDK print or real provider run is claimed.
+
+
+## 2026-10-16 — Implemented generic Forge SDK execution
+
+The operator clarified that adding missing SDK execution support was part of the
+requested build. Forge support was implemented in an isolated worktree and
+branch `codex/harness-sdk-support-20261016`; no shared source checkout or global
+installed command was changed.
+
+The earlier "experimental/unsupported" assessment described an unfinished local
+prototype. The new generic executor validates the project-pinned package and
+entrypoint contract, every project runtime source, and interpreter bytes. It
+forwards typed inputs, supplies only declared credential environment names,
+retains failed diagnostics and partial output with those credential values
+redacted, and kills the local child process group on an authored timeout. It
+contains no vendor list, model choice, permission profile, or fresh/resume policy.
+Harness custody continues to own network use; Forge's contradictory generic
+HTTP-egress requirement was corrected. Unknown CLI parsers remain refused on the
+CLI route and do not select SDK behavior.
+
+All eleven native plan checks pass and all eleven standalone unsigned packages
+build. Each SDK has private material paths. Eleven native Block artifacts and
+`praxis/handoff/sdk/capabilities.json` retain their exact revisions. The project
+suite passes **347 tests, no skips**; generator `--check` passes for 14 handoff
+trees and one review tree. Forge's Harness/SDK, compiled-source and compiler
+checks pass, as do the author-plan tests. The wheel includes all eleven Blocks,
+the revision index, runtime pins and source helpers.
+
+Each exact development package was invoked with an empty SDK workspace, empty
+credential environment and a separate empty home. All eleven correctly failed
+before vendor imports because the selected dependencies were absent. The driver
+receipts retained the runtime/request digests and dependency error details.
+These are startup mechanics checks, not real-use SDK success or admission proof.
+Local SDK simulations additionally cover successful settings forwarding, failure
+retention, runtime/source drift and local descendant cancellation.
+
+Evidence: `/Users/nate/Documents/Codex/2026-10-16/harness-handoff-correction/`:
+`sdk-support-checks-final`, `sdk-development-pinned`,
+`sdk-safe-startup-final/checked-summary.json`, `sdk-pytest-final.txt`, and
+`sdk-support-result.json`. The result record identifies the final worker build,
+source commits and artifact pins. Earlier attempts are retained as earlier
+attempts; no source or readiness observation was relabeled.
+
+The globally installed factory has not been replaced. Full vendor runtime
+closure, authorized account success/safe failure and interruption recovery,
+admission/release, Atlas catalogue promotion and native AO consumption remain
+unproven. No harness provider calls, remote jobs, spend or FL work occurred.

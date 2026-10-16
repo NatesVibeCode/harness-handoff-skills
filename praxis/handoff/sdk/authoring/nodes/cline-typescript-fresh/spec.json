@@ -287,7 +287,7 @@
           "runner_digest": {
             "type": "string",
             "enum": [
-              "sha256:01ef71f3156c575f3f7444900519cabfe2ada59a605e2fe30d4afe9cf9b317aa"
+              "sha256:ab166ee42f2f1b178990c42d143eaa91f6187fdd913c0ff3abb85dcd4a75f6a5"
             ]
           },
           "contract_digest": {
@@ -299,7 +299,7 @@
           "bindings_digest": {
             "type": "string",
             "enum": [
-              "sha256:d8d27d1a2a578b38fef151ea73f7f443081600e33f0e28da16ee21525ba6ffc0"
+              "sha256:6c2c77a581018991a6e25e1109d49d1ea63bd6133f33e8123e7b8fc7acc0e05f"
             ]
           },
           "settings_digest": {
@@ -411,10 +411,36 @@
           "operation": "fresh",
           "adapter": "cline_ts_fresh",
           "adapter_digest": "sha256:2146a8e3816740d1ad542a129b8938c598ed1d55ed47137df7447fa9cd96795f",
-          "runner_digest": "sha256:01ef71f3156c575f3f7444900519cabfe2ada59a605e2fe30d4afe9cf9b317aa",
+          "runner_digest": "sha256:ab166ee42f2f1b178990c42d143eaa91f6187fdd913c0ff3abb85dcd4a75f6a5",
           "contract_digest": "sha256:f9483f132fbc7875483adcc2548861340e7b82e31c4a56b1f282b2b64e48d869",
-          "bindings_digest": "sha256:d8d27d1a2a578b38fef151ea73f7f443081600e33f0e28da16ee21525ba6ffc0",
-          "dispatch_source_digest": "316eebc30b2dceeb2d6bad80b9d323a14871c92aa0cb719b2a6631d20ac0670b"
+          "bindings_digest": "sha256:6c2c77a581018991a6e25e1109d49d1ea63bd6133f33e8123e7b8fc7acc0e05f",
+          "dispatch_source_digest": "316eebc30b2dceeb2d6bad80b9d323a14871c92aa0cb719b2a6631d20ac0670b",
+          "dispatch_pointer": "sdkdispatch.Run",
+          "runner_file": "nodes/sdk/cline-typescript-fresh/1a2ee2447314fb42ad8776a3c8e704d9db8575b54d7e60ab99e3e7002c3e021b/runtime/typescript/run.mjs",
+          "working_directory_slot": "workspace",
+          "files": {
+            "nodes/sdk/cline-typescript-fresh/1a2ee2447314fb42ad8776a3c8e704d9db8575b54d7e60ab99e3e7002c3e021b/runtime/typescript/adapters.mjs": "sha256:2146a8e3816740d1ad542a129b8938c598ed1d55ed47137df7447fa9cd96795f",
+            "nodes/sdk/cline-typescript-fresh/1a2ee2447314fb42ad8776a3c8e704d9db8575b54d7e60ab99e3e7002c3e021b/runtime/typescript/run.mjs": "sha256:ab166ee42f2f1b178990c42d143eaa91f6187fdd913c0ff3abb85dcd4a75f6a5",
+            "nodes/sdk/cline-typescript-fresh/1a2ee2447314fb42ad8776a3c8e704d9db8575b54d7e60ab99e3e7002c3e021b/runtime/typescript/contract.mjs": "sha256:f9483f132fbc7875483adcc2548861340e7b82e31c4a56b1f282b2b64e48d869",
+            "nodes/sdk/cline-typescript-fresh/1a2ee2447314fb42ad8776a3c8e704d9db8575b54d7e60ab99e3e7002c3e021b/runtime/typescript/sdk_bindings.json": "sha256:6c2c77a581018991a6e25e1109d49d1ea63bd6133f33e8123e7b8fc7acc0e05f",
+            "nodes/sdk/cline-typescript-fresh/1a2ee2447314fb42ad8776a3c8e704d9db8575b54d7e60ab99e3e7002c3e021b/runtime/harness.json": "sha256:61fa864fe6902efdda5f29a017693ffb3472448ec175e9c81c4adc4018258373"
+          },
+          "runtime": {
+            "binary": "node",
+            "sha256": "1ef99ea25fe70c9b67e7efe768ef8ee22148d3cabc703db6131b57aeb617d040",
+            "arguments": []
+          },
+          "environment": [
+            "ANTHROPIC_API_KEY",
+            "OPENAI_API_KEY",
+            "GOOGLE_API_KEY",
+            "GEMINI_API_KEY",
+            "OPENROUTER_API_KEY",
+            "GROQ_API_KEY",
+            "MISTRAL_API_KEY",
+            "DEEPSEEK_API_KEY"
+          ],
+          "contract_file": "nodes/sdk/cline-typescript-fresh/1a2ee2447314fb42ad8776a3c8e704d9db8575b54d7e60ab99e3e7002c3e021b/runtime/harness.json"
         }
       }
     },

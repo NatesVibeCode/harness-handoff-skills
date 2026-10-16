@@ -8,9 +8,9 @@
       "spec_file": "nodes/opencode-typescript-fresh/spec.json",
       "source_file": "assets/sdk_dispatch.go",
       "dispatch": {
-        "dir": "invoke",
+        "dir": "sdk/opencode-typescript-fresh/ddb926d19ae04f4fc0670a9207db0d9f205ab8ac5170628c2cc19a8c2816171e",
         "file": "spec.json",
-        "source_file": "entry.go",
+        "source_file": "sdk_dispatch.go",
         "package": "sdkdispatch",
         "symbol": "Run"
       }
@@ -128,23 +128,23 @@
   },
   "assets": [
     {
-      "rel_path": "worker/harness.json",
+      "rel_path": "nodes/sdk/opencode-typescript-fresh/ddb926d19ae04f4fc0670a9207db0d9f205ab8ac5170628c2cc19a8c2816171e/runtime/harness.json",
       "file": "assets/worker/harness-opencode.json"
     },
     {
-      "rel_path": "worker/sdk/typescript/adapters.mjs",
+      "rel_path": "nodes/sdk/opencode-typescript-fresh/ddb926d19ae04f4fc0670a9207db0d9f205ab8ac5170628c2cc19a8c2816171e/runtime/typescript/adapters.mjs",
       "file": "assets/worker/sdk/typescript/adapters.mjs"
     },
     {
-      "rel_path": "worker/sdk/typescript/run.mjs",
+      "rel_path": "nodes/sdk/opencode-typescript-fresh/ddb926d19ae04f4fc0670a9207db0d9f205ab8ac5170628c2cc19a8c2816171e/runtime/typescript/run.mjs",
       "file": "assets/worker/sdk/typescript/run.mjs"
     },
     {
-      "rel_path": "worker/sdk/typescript/contract.mjs",
+      "rel_path": "nodes/sdk/opencode-typescript-fresh/ddb926d19ae04f4fc0670a9207db0d9f205ab8ac5170628c2cc19a8c2816171e/runtime/typescript/contract.mjs",
       "file": "../../../../mcp_bridge/sdk_contract.mjs"
     },
     {
-      "rel_path": "worker/sdk/typescript/sdk_bindings.json",
+      "rel_path": "nodes/sdk/opencode-typescript-fresh/ddb926d19ae04f4fc0670a9207db0d9f205ab8ac5170628c2cc19a8c2816171e/runtime/typescript/sdk_bindings.json",
       "file": "../../../../mcp_bridge/sdk_bindings.json"
     }
   ]

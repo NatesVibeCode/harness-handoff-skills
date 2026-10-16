@@ -58,7 +58,10 @@
         ],
         "closure_qualified": false
       },
-      "settings_nonempty_strings": true
+      "settings_nonempty_strings": true,
+      "environment": [
+        "GEMINI_API_KEY"
+      ]
     },
     "claude": {
       "language": "python",
@@ -133,7 +136,11 @@
         ],
         "closure_qualified": false
       },
-      "settings_nonempty_strings": true
+      "settings_nonempty_strings": true,
+      "environment": [
+        "ANTHROPIC_API_KEY",
+        "ANTHROPIC_BASE_URL"
+      ]
     },
     "copilot": {
       "language": "python",
@@ -178,7 +185,12 @@
         ],
         "closure_qualified": false
       },
-      "settings_nonempty_strings": true
+      "settings_nonempty_strings": true,
+      "environment": [
+        "COPILOT_API_KEY",
+        "GITHUB_TOKEN",
+        "GH_TOKEN"
+      ]
     },
     "cursor": {
       "language": "python",
@@ -232,7 +244,10 @@
         ],
         "closure_qualified": false
       },
-      "settings_nonempty_strings": true
+      "settings_nonempty_strings": true,
+      "environment": [
+        "CURSOR_API_KEY"
+      ]
     },
     "muse": {
       "language": "python",
@@ -291,7 +306,11 @@
           "reason": "muse-code-sdk 1.4.7 imports muse_code_msp but does not declare it"
         }
       ],
-      "settings_nonempty_strings": true
+      "settings_nonempty_strings": true,
+      "environment": [
+        "META_API_KEY",
+        "MUSE_EXPERIMENTAL_SDK_ENABLED"
+      ]
     },
     "openhands": {
       "language": "python",
@@ -355,7 +374,11 @@
         ],
         "closure_qualified": false
       },
-      "settings_nonempty_strings": true
+      "settings_nonempty_strings": true,
+      "environment": [
+        "LLM_API_KEY",
+        "LLM_BASE_URL"
+      ]
     },
     "amp": {
       "language": "typescript",
@@ -431,7 +454,10 @@
         },
         "closure_qualified": false
       },
-      "settings_nonempty_strings": true
+      "settings_nonempty_strings": true,
+      "environment": [
+        "AMP_API_KEY"
+      ]
     },
     "cline": {
       "language": "typescript",
@@ -560,7 +586,17 @@
         },
         "closure_qualified": false
       },
-      "settings_nonempty_strings": true
+      "settings_nonempty_strings": true,
+      "environment": [
+        "ANTHROPIC_API_KEY",
+        "OPENAI_API_KEY",
+        "GOOGLE_API_KEY",
+        "GEMINI_API_KEY",
+        "OPENROUTER_API_KEY",
+        "GROQ_API_KEY",
+        "MISTRAL_API_KEY",
+        "DEEPSEEK_API_KEY"
+      ]
     },
     "codex": {
       "language": "typescript",
@@ -626,7 +662,10 @@
         },
         "closure_qualified": false
       },
-      "settings_nonempty_strings": true
+      "settings_nonempty_strings": true,
+      "environment": [
+        "OPENAI_API_KEY"
+      ]
     },
     "droid": {
       "language": "typescript",
@@ -694,7 +733,10 @@
         },
         "closure_qualified": false
       },
-      "settings_nonempty_strings": true
+      "settings_nonempty_strings": true,
+      "environment": [
+        "FACTORY_API_KEY"
+      ]
     },
     "opencode": {
       "language": "typescript",
@@ -766,7 +808,17 @@
         },
         "closure_qualified": false
       },
-      "settings_nonempty_strings": true
+      "settings_nonempty_strings": true,
+      "environment": [
+        "ANTHROPIC_API_KEY",
+        "OPENAI_API_KEY",
+        "GOOGLE_API_KEY",
+        "GEMINI_API_KEY",
+        "OPENROUTER_API_KEY",
+        "GROQ_API_KEY",
+        "MISTRAL_API_KEY",
+        "DEEPSEEK_API_KEY"
+      ]
     }
   }
 }

@@ -342,7 +342,7 @@ def test_supported_forge_entrypoint_accepts_each_typed_need(harness, tmp_path):
     store = json.loads((author/f'stores-{slug}.json').read_text())
     assert [c['name'] for c in store['contracts']] == [harness]
     plan = json.loads((author/f'plan-{slug}.json').read_text())
-    contract_asset = next(asset for asset in plan['assets'] if asset['rel_path'] == 'worker/harness.json')
+    contract_asset = next(asset for asset in plan['assets'] if asset['rel_path'].endswith('/harness.json'))
     assert list(json.loads((author/contract_asset['file']).read_text())['contracts']) == [harness]
     def ports(side):
         return [{'name': f['name'], 'type': f['type'], 'semantic': spec['composition'][side+'s'][f['name']]['semantic'], 'required': f['required']}
@@ -364,3 +364,28 @@ def test_openhands_supported_empty_tool_selection_is_not_an_empty_enum(tmp_path)
     req['settings']['tools'] = ['unsupported-tool']
     with pytest.raises(ValueError, match='declared selection'):
         sdk_contract.validate_request(req, 'python')
+
+
+def test_sdk_blocks_and_material_have_exact_private_bindings():
+    root = ROOT/'praxis/handoff/sdk'
+    index = json.loads((root/'capabilities.json').read_text())
+    assert len(index['capabilities']) == len(BINDINGS) == 11
+    assert index['readiness']['development_package_built']
+    assert not index['readiness']['admitted']
+    claimed_paths = set()
+    for entry in index['capabilities']:
+        plan = json.loads((root/entry['plan']).read_text())
+        spec = json.loads((root/entry['node_spec']).read_text())
+        block = json.loads((root/entry['block_file']).read_text())
+        assert block['nodes'][0]['node']['digest'] == entry['node']['digest']
+        assert block['nodes'][0]['node']['name'] == spec['identity']['name']
+        sdk = next(d['contents']['sdk'] for d in spec['dimensions'] if d['name'] == 'handoff')
+        assert sdk['contract_file'] in sdk['files']
+        assert sdk['runner_file'] in sdk['files']
+        assert sdk['runtime']['arguments'] is not None
+        paths = {asset['rel_path'] for asset in plan['assets']}
+        assert not paths & claimed_paths
+        claimed_paths |= paths
+        assert paths == set(sdk['files'])
+        for asset in plan['assets']:
+            assert sdk['files'][asset['rel_path']] == sdk_contract.digest((root/'authoring'/asset['file']).read_bytes())

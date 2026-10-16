@@ -180,6 +180,12 @@ def node_spec(harness: str, operation: str, contract: dict, package_version: str
             "contract_digest": raw_sha256((REPO_ROOT / ("mcp_bridge/sdk_contract.mjs" if language == "typescript" else "mcp_bridge/sdk_contract.py")).read_bytes()),
             "bindings_digest": raw_sha256(BINDINGS_PATH.read_bytes()),
             "dispatch_source_digest": dispatch_source_digest,
+            "dispatch_pointer": "sdkdispatch.Run",
+            "runner_file": "worker/sdk/typescript/run.mjs" if language == "typescript" else "worker/sdk/run.py",
+            "working_directory_slot": "workspace",
+            "files": {},
+            "runtime": read_json(HERE / "runtime-pins.json")["runtimes"][language],
+            "environment": BINDINGS[harness]["environment"],
         },
     }
     return {
@@ -219,6 +225,10 @@ def node_spec(harness: str, operation: str, contract: dict, package_version: str
     }
 
 
+def handoff_material(node):
+    return next(d["contents"]["sdk"] for d in node["dimensions"] if d["name"] == "handoff")
+
+
 def make_plan(harness: str, operation: str, contract: dict, package_version: str, adapter_digest: str, runner_digest: str, dispatch_source_digest: str, digest: str, *, language: str = "python", module: str | None = None, entrypoint: str | None = None, adapter: str | None = None):
     slug = f"{harness}-{operation}"
     node_fields = operation_fields(harness, operation, language)
@@ -237,7 +247,7 @@ def make_plan(harness: str, operation: str, contract: dict, package_version: str
                 "dispatch": {
                     "dir": "invoke",
                     "file": "spec.json",
-                    "source_file": "entry.go",
+                    "source_file": "sdk_dispatch.go",
                     "package": "sdkdispatch",
                     "symbol": "Run",
                 },
@@ -297,8 +307,20 @@ def make_plan(harness: str, operation: str, contract: dict, package_version: str
     node = node_spec(harness, operation, contract, package_version, adapter_digest, runner_digest, dispatch_source_digest, digest, language=language, module=module, entrypoint=entrypoint, adapter=adapter)
     if language == "typescript":
         node["identity"]["name"] = f"harness.sdk.typescript.{harness}.{operation}"
+    # Private material paths let different SDK Nodes and exact revisions coexist.
+    material_id = hashlib.sha256(json.dumps(handoff_material(node), sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+    private_dir = f"sdk/{harness}-{language}-{operation}/{material_id}"
+    plan["nodes"][0]["dispatch"]["dir"] = private_dir
+    sdk_root = f"nodes/{private_dir}/runtime"
+    for asset in plan["assets"]:
+        asset["rel_path"] = asset["rel_path"].replace("worker/harness.json", sdk_root + "/harness.json").replace("worker/sdk/", sdk_root + "/")
+    handoff = next(d["contents"] for d in node["dimensions"] if d["name"] == "handoff")
+    handoff["sdk"]["runner_file"] = f"{sdk_root}/typescript/run.mjs" if language == "typescript" else f"{sdk_root}/run.py"
+    handoff["sdk"]["contract_file"] = f"{sdk_root}/harness.json"
+    handoff["sdk"]["files"] = {a["rel_path"]: raw_sha256((HERE/a["file"]).read_bytes()) for a in plan["assets"] if not a["rel_path"].endswith("/harness.json")}
     contract_text = (REPO_ROOT / f"{harness}-harness-handoff/contract.json").read_text(encoding="utf-8")
     write_json(HERE / f"assets/worker/harness-{harness}.json", {"contracts": {harness: contract_text}})
+    handoff["sdk"]["files"][handoff["sdk"]["contract_file"]] = raw_sha256((HERE/f"assets/worker/harness-{harness}.json").read_bytes())
     write_json(HERE / "nodes" / slug / "spec.json", node)
     write_json(HERE / f"plan-{slug}.json", plan)
     stores = read_json(HERE / "stores.json")

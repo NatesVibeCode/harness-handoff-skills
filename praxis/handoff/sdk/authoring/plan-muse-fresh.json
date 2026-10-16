@@ -8,9 +8,9 @@
       "spec_file": "nodes/muse-fresh/spec.json",
       "source_file": "assets/sdk_dispatch.go",
       "dispatch": {
-        "dir": "invoke",
+        "dir": "sdk/muse-python-fresh/2ccc7c076d537459dafd83d17bc56f23a891ea88f116325f92c27fe2841f57c6",
         "file": "spec.json",
-        "source_file": "entry.go",
+        "source_file": "sdk_dispatch.go",
         "package": "sdkdispatch",
         "symbol": "Run"
       }
@@ -128,23 +128,23 @@
   },
   "assets": [
     {
-      "rel_path": "worker/harness.json",
+      "rel_path": "nodes/sdk/muse-python-fresh/2ccc7c076d537459dafd83d17bc56f23a891ea88f116325f92c27fe2841f57c6/runtime/harness.json",
       "file": "assets/worker/harness-muse.json"
     },
     {
-      "rel_path": "worker/sdk/run.py",
+      "rel_path": "nodes/sdk/muse-python-fresh/2ccc7c076d537459dafd83d17bc56f23a891ea88f116325f92c27fe2841f57c6/runtime/run.py",
       "file": "../../../../mcp_bridge/sdk_runner.py"
     },
     {
-      "rel_path": "worker/sdk/mcp_bridge/sdk_operations.py",
+      "rel_path": "nodes/sdk/muse-python-fresh/2ccc7c076d537459dafd83d17bc56f23a891ea88f116325f92c27fe2841f57c6/runtime/mcp_bridge/sdk_operations.py",
       "file": "../../../../mcp_bridge/sdk_operations.py"
     },
     {
-      "rel_path": "worker/sdk/mcp_bridge/sdk_contract.py",
+      "rel_path": "nodes/sdk/muse-python-fresh/2ccc7c076d537459dafd83d17bc56f23a891ea88f116325f92c27fe2841f57c6/runtime/mcp_bridge/sdk_contract.py",
       "file": "../../../../mcp_bridge/sdk_contract.py"
     },
     {
-      "rel_path": "worker/sdk/mcp_bridge/sdk_bindings.json",
+      "rel_path": "nodes/sdk/muse-python-fresh/2ccc7c076d537459dafd83d17bc56f23a891ea88f116325f92c27fe2841f57c6/runtime/mcp_bridge/sdk_bindings.json",
       "file": "../../../../mcp_bridge/sdk_bindings.json"
     }
   ]

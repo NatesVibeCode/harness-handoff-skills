@@ -8,9 +8,9 @@
       "spec_file": "nodes/amp-typescript-fresh/spec.json",
       "source_file": "assets/sdk_dispatch.go",
       "dispatch": {
-        "dir": "invoke",
+        "dir": "sdk/amp-typescript-fresh/51a7367c103fac0a1e677b48e8c53025efa36780b3d1a9350c349f4f9becc625",
         "file": "spec.json",
-        "source_file": "entry.go",
+        "source_file": "sdk_dispatch.go",
         "package": "sdkdispatch",
         "symbol": "Run"
       }
@@ -128,23 +128,23 @@
   },
   "assets": [
     {
-      "rel_path": "worker/harness.json",
+      "rel_path": "nodes/sdk/amp-typescript-fresh/51a7367c103fac0a1e677b48e8c53025efa36780b3d1a9350c349f4f9becc625/runtime/harness.json",
       "file": "assets/worker/harness-amp.json"
     },
     {
-      "rel_path": "worker/sdk/typescript/adapters.mjs",
+      "rel_path": "nodes/sdk/amp-typescript-fresh/51a7367c103fac0a1e677b48e8c53025efa36780b3d1a9350c349f4f9becc625/runtime/typescript/adapters.mjs",
       "file": "assets/worker/sdk/typescript/adapters.mjs"
     },
     {
-      "rel_path": "worker/sdk/typescript/run.mjs",
+      "rel_path": "nodes/sdk/amp-typescript-fresh/51a7367c103fac0a1e677b48e8c53025efa36780b3d1a9350c349f4f9becc625/runtime/typescript/run.mjs",
       "file": "assets/worker/sdk/typescript/run.mjs"
     },
     {
-      "rel_path": "worker/sdk/typescript/contract.mjs",
+      "rel_path": "nodes/sdk/amp-typescript-fresh/51a7367c103fac0a1e677b48e8c53025efa36780b3d1a9350c349f4f9becc625/runtime/typescript/contract.mjs",
       "file": "../../../../mcp_bridge/sdk_contract.mjs"
     },
     {
-      "rel_path": "worker/sdk/typescript/sdk_bindings.json",
+      "rel_path": "nodes/sdk/amp-typescript-fresh/51a7367c103fac0a1e677b48e8c53025efa36780b3d1a9350c349f4f9becc625/runtime/typescript/sdk_bindings.json",
       "file": "../../../../mcp_bridge/sdk_bindings.json"
     }
   ]

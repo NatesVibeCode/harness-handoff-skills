@@ -1,0 +1,18 @@
+{
+  "schema": "harness.sdk_runtime_pins.v1",
+  "target": "darwin-arm64",
+  "runtimes": {
+    "python": {
+      "binary": "python3",
+      "sha256": "cbf84109626aa1013bbe408fbb9590bd0f1c1548f038b2221c6b8b87de26ca43",
+      "arguments": [
+        "-I"
+      ]
+    },
+    "typescript": {
+      "binary": "node",
+      "sha256": "1ef99ea25fe70c9b67e7efe768ef8ee22148d3cabc703db6131b57aeb617d040",
+      "arguments": []
+    }
+  }
+}

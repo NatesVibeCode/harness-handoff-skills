@@ -8,9 +8,9 @@
       "spec_file": "nodes/copilot-fresh/spec.json",
       "source_file": "assets/sdk_dispatch.go",
       "dispatch": {
-        "dir": "invoke",
+        "dir": "sdk/copilot-python-fresh/49c82b9e754ecf075d48288b7edd6a1bc9a6e9d185896f55afb22c46b90a6fd5",
         "file": "spec.json",
-        "source_file": "entry.go",
+        "source_file": "sdk_dispatch.go",
         "package": "sdkdispatch",
         "symbol": "Run"
       }
@@ -128,23 +128,23 @@
   },
   "assets": [
     {
-      "rel_path": "worker/harness.json",
+      "rel_path": "nodes/sdk/copilot-python-fresh/49c82b9e754ecf075d48288b7edd6a1bc9a6e9d185896f55afb22c46b90a6fd5/runtime/harness.json",
       "file": "assets/worker/harness-copilot.json"
     },
     {
-      "rel_path": "worker/sdk/run.py",
+      "rel_path": "nodes/sdk/copilot-python-fresh/49c82b9e754ecf075d48288b7edd6a1bc9a6e9d185896f55afb22c46b90a6fd5/runtime/run.py",
       "file": "../../../../mcp_bridge/sdk_runner.py"
     },
     {
-      "rel_path": "worker/sdk/mcp_bridge/sdk_operations.py",
+      "rel_path": "nodes/sdk/copilot-python-fresh/49c82b9e754ecf075d48288b7edd6a1bc9a6e9d185896f55afb22c46b90a6fd5/runtime/mcp_bridge/sdk_operations.py",
       "file": "../../../../mcp_bridge/sdk_operations.py"
     },
     {
-      "rel_path": "worker/sdk/mcp_bridge/sdk_contract.py",
+      "rel_path": "nodes/sdk/copilot-python-fresh/49c82b9e754ecf075d48288b7edd6a1bc9a6e9d185896f55afb22c46b90a6fd5/runtime/mcp_bridge/sdk_contract.py",
       "file": "../../../../mcp_bridge/sdk_contract.py"
     },
     {
-      "rel_path": "worker/sdk/mcp_bridge/sdk_bindings.json",
+      "rel_path": "nodes/sdk/copilot-python-fresh/49c82b9e754ecf075d48288b7edd6a1bc9a6e9d185896f55afb22c46b90a6fd5/runtime/mcp_bridge/sdk_bindings.json",
       "file": "../../../../mcp_bridge/sdk_bindings.json"
     }
   ]
