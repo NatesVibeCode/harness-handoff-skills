@@ -19,9 +19,8 @@ from __future__ import annotations
 
 import asyncio
 import importlib.util
+import re
 import sys
-
-from mcp_bridge import cli_executor
 
 
 def available(harness: str) -> bool:
@@ -45,7 +44,12 @@ def available(harness: str) -> bool:
 
 
 def _receipt(harness: str, session_id: str | None, output: str) -> dict:
-    return {"harness": harness, "route": "sdk", "session_id": session_id, "output": cli_executor.redact(output[-8000:])}
+    redacted = re.sub(
+        r"(sk-[A-Za-z0-9-_]{8,}|xai-[A-Za-z0-9-_]{8,}|sgamp_[A-Za-z0-9-_]{8,}|crsr_[A-Za-z0-9-_]{8,}|perm-[A-Za-z0-9-_]{8,})",
+        "[redacted-credential]",
+        output,
+    )
+    return {"harness": harness, "route": "sdk", "session_id": session_id, "output": redacted}
 
 
 async def run_plan(plan, *, authorization=None):
@@ -120,7 +124,10 @@ async def cursor_fresh(prompt: str, workspace: str | None, model: str | None, ap
         local=LocalAgentOptions(cwd=workspace or "."),
     ) as agent:
         run = agent.send(prompt)
-        text = run.wait() if hasattr(run, "wait") else run.text()
+        result = run.wait() if hasattr(run, "wait") else run
+        text = getattr(result, "result", None)
+        if text is None:
+            text = run.text() if hasattr(run, "text") else result
         return _receipt("cursor", agent.agent_id, str(text))
 
 
@@ -131,7 +138,10 @@ async def cursor_resume(session_id: str, prompt: str, workspace: str | None) -> 
 
     agent = Agent.resume(session_id)
     run = agent.send(prompt)
-    text = run.wait() if hasattr(run, "wait") else run.text()
+    result = run.wait() if hasattr(run, "wait") else run
+    text = getattr(result, "result", None)
+    if text is None:
+        text = run.text() if hasattr(run, "text") else result
     return _receipt("cursor", agent.agent_id, str(text))
 
 
@@ -141,8 +151,8 @@ async def cursor_history(session_id: str, workspace: str | None, limit: int = 20
     from cursor_sdk import Agent
 
     agent = Agent.resume(session_id)
-    conversation = agent.conversation() if hasattr(agent, "conversation") else None
-    return _receipt("cursor", session_id, str(conversation))
+    messages = agent.list_messages()
+    return _receipt("cursor", session_id, str(messages[:limit]))
 
 
 # --- copilot --------------------------------------------------------------
@@ -195,6 +205,32 @@ async def copilot_resume(session_id: str, prompt: str, workspace: str | None,
 # --- muse -----------------------------------------------------------------
 
 
+def _muse_item_text(item) -> str:
+    value = item
+    nested = item.get("item") if isinstance(item, dict) else getattr(item, "item", None)
+    if nested is not None:
+        value = nested
+    get = (lambda key: value.get(key)) if isinstance(value, dict) else (lambda key: getattr(value, key, None))
+    if get("kind") != "agentMessage" or get("status") != "completed":
+        return ""
+    text = get("text")
+    return text if isinstance(text, str) else ""
+
+
+async def _muse_completed_text(turn) -> str:
+    chunks: list[str] = []
+    async for item in turn.items():
+        text = _muse_item_text(item)
+        if text:
+            chunks.append(text)
+    outcome = await turn.completed
+    if getattr(outcome, 'kind', None) != 'completed' or getattr(outcome, 'params', {}).get('terminal') != 'completed':
+        raise RuntimeError('muse SDK turn did not complete successfully')
+    if not chunks:
+        raise RuntimeError("muse SDK turn completed without a completed agent message")
+    return "\n".join(chunks)
+
+
 async def muse_fresh(prompt: str, workspace: str | None, model: str | None, approval: str) -> dict:
     if model:
         raise RuntimeError("muse SDK adapter cannot bind the selected model")
@@ -213,11 +249,7 @@ async def muse_fresh(prompt: str, workspace: str | None, model: str | None, appr
         turn = await session.send_user_turn(
             SendUserTurnOptions(input=[{"type": "text", "text": prompt}], composer_input=prompt)
         )
-        chunks: list[str] = []
-        async for item in turn.items():
-            chunks.append(str(item))
-        await turn.completed
-        return _receipt("muse", session_id, "\n".join(chunks))
+        return _receipt("muse", session_id, await _muse_completed_text(turn))
     finally:
         await client.close()
 
@@ -225,7 +257,7 @@ async def muse_fresh(prompt: str, workspace: str | None, model: str | None, appr
 async def muse_resume(session_id: str, prompt: str, workspace: str | None) -> dict:
     if workspace:
         raise RuntimeError("muse SDK resume cannot bind or verify the selected workspace")
-    from muse_code import MuseClient, MuseClientSpawnOptions, SendUserTurnOptions
+    from muse_code import MuseClient, MuseClientSpawnOptions, ResumeSessionOptions, SendUserTurnOptions
 
     client = await MuseClient.spawn(
         MuseClientSpawnOptions(
@@ -235,15 +267,11 @@ async def muse_resume(session_id: str, prompt: str, workspace: str | None) -> di
         )
     )
     try:
-        session = await client.resume_session(session_id)
+        session = await client.resume_session(ResumeSessionOptions(session_id=session_id))
         turn = await session.send_user_turn(
             SendUserTurnOptions(input=[{"type": "text", "text": prompt}], composer_input=prompt)
         )
-        chunks: list[str] = []
-        async for item in turn.items():
-            chunks.append(str(item))
-        await turn.completed
-        return _receipt("muse", session_id, "\n".join(chunks))
+        return _receipt("muse", session_id, await _muse_completed_text(turn))
     finally:
         await client.close()
 

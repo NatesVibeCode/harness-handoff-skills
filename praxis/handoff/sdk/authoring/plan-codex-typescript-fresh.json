@@ -1,0 +1,151 @@
+{
+  "schema": "forge.author_plan.v1",
+  "module": "github.com/natesvibecode/harness-handoff/praxis/handoff/sdk",
+  "tool_name": "harness_sdk_typescript_codex_fresh",
+  "nodes": [
+    {
+      "key": "invoke",
+      "spec_file": "nodes/codex-typescript-fresh/spec.json",
+      "source_file": "assets/sdk_dispatch.go",
+      "dispatch": {
+        "dir": "invoke",
+        "file": "spec.json",
+        "source_file": "entry.go",
+        "package": "sdkdispatch",
+        "symbol": "Run"
+      }
+    }
+  ],
+  "blocks": [
+    {
+      "key": "operation",
+      "name": "harness.sdk.typescript.codex.fresh",
+      "nodes": [
+        {
+          "key": "invoke",
+          "node": "invoke"
+        }
+      ],
+      "inputs": [
+        {
+          "name": "prompt",
+          "to": {
+            "node": "invoke",
+            "port": "prompt"
+          }
+        },
+        {
+          "name": "workspace",
+          "to": {
+            "node": "invoke",
+            "port": "workspace"
+          }
+        },
+        {
+          "name": "settings",
+          "to": {
+            "node": "invoke",
+            "port": "settings"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "receipt",
+          "from": {
+            "node": "invoke",
+            "port": "receipt"
+          }
+        }
+      ]
+    }
+  ],
+  "process": {
+    "name": "harness.sdk.typescript.codex.fresh",
+    "policy": {
+      "allowed_effects": [
+        "harness.invoke"
+      ],
+      "acceptance": {
+        "schema": "praxis.process_outcome_coverage.v1",
+        "required_outcomes": [
+          {
+            "id": "pinned_sdk_operation_returned",
+            "purpose": "The selected SDK adapter completed one operation and returned its exact package and source binding.",
+            "owner": {
+              "block": "operation",
+              "node": "invoke"
+            },
+            "node_outcome": "completed",
+            "deliveries": [
+              {
+                "node_output": "receipt",
+                "process_output": "receipt"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "blocks": [
+      {
+        "key": "operation",
+        "block": "operation"
+      }
+    ],
+    "inputs": [
+      {
+        "name": "prompt",
+        "to": {
+          "block": "operation",
+          "port": "prompt"
+        }
+      },
+      {
+        "name": "workspace",
+        "to": {
+          "block": "operation",
+          "port": "workspace"
+        }
+      },
+      {
+        "name": "settings",
+        "to": {
+          "block": "operation",
+          "port": "settings"
+        }
+      }
+    ],
+    "outputs": [
+      {
+        "name": "receipt",
+        "from": {
+          "block": "operation",
+          "port": "receipt"
+        }
+      }
+    ]
+  },
+  "assets": [
+    {
+      "rel_path": "worker/harness.json",
+      "file": "assets/worker/harness.json"
+    },
+    {
+      "rel_path": "worker/sdk/typescript/adapters.mjs",
+      "file": "assets/worker/sdk/typescript/adapters.mjs"
+    },
+    {
+      "rel_path": "worker/sdk/typescript/run.mjs",
+      "file": "assets/worker/sdk/typescript/run.mjs"
+    },
+    {
+      "rel_path": "worker/sdk/typescript/contract.mjs",
+      "file": "../../../../mcp_bridge/sdk_contract.mjs"
+    },
+    {
+      "rel_path": "worker/sdk/typescript/sdk_bindings.json",
+      "file": "../../../../mcp_bridge/sdk_bindings.json"
+    }
+  ]
+}

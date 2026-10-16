@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "harness.handoff_request.v1",
+  "type": "object",
+  "properties": {
+    "schema": {"type": "string", "enum": ["harness.handoff_request.v1"]},
+    "identity_context": {
+      "type": "object",
+      "properties": {
+        "operator_identity": {"type": "string"},
+        "current_product_interaction": {"type": "string"},
+        "current_client_or_harness": {"type": "string"},
+        "current_channel": {"type": "string"},
+        "current_inference_mechanism": {"type": "string"},
+        "current_execution_adapter": {"type": "string"}
+      },
+      "required": ["operator_identity", "current_product_interaction", "current_client_or_harness", "current_channel", "current_inference_mechanism", "current_execution_adapter"],
+      "additionalProperties": false
+    },
+    "destination": {
+      "type": "object",
+      "properties": {
+        "product": {"type": "string"},
+        "harness": {"type": "string", "enum": ["amp", "antigravity", "claude", "cline", "codex", "copilot", "cursor", "droid", "gemini", "grok", "junie", "muse", "opencode", "openhands"]},
+        "client_or_harness": {"type": "string"},
+        "channel": {"type": "string"},
+        "inference_mechanism": {"type": "string"},
+        "execution_adapter": {"type": "string"},
+        "operation": {"type": "string", "enum": ["fresh", "continue", "manual"]},
+        "route": {"type": "string", "enum": ["cli", "sdk", "manual"]},
+        "workspace": {"type": "string"},
+        "session_id": {"type": "string"}
+      },
+      "required": ["product", "harness", "client_or_harness", "channel", "inference_mechanism", "execution_adapter", "operation", "route", "workspace", "session_id"],
+      "additionalProperties": false
+    },
+    "task": {
+      "type": "object",
+      "properties": {
+        "direct_instruction": {"type": "string"},
+        "current_state": {"type": "string"},
+        "next_action": {"type": "string"},
+        "constraints": {"type": "array", "items": {"type": "string"}},
+        "acceptance_criteria": {"type": "array", "items": {"type": "string"}},
+        "evidence_refs": {"type": "array", "items": {"type": "string"}}
+      },
+      "required": ["direct_instruction", "current_state", "next_action", "constraints", "acceptance_criteria", "evidence_refs"],
+      "additionalProperties": false
+    }
+  },
+  "required": ["schema", "identity_context", "destination", "task"],
+  "additionalProperties": false
+}

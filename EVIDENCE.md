@@ -248,3 +248,32 @@ fourteen handoff trees and the review tree remain current. No generated skill
 files changed for this scope. The existing suite, using the real local ABAC
 source, passed **221 tests in 13.42s**. These checks do not qualify the proposed
 product, authenticate a connection or exercise any live system integration.
+
+## Fresh SDK Node source repair — 2026-10-16
+
+The isolated SDK authoring set now has eleven fresh-only Node/Block/Process plans.
+`mcp_bridge/sdk_bindings.json` owns their supported typed settings and package
+bindings. The project captures SHA-256 pins for eleven published SDK archives and
+the supplemental Muse protocol archive; this does not qualify their full runtime
+closures. Codex no longer selects a permission profile in its adapter. Completion
+checks reject send-only acknowledgments, unsuccessful terminal results and empty
+assistant output. Muse distinguishes a resolved turn from a successful turn.
+
+Local verification with the actual local ABAC evaluator source passed **323 tests
+with no skips**. This includes Python adapters, TypeScript adapter checks, and
+subprocess runner fixtures checking source drift, settings refusal before vendor
+import, and the JSON stdout channel. These SDK fixtures prove local mechanics;
+they do not represent provider success or admission evidence. The wheel builds,
+and inspection confirms exactly eleven fresh plans and all project runtime files.
+The skill generator's `--check` and `git diff --check` pass. Only Cline's generated
+contract changed; skill prose trees remain unchanged.
+
+All eleven supported `forge-author plan -check` attempts refused the current
+contract store (`harness contract: parser`). No revised SDK Process was printed,
+invoked, admitted or released, and no native AO consumption was claimed. No
+provider calls or remote job writes were made. Remaining work is documented in
+[`praxis/handoff/sdk/README.md`](praxis/handoff/sdk/README.md): supported factory
+SDK execution/contract acceptance; sealed target runtime material; authorized
+real-use success, safe-failure and interruption evidence; then exact-source
+admission, release and standalone consumption. Historical experimental prints
+are retained separately and are not qualification of these revised sources.

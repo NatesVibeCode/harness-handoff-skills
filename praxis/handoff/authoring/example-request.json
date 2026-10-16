@@ -1,0 +1,35 @@
+{
+  "schema": "harness.handoff_request.v1",
+  "identity_context": {
+    "operator_identity": "",
+    "current_product_interaction": "",
+    "current_client_or_harness": "",
+    "current_channel": "",
+    "current_inference_mechanism": "",
+    "current_execution_adapter": ""
+  },
+  "destination": {
+    "product": "Muse Code",
+    "harness": "muse",
+    "client_or_harness": "Muse Code desktop",
+    "channel": "manual paste",
+    "inference_mechanism": "pending operator selection",
+    "execution_adapter": "manual-copy",
+    "operation": "manual",
+    "route": "manual",
+    "workspace": "",
+    "session_id": ""
+  },
+  "task": {
+    "direct_instruction": "Preserve this example instruction verbatim.",
+    "current_state": "Current state supplied by the operator.",
+    "next_action": "Paste the packet into the selected Muse workspace.",
+    "constraints": [
+      "Preserve the direct instruction and selected target."
+    ],
+    "acceptance_criteria": [
+      "Return the completed result and evidence."
+    ],
+    "evidence_refs": []
+  }
+}

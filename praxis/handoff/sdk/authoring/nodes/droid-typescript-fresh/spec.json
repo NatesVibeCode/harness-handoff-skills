@@ -1,0 +1,384 @@
+{
+  "composition": {
+    "schema": "praxis.capability_contract.v1",
+    "inputs": {
+      "prompt": {
+        "semantic": "harness.sdk.droid.fresh.prompt.v1"
+      },
+      "workspace": {
+        "semantic": "harness.sdk.droid.fresh.workspace.v1"
+      },
+      "settings": {
+        "semantic": "harness.sdk.droid.fresh.settings.v1"
+      }
+    },
+    "outputs": {
+      "receipt": {
+        "semantic": "harness.sdk.droid.fresh.receipt.v1"
+      }
+    },
+    "outcomes": [
+      "completed"
+    ],
+    "effects": [
+      "harness.invoke"
+    ],
+    "failure": "error"
+  },
+  "schema": "aeltum.node_spec.v1",
+  "identity": {
+    "name": "harness.sdk.typescript.droid.fresh",
+    "kind": "harness"
+  },
+  "pattern": {
+    "key": "node.v1",
+    "digest": "144731dd834259d024c98b17ea7e62805ce5af074128133790a5dcdfafa0e24f"
+  },
+  "fields": [
+    {
+      "side": "input",
+      "name": "prompt",
+      "type": {
+        "type": "string"
+      },
+      "required": true,
+      "bounds": [
+        {
+          "key": "handoff.value.length.nonnegative",
+          "digest": "11ee5a5237e83c31468ee3fc471982ea3e1c80b33ea2444d4429707d945d5196"
+        }
+      ],
+      "description": {
+        "intent": "One prompt submitted once to a fresh SDK session",
+        "tags": [
+          "harness",
+          "sdk",
+          "input"
+        ],
+        "meaning": "One prompt submitted once to a fresh SDK session",
+        "units": "typed value",
+        "source": "caller",
+        "declared_by": "harness-handoff SDK authoring"
+      }
+    },
+    {
+      "side": "input",
+      "name": "workspace",
+      "type": {
+        "type": "string"
+      },
+      "required": true,
+      "bounds": [
+        {
+          "key": "handoff.value.length.nonnegative",
+          "digest": "11ee5a5237e83c31468ee3fc471982ea3e1c80b33ea2444d4429707d945d5196"
+        }
+      ],
+      "description": {
+        "intent": "Existing absolute workspace selected by the calling Process",
+        "tags": [
+          "harness",
+          "sdk",
+          "input"
+        ],
+        "meaning": "Existing absolute workspace selected by the calling Process",
+        "units": "typed value",
+        "source": "caller",
+        "declared_by": "harness-handoff SDK authoring"
+      }
+    },
+    {
+      "side": "input",
+      "name": "settings",
+      "type": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "modelId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "autonomyLevel": {
+            "type": "string",
+            "enum": [
+              "off",
+              "low",
+              "medium",
+              "high"
+            ]
+          },
+          "interactionMode": {
+            "type": "string",
+            "enum": [
+              "auto",
+              "spec",
+              "mission"
+            ]
+          },
+          "permission": {
+            "type": "string",
+            "enum": [
+              "deny_unapproved",
+              "unattended"
+            ]
+          }
+        },
+        "required": [
+          "modelId",
+          "autonomyLevel",
+          "interactionMode",
+          "permission"
+        ]
+      },
+      "required": true,
+      "bounds": [
+        {
+          "key": "handoff.value.length.nonnegative",
+          "digest": "11ee5a5237e83c31468ee3fc471982ea3e1c80b33ea2444d4429707d945d5196"
+        }
+      ],
+      "description": {
+        "intent": "Typed SDK settings selected by the calling Process",
+        "tags": [
+          "harness",
+          "sdk",
+          "input"
+        ],
+        "meaning": "Typed SDK settings selected by the calling Process",
+        "units": "typed value",
+        "source": "caller",
+        "declared_by": "harness-handoff SDK authoring"
+      }
+    },
+    {
+      "side": "output",
+      "name": "receipt",
+      "type": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "schema": {
+            "type": "string",
+            "enum": [
+              "praxis.harness_sdk_receipt.v1"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "succeeded"
+            ]
+          },
+          "harness": {
+            "type": "string",
+            "enum": [
+              "droid"
+            ]
+          },
+          "sdk_operation": {
+            "type": "string",
+            "enum": [
+              "fresh"
+            ]
+          },
+          "distribution": {
+            "type": "string",
+            "enum": [
+              "@factory/droid-sdk"
+            ]
+          },
+          "distribution_version": {
+            "type": "string",
+            "enum": [
+              "0.9.1"
+            ]
+          },
+          "module": {
+            "type": "string",
+            "enum": [
+              "@factory/droid-sdk/node"
+            ]
+          },
+          "entrypoint": {
+            "type": "string",
+            "enum": [
+              "createSession"
+            ]
+          },
+          "adapter": {
+            "type": "string",
+            "enum": [
+              "droid_ts_fresh"
+            ]
+          },
+          "adapter_digest": {
+            "type": "string",
+            "enum": [
+              "sha256:2146a8e3816740d1ad542a129b8938c598ed1d55ed47137df7447fa9cd96795f"
+            ]
+          },
+          "runner_digest": {
+            "type": "string",
+            "enum": [
+              "sha256:01ef71f3156c575f3f7444900519cabfe2ada59a605e2fe30d4afe9cf9b317aa"
+            ]
+          },
+          "contract_digest": {
+            "type": "string",
+            "enum": [
+              "sha256:a4537f68a3aa5d99041a87de9eedb86fa19782ee866956574335b192cdb84279"
+            ]
+          },
+          "bindings_digest": {
+            "type": "string",
+            "enum": [
+              "sha256:a83aa10624319c1b8b6baeac785a539d535a62718117e082fbf7f7d8c1c2598b"
+            ]
+          },
+          "settings_digest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "session_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "output": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "schema",
+          "status",
+          "harness",
+          "sdk_operation",
+          "distribution",
+          "distribution_version",
+          "module",
+          "entrypoint",
+          "adapter",
+          "adapter_digest",
+          "runner_digest",
+          "contract_digest",
+          "bindings_digest",
+          "settings_digest",
+          "session_id",
+          "output"
+        ]
+      },
+      "required": true,
+      "bounds": [
+        {
+          "key": "handoff.value.length.nonnegative",
+          "digest": "11ee5a5237e83c31468ee3fc471982ea3e1c80b33ea2444d4429707d945d5196"
+        }
+      ],
+      "description": {
+        "intent": "Completed SDK assistant output and exact session identity",
+        "tags": [
+          "harness",
+          "sdk",
+          "output"
+        ],
+        "meaning": "Completed SDK assistant output and exact session identity",
+        "units": "typed value",
+        "source": "computed",
+        "declared_by": "harness-handoff SDK authoring"
+      }
+    }
+  ],
+  "dimensions": [
+    {
+      "name": "surface",
+      "contents": {
+        "entry": "invoke_pinned_typescript_sdk",
+        "inputs": [
+          {
+            "field": "prompt",
+            "target": "slot:prompt"
+          },
+          {
+            "field": "workspace",
+            "target": "slot:workspace"
+          },
+          {
+            "field": "settings",
+            "target": "slot:settings"
+          }
+        ],
+        "outputs": [
+          {
+            "field": "receipt",
+            "target": "result:json"
+          }
+        ]
+      }
+    },
+    {
+      "name": "access",
+      "contents": {
+        "share": {
+          "identity": "operator-sdk-account:droid",
+          "digests": [
+            "834f2d71448639d7b881e3424a26b274bbd95e93460dd749843968e9d1dff96e"
+          ]
+        }
+      }
+    },
+    {
+      "name": "handoff",
+      "contents": {
+        "harness": "droid",
+        "executor": "sdk",
+        "contract": {
+          "digest": "sha256:834f2d71448639d7b881e3424a26b274bbd95e93460dd749843968e9d1dff96e"
+        },
+        "ownership": "customer",
+        "interactivity": "prompts",
+        "credential_channel": "native-session",
+        "credential_auth": "native-session",
+        "sdk": {
+          "language": "typescript",
+          "package": "@factory/droid-sdk",
+          "version": "0.9.1",
+          "module": "@factory/droid-sdk/node",
+          "entrypoint": "createSession",
+          "operation": "fresh",
+          "adapter": "droid_ts_fresh",
+          "adapter_digest": "sha256:2146a8e3816740d1ad542a129b8938c598ed1d55ed47137df7447fa9cd96795f",
+          "runner_digest": "sha256:01ef71f3156c575f3f7444900519cabfe2ada59a605e2fe30d4afe9cf9b317aa",
+          "contract_digest": "sha256:a4537f68a3aa5d99041a87de9eedb86fa19782ee866956574335b192cdb84279",
+          "bindings_digest": "sha256:a83aa10624319c1b8b6baeac785a539d535a62718117e082fbf7f7d8c1c2598b",
+          "dispatch_source_digest": "316eebc30b2dceeb2d6bad80b9d323a14871c92aa0cb719b2a6631d20ac0670b"
+        }
+      }
+    },
+    {
+      "name": "fields",
+      "contents": null
+    },
+    {
+      "name": "field_types",
+      "contents": null
+    }
+  ],
+  "proof_spec": {
+    "behavior": [],
+    "test": {
+      "pointer": "",
+      "digest": ""
+    },
+    "target": "sdk-runtime",
+    "mode": "real_service"
+  },
+  "usage": {
+    "purpose": "Invoke exactly one droid Typescript SDK fresh operation through its pinned adapter and return a bound receipt.",
+    "use_when": [
+      "an explicit droid SDK fresh operation is selected"
+    ],
+    "avoid_when": [
+      "the selected SDK package version or exact session identity is unknown"
+    ]
+  }
+}

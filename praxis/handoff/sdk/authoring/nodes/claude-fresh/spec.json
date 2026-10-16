@@ -1,0 +1,385 @@
+{
+  "composition": {
+    "schema": "praxis.capability_contract.v1",
+    "inputs": {
+      "prompt": {
+        "semantic": "harness.sdk.claude.fresh.prompt.v1"
+      },
+      "workspace": {
+        "semantic": "harness.sdk.claude.fresh.workspace.v1"
+      },
+      "settings": {
+        "semantic": "harness.sdk.claude.fresh.settings.v1"
+      }
+    },
+    "outputs": {
+      "receipt": {
+        "semantic": "harness.sdk.claude.fresh.receipt.v1"
+      }
+    },
+    "outcomes": [
+      "completed"
+    ],
+    "effects": [
+      "harness.invoke"
+    ],
+    "failure": "error"
+  },
+  "schema": "aeltum.node_spec.v1",
+  "identity": {
+    "name": "harness.sdk.claude.fresh",
+    "kind": "harness"
+  },
+  "pattern": {
+    "key": "node.v1",
+    "digest": "144731dd834259d024c98b17ea7e62805ce5af074128133790a5dcdfafa0e24f"
+  },
+  "fields": [
+    {
+      "side": "input",
+      "name": "prompt",
+      "type": {
+        "type": "string"
+      },
+      "required": true,
+      "bounds": [
+        {
+          "key": "handoff.value.length.nonnegative",
+          "digest": "11ee5a5237e83c31468ee3fc471982ea3e1c80b33ea2444d4429707d945d5196"
+        }
+      ],
+      "description": {
+        "intent": "One prompt submitted once to a fresh SDK session",
+        "tags": [
+          "harness",
+          "sdk",
+          "input"
+        ],
+        "meaning": "One prompt submitted once to a fresh SDK session",
+        "units": "typed value",
+        "source": "caller",
+        "declared_by": "harness-handoff SDK authoring"
+      }
+    },
+    {
+      "side": "input",
+      "name": "workspace",
+      "type": {
+        "type": "string"
+      },
+      "required": true,
+      "bounds": [
+        {
+          "key": "handoff.value.length.nonnegative",
+          "digest": "11ee5a5237e83c31468ee3fc471982ea3e1c80b33ea2444d4429707d945d5196"
+        }
+      ],
+      "description": {
+        "intent": "Existing absolute workspace selected by the calling Process",
+        "tags": [
+          "harness",
+          "sdk",
+          "input"
+        ],
+        "meaning": "Existing absolute workspace selected by the calling Process",
+        "units": "typed value",
+        "source": "caller",
+        "declared_by": "harness-handoff SDK authoring"
+      }
+    },
+    {
+      "side": "input",
+      "name": "settings",
+      "type": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "model": {
+            "type": "string",
+            "minLength": 1
+          },
+          "permission_mode": {
+            "type": "string",
+            "enum": [
+              "default",
+              "acceptEdits",
+              "bypassPermissions",
+              "plan",
+              "dontAsk",
+              "auto"
+            ]
+          },
+          "allowed_tools": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "disallowed_tools": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "required": [
+          "model",
+          "permission_mode",
+          "allowed_tools",
+          "disallowed_tools"
+        ]
+      },
+      "required": true,
+      "bounds": [
+        {
+          "key": "handoff.value.length.nonnegative",
+          "digest": "11ee5a5237e83c31468ee3fc471982ea3e1c80b33ea2444d4429707d945d5196"
+        }
+      ],
+      "description": {
+        "intent": "Typed SDK settings selected by the calling Process",
+        "tags": [
+          "harness",
+          "sdk",
+          "input"
+        ],
+        "meaning": "Typed SDK settings selected by the calling Process",
+        "units": "typed value",
+        "source": "caller",
+        "declared_by": "harness-handoff SDK authoring"
+      }
+    },
+    {
+      "side": "output",
+      "name": "receipt",
+      "type": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "schema": {
+            "type": "string",
+            "enum": [
+              "praxis.harness_sdk_receipt.v1"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "succeeded"
+            ]
+          },
+          "harness": {
+            "type": "string",
+            "enum": [
+              "claude"
+            ]
+          },
+          "sdk_operation": {
+            "type": "string",
+            "enum": [
+              "fresh"
+            ]
+          },
+          "distribution": {
+            "type": "string",
+            "enum": [
+              "claude-agent-sdk"
+            ]
+          },
+          "distribution_version": {
+            "type": "string",
+            "enum": [
+              "0.2.166"
+            ]
+          },
+          "module": {
+            "type": "string",
+            "enum": [
+              "claude_agent_sdk"
+            ]
+          },
+          "entrypoint": {
+            "type": "string",
+            "enum": [
+              "query"
+            ]
+          },
+          "adapter": {
+            "type": "string",
+            "enum": [
+              "claude_fresh"
+            ]
+          },
+          "adapter_digest": {
+            "type": "string",
+            "enum": [
+              "sha256:7389df391628385d7a8406cc14f6e4e35b0ae4671bb8b9f3152371fd96635e2d"
+            ]
+          },
+          "runner_digest": {
+            "type": "string",
+            "enum": [
+              "sha256:1544ed4341fa87faebd2c383ec21450af45519f7bdff5dd404d50108445d7996"
+            ]
+          },
+          "contract_digest": {
+            "type": "string",
+            "enum": [
+              "sha256:eb2fa64c5f56296a01fe0ab9fe55345a01b43480e8a580714d3b5850a7a7af58"
+            ]
+          },
+          "bindings_digest": {
+            "type": "string",
+            "enum": [
+              "sha256:a83aa10624319c1b8b6baeac785a539d535a62718117e082fbf7f7d8c1c2598b"
+            ]
+          },
+          "settings_digest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "session_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "output": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "schema",
+          "status",
+          "harness",
+          "sdk_operation",
+          "distribution",
+          "distribution_version",
+          "module",
+          "entrypoint",
+          "adapter",
+          "adapter_digest",
+          "runner_digest",
+          "contract_digest",
+          "bindings_digest",
+          "settings_digest",
+          "session_id",
+          "output"
+        ]
+      },
+      "required": true,
+      "bounds": [
+        {
+          "key": "handoff.value.length.nonnegative",
+          "digest": "11ee5a5237e83c31468ee3fc471982ea3e1c80b33ea2444d4429707d945d5196"
+        }
+      ],
+      "description": {
+        "intent": "Completed SDK assistant output and exact session identity",
+        "tags": [
+          "harness",
+          "sdk",
+          "output"
+        ],
+        "meaning": "Completed SDK assistant output and exact session identity",
+        "units": "typed value",
+        "source": "computed",
+        "declared_by": "harness-handoff SDK authoring"
+      }
+    }
+  ],
+  "dimensions": [
+    {
+      "name": "surface",
+      "contents": {
+        "entry": "invoke_pinned_python_sdk",
+        "inputs": [
+          {
+            "field": "prompt",
+            "target": "slot:prompt"
+          },
+          {
+            "field": "workspace",
+            "target": "slot:workspace"
+          },
+          {
+            "field": "settings",
+            "target": "slot:settings"
+          }
+        ],
+        "outputs": [
+          {
+            "field": "receipt",
+            "target": "result:json"
+          }
+        ]
+      }
+    },
+    {
+      "name": "access",
+      "contents": {
+        "share": {
+          "identity": "operator-sdk-account:claude",
+          "digests": [
+            "c926b2ebcc89cb06a0c0a15375f23c03a7bbd18ee1e05eef032a5b0735dc6a49"
+          ]
+        }
+      }
+    },
+    {
+      "name": "handoff",
+      "contents": {
+        "harness": "claude",
+        "executor": "sdk",
+        "contract": {
+          "digest": "sha256:c926b2ebcc89cb06a0c0a15375f23c03a7bbd18ee1e05eef032a5b0735dc6a49"
+        },
+        "ownership": "customer",
+        "interactivity": "prompts",
+        "credential_channel": "native-session",
+        "credential_auth": "native-session",
+        "sdk": {
+          "language": "python",
+          "package": "claude-agent-sdk",
+          "version": "0.2.166",
+          "module": "claude_agent_sdk",
+          "entrypoint": "query",
+          "operation": "fresh",
+          "adapter": "claude_fresh",
+          "adapter_digest": "sha256:7389df391628385d7a8406cc14f6e4e35b0ae4671bb8b9f3152371fd96635e2d",
+          "runner_digest": "sha256:1544ed4341fa87faebd2c383ec21450af45519f7bdff5dd404d50108445d7996",
+          "contract_digest": "sha256:eb2fa64c5f56296a01fe0ab9fe55345a01b43480e8a580714d3b5850a7a7af58",
+          "bindings_digest": "sha256:a83aa10624319c1b8b6baeac785a539d535a62718117e082fbf7f7d8c1c2598b",
+          "dispatch_source_digest": "316eebc30b2dceeb2d6bad80b9d323a14871c92aa0cb719b2a6631d20ac0670b"
+        }
+      }
+    },
+    {
+      "name": "fields",
+      "contents": null
+    },
+    {
+      "name": "field_types",
+      "contents": null
+    }
+  ],
+  "proof_spec": {
+    "behavior": [],
+    "test": {
+      "pointer": "",
+      "digest": ""
+    },
+    "target": "sdk-runtime",
+    "mode": "real_service"
+  },
+  "usage": {
+    "purpose": "Invoke exactly one claude Python SDK fresh operation through its pinned adapter and return a bound receipt.",
+    "use_when": [
+      "an explicit claude SDK fresh operation is selected"
+    ],
+    "avoid_when": [
+      "the selected SDK package version or exact session identity is unknown"
+    ]
+  }
+}

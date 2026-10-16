@@ -194,3 +194,13 @@ per-user authentication; connect it only to a trusted local MCP host and use
 that host's tool approval controls for each execution.
 
 See [evidence and limits](EVIDENCE.md) for checked versions, historical successes, failures, and untested paths. The skills contain no required private services, personal filesystem paths, or account configuration. Product names belong to their respective owners; this is an independent community project.
+
+## Praxis handoff authoring
+
+The [typed packet Process](praxis/handoff/README.md) prepares an explicit portable
+handoff packet and SHA-256 fingerprint. The [fresh SDK operation plans](praxis/handoff/sdk/README.md)
+provide eleven SDK Nodes, reusable Blocks and one-operation Processes with typed
+caller-selected settings. Current sources are development work, not admitted
+capabilities. The SDK plans are blocked at the supported factory front door;
+local adapter tests do not establish real-use readiness. The SDK guide records
+the remaining build, material, account-proof and consumption requirements.

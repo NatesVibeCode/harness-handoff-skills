@@ -1,0 +1,239 @@
+{
+  "schema": "forge.author_plan.v1",
+  "module": "github.com/natesvibecode/harness-handoff/praxis/handoff",
+  "tool_name": "prepare_handoff",
+  "nodes": [
+    {
+      "key": "request_gate",
+      "runway_file": "runway/request_gate.json"
+    },
+    {
+      "key": "render_packet",
+      "runway_file": "runway/render_packet.json"
+    },
+    {
+      "key": "fingerprint_packet",
+      "runway_file": "runway/fingerprint_packet.json"
+    }
+  ],
+  "blocks": [
+    {
+      "key": "intent",
+      "name": "harness.handoff.intent",
+      "nodes": [
+        {
+          "key": "validate",
+          "node": "request_gate"
+        }
+      ],
+      "inputs": [
+        {
+          "name": "request",
+          "to": {
+            "node": "validate",
+            "port": "request"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "validated_request",
+          "from": {
+            "node": "validate",
+            "port": "request"
+          }
+        }
+      ]
+    },
+    {
+      "key": "packet",
+      "name": "harness.handoff.packet",
+      "nodes": [
+        {
+          "key": "render",
+          "node": "render_packet"
+        },
+        {
+          "key": "fingerprint",
+          "node": "fingerprint_packet"
+        }
+      ],
+      "edges": [
+        {
+          "from": {
+            "node": "render",
+            "port": "packet_json"
+          },
+          "to": {
+            "node": "fingerprint",
+            "port": "packet_json"
+          }
+        }
+      ],
+      "inputs": [
+        {
+          "name": "request",
+          "to": {
+            "node": "render",
+            "port": "request"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "handoff_packet",
+          "from": {
+            "node": "render",
+            "port": "packet"
+          }
+        },
+        {
+          "name": "packet_json",
+          "from": {
+            "node": "render",
+            "port": "packet_json"
+          }
+        },
+        {
+          "name": "handoff_prompt",
+          "from": {
+            "node": "render",
+            "port": "handoff_prompt"
+          }
+        },
+        {
+          "name": "packet_sha256",
+          "from": {
+            "node": "fingerprint",
+            "port": "sha256"
+          }
+        }
+      ]
+    }
+  ],
+  "process": {
+    "name": "harness.handoff.prepare",
+    "policy": {
+      "allowed_effects": [],
+      "acceptance": {
+        "schema": "praxis.process_outcome_coverage.v1",
+        "required_outcomes": [
+          {
+            "id": "explicit_request_validated",
+            "purpose": "Validate that the task and execution destination are explicit before packet construction.",
+            "owner": {
+              "block": "intent",
+              "node": "validate"
+            },
+            "node_outcome": "completed",
+            "deliveries": [
+              {
+                "node_output": "request",
+                "process_output": "handoff_packet"
+              }
+            ]
+          },
+          {
+            "id": "portable_packet_prepared",
+            "purpose": "Preserve the complete task and distinct identity and destination fields in the portable packet.",
+            "owner": {
+              "block": "packet",
+              "node": "render"
+            },
+            "node_outcome": "completed",
+            "deliveries": [
+              {
+                "node_output": "packet",
+                "process_output": "handoff_packet"
+              },
+              {
+                "node_output": "packet_json",
+                "process_output": "packet_json"
+              },
+              {
+                "node_output": "handoff_prompt",
+                "process_output": "handoff_prompt"
+              }
+            ]
+          },
+          {
+            "id": "packet_fingerprint_created",
+            "purpose": "Return a digest for the exact compact JSON packet bytes.",
+            "owner": {
+              "block": "packet",
+              "node": "fingerprint"
+            },
+            "node_outcome": "completed",
+            "deliveries": [
+              {
+                "node_output": "sha256",
+                "process_output": "packet_sha256"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "blocks": [
+      {
+        "key": "intent",
+        "block": "intent"
+      },
+      {
+        "key": "packet",
+        "block": "packet"
+      }
+    ],
+    "edges": [
+      {
+        "from": {
+          "block": "intent",
+          "port": "validated_request"
+        },
+        "to": {
+          "block": "packet",
+          "port": "request"
+        }
+      }
+    ],
+    "inputs": [
+      {
+        "name": "request",
+        "to": {
+          "block": "intent",
+          "port": "request"
+        }
+      }
+    ],
+    "outputs": [
+      {
+        "name": "handoff_packet",
+        "from": {
+          "block": "packet",
+          "port": "handoff_packet"
+        }
+      },
+      {
+        "name": "packet_json",
+        "from": {
+          "block": "packet",
+          "port": "packet_json"
+        }
+      },
+      {
+        "name": "handoff_prompt",
+        "from": {
+          "block": "packet",
+          "port": "handoff_prompt"
+        }
+      },
+      {
+        "name": "packet_sha256",
+        "from": {
+          "block": "packet",
+          "port": "packet_sha256"
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,770 @@
+{
+  "schema": "harness.sdk_bindings.v1",
+  "bindings": {
+    "antigravity": {
+      "language": "python",
+      "distribution": "google-antigravity",
+      "version": "0.1.22",
+      "module": "google.antigravity",
+      "entrypoint": "Agent",
+      "minimum_runtime": "3.10",
+      "operations": [
+        "fresh"
+      ],
+      "settings": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "model": {
+            "type": "string",
+            "minLength": 1
+          },
+          "permission": {
+            "type": "string",
+            "enum": [
+              "native",
+              "unattended"
+            ]
+          },
+          "save_dir": {
+            "type": "string",
+            "minLength": 1
+          },
+          "app_data_dir": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "model",
+          "permission",
+          "save_dir",
+          "app_data_dir"
+        ]
+      },
+      "material": {
+        "url": "https://files.pythonhosted.org/packages/16/2d/fd1cb2cf1f610726914087a89960a95a33ed47e9804a00e598debc0280aa/google_antigravity-0.1.22-py3-none-macosx_11_0_arm64.whl",
+        "sha256": "1db8f5ef2eb3a821c7780d8a5c634c4d9b90d401a02de6d640c2fa69a2545b62",
+        "archive": "google_antigravity-0.1.22-py3-none-macosx_11_0_arm64.whl",
+        "license": "Apache-2.0",
+        "declared_dependencies": [
+          "absl-py",
+          "google-genai>=1.0",
+          "mcp<3.0,>=1.0",
+          "pydantic>=2.0",
+          "uvicorn>=0.46",
+          "websockets>=12.0",
+          "protobuf>=7.35",
+          "pytest>=7.0; extra == \"dev\"",
+          "opentelemetry-api; extra == \"otel\"",
+          "opentelemetry-sdk; extra == \"otel\""
+        ],
+        "closure_qualified": false
+      }
+    },
+    "claude": {
+      "language": "python",
+      "distribution": "claude-agent-sdk",
+      "version": "0.2.166",
+      "module": "claude_agent_sdk",
+      "entrypoint": "query",
+      "minimum_runtime": "3.10",
+      "operations": [
+        "fresh"
+      ],
+      "settings": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "model": {
+            "type": "string",
+            "minLength": 1
+          },
+          "permission_mode": {
+            "type": "string",
+            "enum": [
+              "default",
+              "acceptEdits",
+              "bypassPermissions",
+              "plan",
+              "dontAsk",
+              "auto"
+            ]
+          },
+          "allowed_tools": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "disallowed_tools": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "required": [
+          "model",
+          "permission_mode",
+          "allowed_tools",
+          "disallowed_tools"
+        ]
+      },
+      "material": {
+        "url": "https://files.pythonhosted.org/packages/f9/37/c15f09e30f44a05624c2b2f8e8d6ca3a7b7c4d00dd336b7869a6337d592c/claude_agent_sdk-0.2.166-py3-none-macosx_11_0_arm64.whl",
+        "sha256": "35f2082ba76d851af76954e8a19c0bd9d5b81a49a3efc7864e2d9e6ff393e743",
+        "archive": "claude_agent_sdk-0.2.166-py3-none-macosx_11_0_arm64.whl",
+        "license": "MIT",
+        "declared_dependencies": [
+          "anyio>=4.0.0",
+          "jsonschema>=4.20.0",
+          "mcp<3.0.0,>=1.23.0",
+          "sniffio>=1.0.0",
+          "typing-extensions>=4.0.0; python_version < \"3.11\"",
+          "anyio[trio]>=4.0.0; extra == \"dev\"",
+          "mypy>=1.0.0; extra == \"dev\"",
+          "pytest-cov>=4.0.0; extra == \"dev\"",
+          "pytest>=7.0.0; extra == \"dev\"",
+          "ruff>=0.1.0; extra == \"dev\"",
+          "asyncpg>=0.27.0; extra == \"examples\"",
+          "boto3>=1.28.0; extra == \"examples\"",
+          "fakeredis>=2.20.0; extra == \"examples\"",
+          "moto[s3]>=5.0.0; extra == \"examples\"",
+          "redis>=4.2.0; extra == \"examples\"",
+          "opentelemetry-api>=1.20.0; extra == \"otel\""
+        ],
+        "closure_qualified": false
+      }
+    },
+    "copilot": {
+      "language": "python",
+      "distribution": "github-copilot-sdk",
+      "version": "1.0.18",
+      "module": "copilot",
+      "entrypoint": "CopilotClient",
+      "minimum_runtime": "3.11",
+      "operations": [
+        "fresh"
+      ],
+      "settings": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "model": {
+            "type": "string",
+            "minLength": 1
+          },
+          "permission": {
+            "type": "string",
+            "enum": [
+              "deny_unapproved",
+              "unattended"
+            ]
+          }
+        },
+        "required": [
+          "model",
+          "permission"
+        ]
+      },
+      "material": {
+        "url": "https://files.pythonhosted.org/packages/5c/49/2fdd58f72e118dd3c7578d4af8b5ba2686709be3878b6c13794676ab6b88/github_copilot_sdk-1.0.18-py3-none-any.whl",
+        "sha256": "7c438b060491ce9a96ba1fe9f0951d782d83f510c898556255528e8c6d552565",
+        "archive": "github_copilot_sdk-1.0.18-py3-none-any.whl",
+        "license": "MIT",
+        "declared_dependencies": [
+          "python-dateutil>=2.9.0.post0",
+          "pydantic>=2.11",
+          "httpx>=0.24.0",
+          "opentelemetry-api>=1.0.0; extra == \"telemetry\""
+        ],
+        "closure_qualified": false
+      }
+    },
+    "cursor": {
+      "language": "python",
+      "distribution": "cursor-sdk",
+      "version": "1.0.37",
+      "module": "cursor_sdk",
+      "entrypoint": "Agent",
+      "minimum_runtime": "3.10",
+      "operations": [
+        "fresh"
+      ],
+      "settings": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "model": {
+            "type": "string",
+            "minLength": 1
+          },
+          "auto_review": {
+            "type": "boolean"
+          },
+          "sandbox_options": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "enabled": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "enabled"
+            ]
+          }
+        },
+        "required": [
+          "model",
+          "auto_review",
+          "sandbox_options"
+        ]
+      },
+      "material": {
+        "url": "https://files.pythonhosted.org/packages/9d/72/1c9c7d84b33b11168567083d9e0912435d8f5621ecc5e0679988191ee711/cursor_sdk-1.0.37-py3-none-macosx_11_0_arm64.whl",
+        "sha256": "92044518f8b565b29faddc8199b880f08cd83071970f0a9c6d28cf4c14e078e0",
+        "archive": "cursor_sdk-1.0.37-py3-none-macosx_11_0_arm64.whl",
+        "license": "Proprietary",
+        "declared_dependencies": [
+          "httpx<1,>=0.27",
+          "packaging>=24; extra == \"test\"",
+          "pytest-asyncio>=0.23; extra == \"test\"",
+          "pytest>=8; extra == \"test\""
+        ],
+        "closure_qualified": false
+      }
+    },
+    "muse": {
+      "language": "python",
+      "distribution": "muse-code-sdk",
+      "version": "1.4.7",
+      "module": "muse_code",
+      "entrypoint": "MuseClient",
+      "minimum_runtime": "3.10",
+      "operations": [
+        "fresh"
+      ],
+      "settings": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "model_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "provider_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "approval_mode": {
+            "type": "string",
+            "minLength": 1
+          },
+          "permission_profile": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "model_id",
+          "provider_id",
+          "approval_mode",
+          "permission_profile"
+        ]
+      },
+      "material": {
+        "url": "https://files.pythonhosted.org/packages/69/bf/533f6a536e9c6422974b30dfb645b52cf37c1f873765f288335a4eed4b86/muse_code_sdk-1.4.7-py3-none-any.whl",
+        "sha256": "c9df344d71f08ec93155c27f5eb35f3730947d2fa3be4095cb4baf6bbbfc3109",
+        "archive": "muse_code_sdk-1.4.7-py3-none-any.whl",
+        "license": "MIT",
+        "declared_dependencies": [
+          "pydantic==2.13.5"
+        ],
+        "closure_qualified": false
+      },
+      "additional_material": [
+        {
+          "distribution": "muse-code-msp",
+          "version": "1.4.7",
+          "module": "muse_code_msp",
+          "url": "https://files.pythonhosted.org/packages/20/23/d5f5dc8091fbad52586a81fb81cabd235d740833b2fd1ea2ba6415788a62/muse_code_msp-1.4.7-py3-none-any.whl",
+          "sha256": "4cceb2f13a514b2d110a6f9b44ba68ea94efca74b62c8bbe78d4a175afe4458b",
+          "archive": "muse_code_msp-1.4.7-py3-none-any.whl",
+          "license": "MIT",
+          "declared_dependencies": [],
+          "reason": "muse-code-sdk 1.4.7 imports muse_code_msp but does not declare it"
+        }
+      ]
+    },
+    "openhands": {
+      "language": "python",
+      "distribution": "openhands-sdk",
+      "version": "1.54.0",
+      "module": "openhands.sdk",
+      "entrypoint": "Conversation",
+      "minimum_runtime": "3.12",
+      "operations": [
+        "fresh"
+      ],
+      "settings": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "model": {
+            "type": "string",
+            "minLength": 1
+          },
+          "tools": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": []
+            }
+          }
+        },
+        "required": [
+          "model",
+          "tools"
+        ]
+      },
+      "material": {
+        "url": "https://files.pythonhosted.org/packages/fe/68/dcbf19f330f9627c8aa40d3beb50ad458d8fda34be3870af3264ef7063fe/openhands_sdk-1.54.0-py3-none-any.whl",
+        "sha256": "647bf83c888bc544b0500480aa8a89729f44f6db9f93ea3ba43cfc7fdf070db3",
+        "archive": "openhands_sdk-1.54.0-py3-none-any.whl",
+        "license": [],
+        "declared_dependencies": [
+          "agent-client-protocol<0.13.0,>=0.12.1",
+          "deprecation>=2.1.0",
+          "fakeredis[lua]>=2.32.1",
+          "fastmcp<4,>=3.2.0",
+          "filelock>=3.20.1",
+          "httpx[socks]>=0.28.1",
+          "jsonschema>=4.23.0",
+          "joserfc>=1.7.5",
+          "litellm>=1.93.0",
+          "pillow>=12.3.0",
+          "pydantic>=2.13.5",
+          "python-frontmatter>=1.3.0",
+          "python-json-logger>=3.3.0",
+          "tenacity>=9.1.2",
+          "websockets>=12",
+          "lmnr<0.8.0,>=0.7.60",
+          "tree-sitter>=0.25",
+          "tree-sitter-bash>=0.25",
+          "boto3>=1.35.0; extra == \"boto3\"",
+          "toolshield<0.2,>=0.1.3; extra == \"toolshield\"",
+          "google-cloud-aiplatform>=2.1.3; extra == \"vertex\""
+        ],
+        "closure_qualified": false
+      }
+    },
+    "amp": {
+      "language": "typescript",
+      "distribution": "@ampcode/sdk",
+      "version": "0.1.0-20260918210405-g81edbf0",
+      "module": "@ampcode/sdk",
+      "entrypoint": "execute",
+      "minimum_runtime": "18",
+      "operations": [
+        "fresh"
+      ],
+      "settings": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "mode": {
+            "type": "string",
+            "minLength": 1
+          },
+          "visibility": {
+            "type": "string",
+            "enum": [
+              "private",
+              "unlisted",
+              "public",
+              "workspace",
+              "group"
+            ]
+          },
+          "dangerouslyAllowAll": {
+            "type": "boolean"
+          },
+          "permissions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "tool": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "action": {
+                  "type": "string",
+                  "enum": [
+                    "allow",
+                    "reject",
+                    "ask",
+                    "delegate"
+                  ]
+                }
+              },
+              "required": [
+                "tool",
+                "action"
+              ]
+            }
+          }
+        },
+        "required": [
+          "mode",
+          "visibility",
+          "dangerouslyAllowAll",
+          "permissions"
+        ]
+      },
+      "material": {
+        "url": "https://registry.npmjs.org/@ampcode/sdk/-/sdk-0.1.0-20260918210405-g81edbf0.tgz",
+        "sha256": "c7b93dd0568e256d79d8168146174bd1650c11b3e41bbe870b6fd0fe085fa0b2",
+        "archive": "sdk-0.1.0-20260918210405-g81edbf0.tgz",
+        "license": "Amp Commercial License",
+        "declared_dependencies": {
+          "zod": "^3.23.8",
+          "@ampcode/cli": "latest"
+        },
+        "closure_qualified": false
+      }
+    },
+    "cline": {
+      "language": "typescript",
+      "distribution": "@cline/sdk",
+      "version": "0.0.93",
+      "module": "@cline/sdk",
+      "entrypoint": "ClineCore",
+      "minimum_runtime": "22",
+      "operations": [
+        "fresh"
+      ],
+      "settings": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "provider_id": {
+            "type": "string",
+            "enum": [
+              "anthropic",
+              "openai",
+              "google",
+              "gemini",
+              "openrouter",
+              "groq",
+              "mistral",
+              "deepseek"
+            ]
+          },
+          "model": {
+            "type": "string",
+            "minLength": 1
+          },
+          "enableTools": {
+            "type": "boolean"
+          },
+          "enableSpawnAgent": {
+            "type": "boolean"
+          },
+          "enableAgentTeams": {
+            "type": "boolean"
+          },
+          "toolPolicies": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "read_files": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "autoApprove": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "autoApprove"
+                ]
+              },
+              "search_codebase": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "autoApprove": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "autoApprove"
+                ]
+              },
+              "run_commands": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "autoApprove": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "autoApprove"
+                ]
+              },
+              "editor": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "autoApprove": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "autoApprove"
+                ]
+              }
+            },
+            "required": [
+              "read_files",
+              "search_codebase",
+              "run_commands",
+              "editor"
+            ]
+          },
+          "unmatched_tool_approval": {
+            "type": "string",
+            "enum": [
+              "deny",
+              "approve"
+            ]
+          }
+        },
+        "required": [
+          "provider_id",
+          "model",
+          "enableTools",
+          "enableSpawnAgent",
+          "enableAgentTeams",
+          "toolPolicies",
+          "unmatched_tool_approval"
+        ]
+      },
+      "material": {
+        "url": "https://registry.npmjs.org/@cline/sdk/-/sdk-0.0.93.tgz",
+        "sha256": "8eac213c2c043ba3cd291e8428f1ff05caf5429c6bdf95a540e7a2b56eb2c61b",
+        "archive": "sdk-0.0.93.tgz",
+        "license": "Apache-2.0",
+        "declared_dependencies": {
+          "@cline/core": "0.0.93"
+        },
+        "closure_qualified": false
+      }
+    },
+    "codex": {
+      "language": "typescript",
+      "distribution": "@openai/codex-sdk",
+      "version": "0.162.1",
+      "module": "@openai/codex-sdk",
+      "entrypoint": "Codex",
+      "minimum_runtime": "18",
+      "operations": [
+        "fresh"
+      ],
+      "settings": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "model": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sandboxMode": {
+            "type": "string",
+            "enum": [
+              "read-only",
+              "workspace-write",
+              "danger-full-access"
+            ]
+          },
+          "approvalPolicy": {
+            "type": "string",
+            "enum": [
+              "never",
+              "on-request",
+              "on-failure",
+              "untrusted"
+            ]
+          },
+          "networkAccessEnabled": {
+            "type": "boolean"
+          },
+          "webSearchMode": {
+            "type": "string",
+            "enum": [
+              "disabled",
+              "cached",
+              "live"
+            ]
+          }
+        },
+        "required": [
+          "model",
+          "sandboxMode",
+          "approvalPolicy",
+          "networkAccessEnabled",
+          "webSearchMode"
+        ]
+      },
+      "material": {
+        "url": "https://registry.npmjs.org/@openai/codex-sdk/-/codex-sdk-0.162.1.tgz",
+        "sha256": "ae10b9096bb72ebdf1fbac598fd87960afc1ddf5b8980fa0d38bdd6770400349",
+        "archive": "codex-sdk-0.162.1.tgz",
+        "license": "Apache-2.0",
+        "declared_dependencies": {
+          "@openai/codex": "0.162.1"
+        },
+        "closure_qualified": false
+      }
+    },
+    "droid": {
+      "language": "typescript",
+      "distribution": "@factory/droid-sdk",
+      "version": "0.9.1",
+      "module": "@factory/droid-sdk/node",
+      "entrypoint": "createSession",
+      "minimum_runtime": "18",
+      "operations": [
+        "fresh"
+      ],
+      "settings": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "modelId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "autonomyLevel": {
+            "type": "string",
+            "enum": [
+              "off",
+              "low",
+              "medium",
+              "high"
+            ]
+          },
+          "interactionMode": {
+            "type": "string",
+            "enum": [
+              "auto",
+              "spec",
+              "mission"
+            ]
+          },
+          "permission": {
+            "type": "string",
+            "enum": [
+              "deny_unapproved",
+              "unattended"
+            ]
+          }
+        },
+        "required": [
+          "modelId",
+          "autonomyLevel",
+          "interactionMode",
+          "permission"
+        ]
+      },
+      "material": {
+        "url": "https://registry.npmjs.org/@factory/droid-sdk/-/droid-sdk-0.9.1.tgz",
+        "sha256": "b7c2e6624c3b49488936a61a43f9092cc2efd600e414bf76aa5fcd12daf89e66",
+        "archive": "droid-sdk-0.9.1.tgz",
+        "license": "Apache-2.0",
+        "declared_dependencies": {
+          "ws": "^8.21.0",
+          "zod": "^3.24.0",
+          "uuid": "^9.0.0",
+          "isows": "^1.0.7",
+          "eventemitter3": "^5.0.1",
+          "fast-deep-equal": "^3.1.3",
+          "@opentelemetry/api": "^1.9.0",
+          "@modelcontextprotocol/sdk": "^1.29.0"
+        },
+        "closure_qualified": false
+      }
+    },
+    "opencode": {
+      "language": "typescript",
+      "distribution": "@opencode-ai/sdk",
+      "version": "1.19.0",
+      "module": "@opencode-ai/sdk",
+      "entrypoint": "createOpencode",
+      "minimum_runtime": "18",
+      "operations": [
+        "fresh"
+      ],
+      "settings": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "model": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "providerID": {
+                "type": "string",
+                "minLength": 1
+              },
+              "modelID": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "providerID",
+              "modelID"
+            ]
+          },
+          "permission": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "enum": [
+                "allow",
+                "deny",
+                "ask"
+              ]
+            },
+            "properties": {},
+            "required": [
+              "*"
+            ]
+          }
+        },
+        "required": [
+          "model",
+          "permission"
+        ]
+      },
+      "material": {
+        "url": "https://registry.npmjs.org/@opencode-ai/sdk/-/sdk-1.19.0.tgz",
+        "sha256": "4ffb572d938a3e8993544acbdb778aefc7805bd726cb6e962111a8308fec61a3",
+        "archive": "sdk-1.19.0.tgz",
+        "license": "MIT",
+        "declared_dependencies": {
+          "cross-spawn": "7.0.6"
+        },
+        "closure_qualified": false
+      }
+    }
+  }
+}

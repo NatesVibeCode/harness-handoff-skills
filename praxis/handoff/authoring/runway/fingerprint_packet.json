@@ -1,0 +1,76 @@
+{
+  "schema": "forge.author_runway_request.v1",
+  "function": {
+    "name": "handoff.packet.fingerprint",
+    "purpose": "Compute a stable lowercase SHA-256 fingerprint of compact handoff packet JSON.",
+    "use_when": [
+      "packet identity is needed to compare or cite the exact prepared handoff"
+    ],
+    "avoid_when": [
+      "an actual harness launch or authorization decision is required"
+    ],
+    "tags": [
+      "harness-handoff",
+      "portable-packet"
+    ],
+    "declared_by": "harness-handoff authoring",
+    "code_pointer": "github.com/natesvibecode/harness-handoff/praxis/handoff/nodes/fingerprint.Fingerprint",
+    "pattern": {
+      "key": "node.v1",
+      "digest": "144731dd834259d024c98b17ea7e62805ce5af074128133790a5dcdfafa0e24f"
+    },
+    "fields": [
+      {
+        "name": "packet_json",
+        "side": "input",
+        "semantic": "handoff.packet.json.v1",
+        "intent": "Compact packet JSON",
+        "meaning": "Compact packet JSON",
+        "tags": [
+          "handoff",
+          "typed"
+        ],
+        "type": {
+          "type": "string"
+        },
+        "required": true,
+        "bounds": [
+          {
+            "key": "handoff.value.length.nonnegative",
+            "digest": "11ee5a5237e83c31468ee3fc471982ea3e1c80b33ea2444d4429707d945d5196"
+          }
+        ]
+      },
+      {
+        "name": "sha256",
+        "side": "output",
+        "semantic": "handoff.packet.sha256",
+        "intent": "Lowercase SHA-256 of the packet JSON bytes",
+        "meaning": "Lowercase SHA-256 of the packet JSON bytes",
+        "tags": [
+          "handoff",
+          "typed"
+        ],
+        "type": {
+          "type": "string"
+        },
+        "required": true,
+        "bounds": [
+          {
+            "key": "handoff.value.length.nonnegative",
+            "digest": "11ee5a5237e83c31468ee3fc471982ea3e1c80b33ea2444d4429707d945d5196"
+          }
+        ]
+      }
+    ],
+    "cases": [
+      {
+        "id": "fingerprint-valid-packet",
+        "inputs": {
+          "packet_json": "{\"schema\":\"harness.handoff_packet.v1\"}"
+        }
+      }
+    ]
+  },
+  "source_file": "../../module/nodes/fingerprint/entry.go"
+}

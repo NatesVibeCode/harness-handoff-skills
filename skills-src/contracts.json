@@ -200,7 +200,7 @@
         "status": "beta",
         "languages": ["typescript"],
         "packages": {"typescript": "@cline/sdk"},
-        "entrypoints": {"typescript": "Agent"},
+        "entrypoints": {"typescript": "ClineCore"},
         "command": null,
         "repositories": {"typescript": "https://github.com/cline/cline"},
         "docs": "https://docs.cline.bot/sdk/overview",

@@ -1,0 +1,399 @@
+{
+  "composition": {
+    "schema": "praxis.capability_contract.v1",
+    "inputs": {
+      "prompt": {
+        "semantic": "harness.sdk.amp.fresh.prompt.v1"
+      },
+      "workspace": {
+        "semantic": "harness.sdk.amp.fresh.workspace.v1"
+      },
+      "settings": {
+        "semantic": "harness.sdk.amp.fresh.settings.v1"
+      }
+    },
+    "outputs": {
+      "receipt": {
+        "semantic": "harness.sdk.amp.fresh.receipt.v1"
+      }
+    },
+    "outcomes": [
+      "completed"
+    ],
+    "effects": [
+      "harness.invoke"
+    ],
+    "failure": "error"
+  },
+  "schema": "aeltum.node_spec.v1",
+  "identity": {
+    "name": "harness.sdk.typescript.amp.fresh",
+    "kind": "harness"
+  },
+  "pattern": {
+    "key": "node.v1",
+    "digest": "144731dd834259d024c98b17ea7e62805ce5af074128133790a5dcdfafa0e24f"
+  },
+  "fields": [
+    {
+      "side": "input",
+      "name": "prompt",
+      "type": {
+        "type": "string"
+      },
+      "required": true,
+      "bounds": [
+        {
+          "key": "handoff.value.length.nonnegative",
+          "digest": "11ee5a5237e83c31468ee3fc471982ea3e1c80b33ea2444d4429707d945d5196"
+        }
+      ],
+      "description": {
+        "intent": "One prompt submitted once to a fresh SDK session",
+        "tags": [
+          "harness",
+          "sdk",
+          "input"
+        ],
+        "meaning": "One prompt submitted once to a fresh SDK session",
+        "units": "typed value",
+        "source": "caller",
+        "declared_by": "harness-handoff SDK authoring"
+      }
+    },
+    {
+      "side": "input",
+      "name": "workspace",
+      "type": {
+        "type": "string"
+      },
+      "required": true,
+      "bounds": [
+        {
+          "key": "handoff.value.length.nonnegative",
+          "digest": "11ee5a5237e83c31468ee3fc471982ea3e1c80b33ea2444d4429707d945d5196"
+        }
+      ],
+      "description": {
+        "intent": "Existing absolute workspace selected by the calling Process",
+        "tags": [
+          "harness",
+          "sdk",
+          "input"
+        ],
+        "meaning": "Existing absolute workspace selected by the calling Process",
+        "units": "typed value",
+        "source": "caller",
+        "declared_by": "harness-handoff SDK authoring"
+      }
+    },
+    {
+      "side": "input",
+      "name": "settings",
+      "type": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "mode": {
+            "type": "string",
+            "minLength": 1
+          },
+          "visibility": {
+            "type": "string",
+            "enum": [
+              "private",
+              "unlisted",
+              "public",
+              "workspace",
+              "group"
+            ]
+          },
+          "dangerouslyAllowAll": {
+            "type": "boolean"
+          },
+          "permissions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "tool": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "action": {
+                  "type": "string",
+                  "enum": [
+                    "allow",
+                    "reject",
+                    "ask",
+                    "delegate"
+                  ]
+                }
+              },
+              "required": [
+                "tool",
+                "action"
+              ]
+            }
+          }
+        },
+        "required": [
+          "mode",
+          "visibility",
+          "dangerouslyAllowAll",
+          "permissions"
+        ]
+      },
+      "required": true,
+      "bounds": [
+        {
+          "key": "handoff.value.length.nonnegative",
+          "digest": "11ee5a5237e83c31468ee3fc471982ea3e1c80b33ea2444d4429707d945d5196"
+        }
+      ],
+      "description": {
+        "intent": "Typed SDK settings selected by the calling Process",
+        "tags": [
+          "harness",
+          "sdk",
+          "input"
+        ],
+        "meaning": "Typed SDK settings selected by the calling Process",
+        "units": "typed value",
+        "source": "caller",
+        "declared_by": "harness-handoff SDK authoring"
+      }
+    },
+    {
+      "side": "output",
+      "name": "receipt",
+      "type": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "schema": {
+            "type": "string",
+            "enum": [
+              "praxis.harness_sdk_receipt.v1"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "succeeded"
+            ]
+          },
+          "harness": {
+            "type": "string",
+            "enum": [
+              "amp"
+            ]
+          },
+          "sdk_operation": {
+            "type": "string",
+            "enum": [
+              "fresh"
+            ]
+          },
+          "distribution": {
+            "type": "string",
+            "enum": [
+              "@ampcode/sdk"
+            ]
+          },
+          "distribution_version": {
+            "type": "string",
+            "enum": [
+              "0.1.0-20260918210405-g81edbf0"
+            ]
+          },
+          "module": {
+            "type": "string",
+            "enum": [
+              "@ampcode/sdk"
+            ]
+          },
+          "entrypoint": {
+            "type": "string",
+            "enum": [
+              "execute"
+            ]
+          },
+          "adapter": {
+            "type": "string",
+            "enum": [
+              "amp_ts_fresh"
+            ]
+          },
+          "adapter_digest": {
+            "type": "string",
+            "enum": [
+              "sha256:2146a8e3816740d1ad542a129b8938c598ed1d55ed47137df7447fa9cd96795f"
+            ]
+          },
+          "runner_digest": {
+            "type": "string",
+            "enum": [
+              "sha256:01ef71f3156c575f3f7444900519cabfe2ada59a605e2fe30d4afe9cf9b317aa"
+            ]
+          },
+          "contract_digest": {
+            "type": "string",
+            "enum": [
+              "sha256:a4537f68a3aa5d99041a87de9eedb86fa19782ee866956574335b192cdb84279"
+            ]
+          },
+          "bindings_digest": {
+            "type": "string",
+            "enum": [
+              "sha256:a83aa10624319c1b8b6baeac785a539d535a62718117e082fbf7f7d8c1c2598b"
+            ]
+          },
+          "settings_digest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "session_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "output": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "schema",
+          "status",
+          "harness",
+          "sdk_operation",
+          "distribution",
+          "distribution_version",
+          "module",
+          "entrypoint",
+          "adapter",
+          "adapter_digest",
+          "runner_digest",
+          "contract_digest",
+          "bindings_digest",
+          "settings_digest",
+          "session_id",
+          "output"
+        ]
+      },
+      "required": true,
+      "bounds": [
+        {
+          "key": "handoff.value.length.nonnegative",
+          "digest": "11ee5a5237e83c31468ee3fc471982ea3e1c80b33ea2444d4429707d945d5196"
+        }
+      ],
+      "description": {
+        "intent": "Completed SDK assistant output and exact session identity",
+        "tags": [
+          "harness",
+          "sdk",
+          "output"
+        ],
+        "meaning": "Completed SDK assistant output and exact session identity",
+        "units": "typed value",
+        "source": "computed",
+        "declared_by": "harness-handoff SDK authoring"
+      }
+    }
+  ],
+  "dimensions": [
+    {
+      "name": "surface",
+      "contents": {
+        "entry": "invoke_pinned_typescript_sdk",
+        "inputs": [
+          {
+            "field": "prompt",
+            "target": "slot:prompt"
+          },
+          {
+            "field": "workspace",
+            "target": "slot:workspace"
+          },
+          {
+            "field": "settings",
+            "target": "slot:settings"
+          }
+        ],
+        "outputs": [
+          {
+            "field": "receipt",
+            "target": "result:json"
+          }
+        ]
+      }
+    },
+    {
+      "name": "access",
+      "contents": {
+        "share": {
+          "identity": "operator-sdk-account:amp",
+          "digests": [
+            "2052921ca62a83c55714da5efd787012e6199cb3d3a2121d526e6fa639f371f5"
+          ]
+        }
+      }
+    },
+    {
+      "name": "handoff",
+      "contents": {
+        "harness": "amp",
+        "executor": "sdk",
+        "contract": {
+          "digest": "sha256:2052921ca62a83c55714da5efd787012e6199cb3d3a2121d526e6fa639f371f5"
+        },
+        "ownership": "customer",
+        "interactivity": "prompts",
+        "credential_channel": "native-session",
+        "credential_auth": "native-session",
+        "sdk": {
+          "language": "typescript",
+          "package": "@ampcode/sdk",
+          "version": "0.1.0-20260918210405-g81edbf0",
+          "module": "@ampcode/sdk",
+          "entrypoint": "execute",
+          "operation": "fresh",
+          "adapter": "amp_ts_fresh",
+          "adapter_digest": "sha256:2146a8e3816740d1ad542a129b8938c598ed1d55ed47137df7447fa9cd96795f",
+          "runner_digest": "sha256:01ef71f3156c575f3f7444900519cabfe2ada59a605e2fe30d4afe9cf9b317aa",
+          "contract_digest": "sha256:a4537f68a3aa5d99041a87de9eedb86fa19782ee866956574335b192cdb84279",
+          "bindings_digest": "sha256:a83aa10624319c1b8b6baeac785a539d535a62718117e082fbf7f7d8c1c2598b",
+          "dispatch_source_digest": "316eebc30b2dceeb2d6bad80b9d323a14871c92aa0cb719b2a6631d20ac0670b"
+        }
+      }
+    },
+    {
+      "name": "fields",
+      "contents": null
+    },
+    {
+      "name": "field_types",
+      "contents": null
+    }
+  ],
+  "proof_spec": {
+    "behavior": [],
+    "test": {
+      "pointer": "",
+      "digest": ""
+    },
+    "target": "sdk-runtime",
+    "mode": "real_service"
+  },
+  "usage": {
+    "purpose": "Invoke exactly one amp Typescript SDK fresh operation through its pinned adapter and return a bound receipt.",
+    "use_when": [
+      "an explicit amp SDK fresh operation is selected"
+    ],
+    "avoid_when": [
+      "the selected SDK package version or exact session identity is unknown"
+    ]
+  }
+}
