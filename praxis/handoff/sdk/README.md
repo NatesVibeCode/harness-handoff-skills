@@ -191,3 +191,27 @@ Qualification also distinguishes startup refusal from a started, uncertain SDK
 attempt. A missing workspace must fail before launch; replay retains that failure
 and its unsigned development identity. The Process completion suite exercises
 this refusal, while each Node proof separately exercises SDK/provider failures.
+
+
+### Native SDK state and provider configuration
+
+Claude receives the execution owner's existing `TMPDIR` through its supported
+`CLAUDE_CODE_TMPDIR` SDK environment setting. Its runtime state therefore stays
+inside the owner's writable temporary directory during sealed consumption.
+
+Droid requires `DROID_STATE_HOME`, an existing canonical directory with mode
+0700 supplied as a caller-owned write path. Each fresh invocation retains a
+private `fresh-*` directory there, writes SDK settings with mode 0600, and reports
+the state directory and actual session identity in diagnostics. The SDK child
+uses that private directory as its home. The owner can bind a different state
+root per Process event through `runtime.harness_sdk.paths`.
+
+Droid's optional typed `settings.customModels` entries contain `model`,
+`displayName`, `baseUrl`, `provider`, and `apiKeyEnv`. The selected credential
+reference resolves only from the Node's declared environment bindings. For
+example, `apiKeyEnv: "DROID_MODEL_API_KEY"` can select the owner's existing
+provider credential. The Node writes those exact selected provider settings into
+its private SDK configuration before starting the owned transport. Public Node
+settings contain credential names; credential values and native state stay in
+execution-owner custody. The Process still selects `modelId`, autonomy,
+interaction mode, and permission behavior explicitly.

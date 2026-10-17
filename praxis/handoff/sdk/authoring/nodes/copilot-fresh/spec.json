@@ -268,7 +268,7 @@
           "adapter_digest": {
             "type": "string",
             "enum": [
-              "sha256:d73f6cd24fb2be89839d09aff12c390d579c7433c0d2e769fe607073447e3778"
+              "sha256:e9ac366350097c37df424f39544c47aff8a3e69a8a46dea967438c7835f51d97"
             ]
           },
           "runner_digest": {
@@ -286,7 +286,7 @@
           "bindings_digest": {
             "type": "string",
             "enum": [
-              "sha256:57305eeec8ce7697c57e31b8be6f3c31c963fe3462ce9e080a3fae83609f434a"
+              "sha256:0e26994e6cbae55055022210d203336b15e4812e699f8b0015de5575ddbd4c60"
             ]
           },
           "settings_digest": {
@@ -397,21 +397,21 @@
           "entrypoint": "CopilotClient",
           "operation": "fresh",
           "adapter": "copilot_fresh",
-          "adapter_digest": "sha256:d73f6cd24fb2be89839d09aff12c390d579c7433c0d2e769fe607073447e3778",
+          "adapter_digest": "sha256:e9ac366350097c37df424f39544c47aff8a3e69a8a46dea967438c7835f51d97",
           "runner_digest": "sha256:ceb96d17d3aade988aedba8975cbcec4318d7d4de4a03ac087b463273166a090",
           "contract_digest": "sha256:db640957ec60ef85be3038d48637ff0e357f9426ec18227e2375dd23808c9594",
-          "bindings_digest": "sha256:57305eeec8ce7697c57e31b8be6f3c31c963fe3462ce9e080a3fae83609f434a",
+          "bindings_digest": "sha256:0e26994e6cbae55055022210d203336b15e4812e699f8b0015de5575ddbd4c60",
           "dispatch_source_digest": "316eebc30b2dceeb2d6bad80b9d323a14871c92aa0cb719b2a6631d20ac0670b",
           "dispatch_pointer": "sdkdispatch.Run",
-          "runner_file": "nodes/sdk/copilot-python-fresh/3520f8e9f72032ad70f402d75ccdcb2e2b9cc7ed4793acd93342e1baa9f06236/runtime/run.py",
+          "runner_file": "nodes/sdk/copilot-python-fresh/35e6673024ea09922ecbbf4c224194e730ca89e7c00760287687ae41d9d1517e/runtime/run.py",
           "working_directory_slot": "workspace",
           "files": {
-            "nodes/sdk/copilot-python-fresh/3520f8e9f72032ad70f402d75ccdcb2e2b9cc7ed4793acd93342e1baa9f06236/runtime/run.py": "sha256:ceb96d17d3aade988aedba8975cbcec4318d7d4de4a03ac087b463273166a090",
-            "nodes/sdk/copilot-python-fresh/3520f8e9f72032ad70f402d75ccdcb2e2b9cc7ed4793acd93342e1baa9f06236/runtime/mcp_bridge/sdk_operations.py": "sha256:d73f6cd24fb2be89839d09aff12c390d579c7433c0d2e769fe607073447e3778",
-            "nodes/sdk/copilot-python-fresh/3520f8e9f72032ad70f402d75ccdcb2e2b9cc7ed4793acd93342e1baa9f06236/runtime/mcp_bridge/sdk_contract.py": "sha256:db640957ec60ef85be3038d48637ff0e357f9426ec18227e2375dd23808c9594",
-            "nodes/sdk/copilot-python-fresh/3520f8e9f72032ad70f402d75ccdcb2e2b9cc7ed4793acd93342e1baa9f06236/runtime/mcp_bridge/sdk_bindings.json": "sha256:57305eeec8ce7697c57e31b8be6f3c31c963fe3462ce9e080a3fae83609f434a",
-            "nodes/sdk/copilot-python-fresh/3520f8e9f72032ad70f402d75ccdcb2e2b9cc7ed4793acd93342e1baa9f06236/runtime/runtime.tar.gz": "sha256:4b61e2e8a2a4a774e512d61352043cccb6b20eefdc74a809f90b78a73ba5710a",
-            "nodes/sdk/copilot-python-fresh/3520f8e9f72032ad70f402d75ccdcb2e2b9cc7ed4793acd93342e1baa9f06236/runtime/harness.json": "sha256:4f7f50242c07d3303fe3e63bdfe43bec1aebc608c88e6a8bb5f269a90c4c19ef"
+            "nodes/sdk/copilot-python-fresh/35e6673024ea09922ecbbf4c224194e730ca89e7c00760287687ae41d9d1517e/runtime/run.py": "sha256:ceb96d17d3aade988aedba8975cbcec4318d7d4de4a03ac087b463273166a090",
+            "nodes/sdk/copilot-python-fresh/35e6673024ea09922ecbbf4c224194e730ca89e7c00760287687ae41d9d1517e/runtime/mcp_bridge/sdk_operations.py": "sha256:e9ac366350097c37df424f39544c47aff8a3e69a8a46dea967438c7835f51d97",
+            "nodes/sdk/copilot-python-fresh/35e6673024ea09922ecbbf4c224194e730ca89e7c00760287687ae41d9d1517e/runtime/mcp_bridge/sdk_contract.py": "sha256:db640957ec60ef85be3038d48637ff0e357f9426ec18227e2375dd23808c9594",
+            "nodes/sdk/copilot-python-fresh/35e6673024ea09922ecbbf4c224194e730ca89e7c00760287687ae41d9d1517e/runtime/mcp_bridge/sdk_bindings.json": "sha256:0e26994e6cbae55055022210d203336b15e4812e699f8b0015de5575ddbd4c60",
+            "nodes/sdk/copilot-python-fresh/35e6673024ea09922ecbbf4c224194e730ca89e7c00760287687ae41d9d1517e/runtime/runtime.tar.gz": "sha256:4b61e2e8a2a4a774e512d61352043cccb6b20eefdc74a809f90b78a73ba5710a",
+            "nodes/sdk/copilot-python-fresh/35e6673024ea09922ecbbf4c224194e730ca89e7c00760287687ae41d9d1517e/runtime/harness.json": "sha256:4f7f50242c07d3303fe3e63bdfe43bec1aebc608c88e6a8bb5f269a90c4c19ef"
           },
           "runtime": {
             "binary": "python/bin/python3.13",
@@ -421,7 +421,7 @@
             "sha256": "3237648c5222017bba78737370570e4c9d5a01e552cdf2fa11f107c8d00fc06e",
             "target": "darwin-arm64",
             "bundle_digest": "4b61e2e8a2a4a774e512d61352043cccb6b20eefdc74a809f90b78a73ba5710a",
-            "bundle_file": "nodes/sdk/copilot-python-fresh/3520f8e9f72032ad70f402d75ccdcb2e2b9cc7ed4793acd93342e1baa9f06236/runtime/runtime.tar.gz"
+            "bundle_file": "nodes/sdk/copilot-python-fresh/35e6673024ea09922ecbbf4c224194e730ca89e7c00760287687ae41d9d1517e/runtime/runtime.tar.gz"
           },
           "environment": [
             "COPILOT_API_KEY",
@@ -429,7 +429,7 @@
             "GH_TOKEN",
             "OPENROUTER_API_KEY"
           ],
-          "contract_file": "nodes/sdk/copilot-python-fresh/3520f8e9f72032ad70f402d75ccdcb2e2b9cc7ed4793acd93342e1baa9f06236/runtime/harness.json"
+          "contract_file": "nodes/sdk/copilot-python-fresh/35e6673024ea09922ecbbf4c224194e730ca89e7c00760287687ae41d9d1517e/runtime/harness.json"
         }
       }
     },

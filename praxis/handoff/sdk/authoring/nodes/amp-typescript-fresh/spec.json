@@ -227,7 +227,7 @@
           "adapter_digest": {
             "type": "string",
             "enum": [
-              "sha256:4b72ed676fb98b2e09b403e46ee9da617ade4880c8b19e278623cc547bce0081"
+              "sha256:dc174b5a0311241a3780f1c6fc55758020e61bc2ed85d1364727a2d22752ea91"
             ]
           },
           "runner_digest": {
@@ -245,7 +245,7 @@
           "bindings_digest": {
             "type": "string",
             "enum": [
-              "sha256:57305eeec8ce7697c57e31b8be6f3c31c963fe3462ce9e080a3fae83609f434a"
+              "sha256:0e26994e6cbae55055022210d203336b15e4812e699f8b0015de5575ddbd4c60"
             ]
           },
           "settings_digest": {
@@ -356,21 +356,21 @@
           "entrypoint": "execute",
           "operation": "fresh",
           "adapter": "amp_ts_fresh",
-          "adapter_digest": "sha256:4b72ed676fb98b2e09b403e46ee9da617ade4880c8b19e278623cc547bce0081",
+          "adapter_digest": "sha256:dc174b5a0311241a3780f1c6fc55758020e61bc2ed85d1364727a2d22752ea91",
           "runner_digest": "sha256:a58e98b97daa23d3180cf2072beadd99d37d13d4069650413e58dcd2158fa476",
           "contract_digest": "sha256:f9483f132fbc7875483adcc2548861340e7b82e31c4a56b1f282b2b64e48d869",
-          "bindings_digest": "sha256:57305eeec8ce7697c57e31b8be6f3c31c963fe3462ce9e080a3fae83609f434a",
+          "bindings_digest": "sha256:0e26994e6cbae55055022210d203336b15e4812e699f8b0015de5575ddbd4c60",
           "dispatch_source_digest": "316eebc30b2dceeb2d6bad80b9d323a14871c92aa0cb719b2a6631d20ac0670b",
           "dispatch_pointer": "sdkdispatch.Run",
-          "runner_file": "nodes/sdk/amp-typescript-fresh/39078f6efeaa3bf4d53865bc420d46c64c6af075260970c91d4e1a0e692f6250/runtime/typescript/run.mjs",
+          "runner_file": "nodes/sdk/amp-typescript-fresh/7fbfe6aa4ae559daba4de04012ef0dae0e9684943acee0f1dcea866ec5f6cb87/runtime/typescript/run.mjs",
           "working_directory_slot": "workspace",
           "files": {
-            "nodes/sdk/amp-typescript-fresh/39078f6efeaa3bf4d53865bc420d46c64c6af075260970c91d4e1a0e692f6250/runtime/typescript/adapters.mjs": "sha256:4b72ed676fb98b2e09b403e46ee9da617ade4880c8b19e278623cc547bce0081",
-            "nodes/sdk/amp-typescript-fresh/39078f6efeaa3bf4d53865bc420d46c64c6af075260970c91d4e1a0e692f6250/runtime/typescript/run.mjs": "sha256:a58e98b97daa23d3180cf2072beadd99d37d13d4069650413e58dcd2158fa476",
-            "nodes/sdk/amp-typescript-fresh/39078f6efeaa3bf4d53865bc420d46c64c6af075260970c91d4e1a0e692f6250/runtime/typescript/contract.mjs": "sha256:f9483f132fbc7875483adcc2548861340e7b82e31c4a56b1f282b2b64e48d869",
-            "nodes/sdk/amp-typescript-fresh/39078f6efeaa3bf4d53865bc420d46c64c6af075260970c91d4e1a0e692f6250/runtime/typescript/sdk_bindings.json": "sha256:57305eeec8ce7697c57e31b8be6f3c31c963fe3462ce9e080a3fae83609f434a",
-            "nodes/sdk/amp-typescript-fresh/39078f6efeaa3bf4d53865bc420d46c64c6af075260970c91d4e1a0e692f6250/runtime/runtime.tar.gz": "sha256:675391d18a195b97b352ffcd062046b23159416ed05f6c34c4394332005ddc8c",
-            "nodes/sdk/amp-typescript-fresh/39078f6efeaa3bf4d53865bc420d46c64c6af075260970c91d4e1a0e692f6250/runtime/harness.json": "sha256:650b273596887825b07bc4c564415d65dee15a4f9c24bd19b11b96dc669f174c"
+            "nodes/sdk/amp-typescript-fresh/7fbfe6aa4ae559daba4de04012ef0dae0e9684943acee0f1dcea866ec5f6cb87/runtime/typescript/adapters.mjs": "sha256:dc174b5a0311241a3780f1c6fc55758020e61bc2ed85d1364727a2d22752ea91",
+            "nodes/sdk/amp-typescript-fresh/7fbfe6aa4ae559daba4de04012ef0dae0e9684943acee0f1dcea866ec5f6cb87/runtime/typescript/run.mjs": "sha256:a58e98b97daa23d3180cf2072beadd99d37d13d4069650413e58dcd2158fa476",
+            "nodes/sdk/amp-typescript-fresh/7fbfe6aa4ae559daba4de04012ef0dae0e9684943acee0f1dcea866ec5f6cb87/runtime/typescript/contract.mjs": "sha256:f9483f132fbc7875483adcc2548861340e7b82e31c4a56b1f282b2b64e48d869",
+            "nodes/sdk/amp-typescript-fresh/7fbfe6aa4ae559daba4de04012ef0dae0e9684943acee0f1dcea866ec5f6cb87/runtime/typescript/sdk_bindings.json": "sha256:0e26994e6cbae55055022210d203336b15e4812e699f8b0015de5575ddbd4c60",
+            "nodes/sdk/amp-typescript-fresh/7fbfe6aa4ae559daba4de04012ef0dae0e9684943acee0f1dcea866ec5f6cb87/runtime/runtime.tar.gz": "sha256:675391d18a195b97b352ffcd062046b23159416ed05f6c34c4394332005ddc8c",
+            "nodes/sdk/amp-typescript-fresh/7fbfe6aa4ae559daba4de04012ef0dae0e9684943acee0f1dcea866ec5f6cb87/runtime/harness.json": "sha256:650b273596887825b07bc4c564415d65dee15a4f9c24bd19b11b96dc669f174c"
           },
           "runtime": {
             "binary": "bin/node",
@@ -378,12 +378,12 @@
             "sha256": "b468fb9c67427c9d3aec07ee1105e63020923a631a9a2a00beb71a7ba3768bfd",
             "target": "darwin-arm64",
             "bundle_digest": "675391d18a195b97b352ffcd062046b23159416ed05f6c34c4394332005ddc8c",
-            "bundle_file": "nodes/sdk/amp-typescript-fresh/39078f6efeaa3bf4d53865bc420d46c64c6af075260970c91d4e1a0e692f6250/runtime/runtime.tar.gz"
+            "bundle_file": "nodes/sdk/amp-typescript-fresh/7fbfe6aa4ae559daba4de04012ef0dae0e9684943acee0f1dcea866ec5f6cb87/runtime/runtime.tar.gz"
           },
           "environment": [
             "AMP_API_KEY"
           ],
-          "contract_file": "nodes/sdk/amp-typescript-fresh/39078f6efeaa3bf4d53865bc420d46c64c6af075260970c91d4e1a0e692f6250/runtime/harness.json"
+          "contract_file": "nodes/sdk/amp-typescript-fresh/7fbfe6aa4ae559daba4de04012ef0dae0e9684943acee0f1dcea866ec5f6cb87/runtime/harness.json"
         }
       }
     },

@@ -253,7 +253,7 @@
           "adapter_digest": {
             "type": "string",
             "enum": [
-              "sha256:d73f6cd24fb2be89839d09aff12c390d579c7433c0d2e769fe607073447e3778"
+              "sha256:e9ac366350097c37df424f39544c47aff8a3e69a8a46dea967438c7835f51d97"
             ]
           },
           "runner_digest": {
@@ -271,7 +271,7 @@
           "bindings_digest": {
             "type": "string",
             "enum": [
-              "sha256:57305eeec8ce7697c57e31b8be6f3c31c963fe3462ce9e080a3fae83609f434a"
+              "sha256:0e26994e6cbae55055022210d203336b15e4812e699f8b0015de5575ddbd4c60"
             ]
           },
           "settings_digest": {
@@ -382,21 +382,21 @@
           "entrypoint": "query",
           "operation": "fresh",
           "adapter": "claude_fresh",
-          "adapter_digest": "sha256:d73f6cd24fb2be89839d09aff12c390d579c7433c0d2e769fe607073447e3778",
+          "adapter_digest": "sha256:e9ac366350097c37df424f39544c47aff8a3e69a8a46dea967438c7835f51d97",
           "runner_digest": "sha256:ceb96d17d3aade988aedba8975cbcec4318d7d4de4a03ac087b463273166a090",
           "contract_digest": "sha256:db640957ec60ef85be3038d48637ff0e357f9426ec18227e2375dd23808c9594",
-          "bindings_digest": "sha256:57305eeec8ce7697c57e31b8be6f3c31c963fe3462ce9e080a3fae83609f434a",
+          "bindings_digest": "sha256:0e26994e6cbae55055022210d203336b15e4812e699f8b0015de5575ddbd4c60",
           "dispatch_source_digest": "316eebc30b2dceeb2d6bad80b9d323a14871c92aa0cb719b2a6631d20ac0670b",
           "dispatch_pointer": "sdkdispatch.Run",
-          "runner_file": "nodes/sdk/claude-python-fresh/cf4d06d9f0a194f6cc85fb858e293b7297c3b6ecbadc677694b3c8617251d0e5/runtime/run.py",
+          "runner_file": "nodes/sdk/claude-python-fresh/55b70b5fd57bb21416a70e6e518829513ac999d3ec5d3fc7bd96944c27eb088d/runtime/run.py",
           "working_directory_slot": "workspace",
           "files": {
-            "nodes/sdk/claude-python-fresh/cf4d06d9f0a194f6cc85fb858e293b7297c3b6ecbadc677694b3c8617251d0e5/runtime/run.py": "sha256:ceb96d17d3aade988aedba8975cbcec4318d7d4de4a03ac087b463273166a090",
-            "nodes/sdk/claude-python-fresh/cf4d06d9f0a194f6cc85fb858e293b7297c3b6ecbadc677694b3c8617251d0e5/runtime/mcp_bridge/sdk_operations.py": "sha256:d73f6cd24fb2be89839d09aff12c390d579c7433c0d2e769fe607073447e3778",
-            "nodes/sdk/claude-python-fresh/cf4d06d9f0a194f6cc85fb858e293b7297c3b6ecbadc677694b3c8617251d0e5/runtime/mcp_bridge/sdk_contract.py": "sha256:db640957ec60ef85be3038d48637ff0e357f9426ec18227e2375dd23808c9594",
-            "nodes/sdk/claude-python-fresh/cf4d06d9f0a194f6cc85fb858e293b7297c3b6ecbadc677694b3c8617251d0e5/runtime/mcp_bridge/sdk_bindings.json": "sha256:57305eeec8ce7697c57e31b8be6f3c31c963fe3462ce9e080a3fae83609f434a",
-            "nodes/sdk/claude-python-fresh/cf4d06d9f0a194f6cc85fb858e293b7297c3b6ecbadc677694b3c8617251d0e5/runtime/runtime.tar.gz": "sha256:46cb5437afac515aad24c610a457a58079ff957c4d2183df69f89b6f28d980d6",
-            "nodes/sdk/claude-python-fresh/cf4d06d9f0a194f6cc85fb858e293b7297c3b6ecbadc677694b3c8617251d0e5/runtime/harness.json": "sha256:e6f5884713e119d5b956180891a2e27356541e61e5ff1936d79d0846965d4ead"
+            "nodes/sdk/claude-python-fresh/55b70b5fd57bb21416a70e6e518829513ac999d3ec5d3fc7bd96944c27eb088d/runtime/run.py": "sha256:ceb96d17d3aade988aedba8975cbcec4318d7d4de4a03ac087b463273166a090",
+            "nodes/sdk/claude-python-fresh/55b70b5fd57bb21416a70e6e518829513ac999d3ec5d3fc7bd96944c27eb088d/runtime/mcp_bridge/sdk_operations.py": "sha256:e9ac366350097c37df424f39544c47aff8a3e69a8a46dea967438c7835f51d97",
+            "nodes/sdk/claude-python-fresh/55b70b5fd57bb21416a70e6e518829513ac999d3ec5d3fc7bd96944c27eb088d/runtime/mcp_bridge/sdk_contract.py": "sha256:db640957ec60ef85be3038d48637ff0e357f9426ec18227e2375dd23808c9594",
+            "nodes/sdk/claude-python-fresh/55b70b5fd57bb21416a70e6e518829513ac999d3ec5d3fc7bd96944c27eb088d/runtime/mcp_bridge/sdk_bindings.json": "sha256:0e26994e6cbae55055022210d203336b15e4812e699f8b0015de5575ddbd4c60",
+            "nodes/sdk/claude-python-fresh/55b70b5fd57bb21416a70e6e518829513ac999d3ec5d3fc7bd96944c27eb088d/runtime/runtime.tar.gz": "sha256:46cb5437afac515aad24c610a457a58079ff957c4d2183df69f89b6f28d980d6",
+            "nodes/sdk/claude-python-fresh/55b70b5fd57bb21416a70e6e518829513ac999d3ec5d3fc7bd96944c27eb088d/runtime/harness.json": "sha256:e6f5884713e119d5b956180891a2e27356541e61e5ff1936d79d0846965d4ead"
           },
           "runtime": {
             "binary": "python/bin/python3.13",
@@ -406,14 +406,14 @@
             "sha256": "3237648c5222017bba78737370570e4c9d5a01e552cdf2fa11f107c8d00fc06e",
             "target": "darwin-arm64",
             "bundle_digest": "46cb5437afac515aad24c610a457a58079ff957c4d2183df69f89b6f28d980d6",
-            "bundle_file": "nodes/sdk/claude-python-fresh/cf4d06d9f0a194f6cc85fb858e293b7297c3b6ecbadc677694b3c8617251d0e5/runtime/runtime.tar.gz"
+            "bundle_file": "nodes/sdk/claude-python-fresh/55b70b5fd57bb21416a70e6e518829513ac999d3ec5d3fc7bd96944c27eb088d/runtime/runtime.tar.gz"
           },
           "environment": [
             "ANTHROPIC_API_KEY",
             "ANTHROPIC_BASE_URL",
             "ANTHROPIC_AUTH_TOKEN"
           ],
-          "contract_file": "nodes/sdk/claude-python-fresh/cf4d06d9f0a194f6cc85fb858e293b7297c3b6ecbadc677694b3c8617251d0e5/runtime/harness.json"
+          "contract_file": "nodes/sdk/claude-python-fresh/55b70b5fd57bb21416a70e6e518829513ac999d3ec5d3fc7bd96944c27eb088d/runtime/harness.json"
         }
       }
     },

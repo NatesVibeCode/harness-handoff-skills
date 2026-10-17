@@ -1,6 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readFileSync, mkdtempSync, realpathSync, readdirSync, rmSync, statSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+const droidState = realpathSync(mkdtempSync(join(tmpdir(), 'sdk-droid-test-')));
+process.env.DROID_STATE_HOME = droidState;
+test.after(() => { delete process.env.DROID_STATE_HOME; rmSync(droidState, { recursive: true, force: true }); });
 import { invoke } from '../mcp_bridge/sdk_ts_adapters.mjs';
 import { validateRequest, digest } from '../mcp_bridge/sdk_contract.mjs';
 const bindingsPath = new URL('../mcp_bridge/sdk_bindings.json', import.meta.url);
@@ -200,3 +205,30 @@ for (const harness of ['amp', 'cline', 'codex', 'droid']) {
     assert.throws(() => validateRequest(req, bindingsPath), /nonempty/);
   });
 }
+
+
+test('Droid materializes only typed custom provider settings in private retained state', async () => {
+  let selected;
+  process.env.DROID_MODEL_API_KEY = 'fixture-selected-provider-key';
+  const sdk = { ToolConfirmationOutcome: { Cancel: 'cancel' },
+    ProcessTransport: class { constructor(options) { selected = options; } async connect() {} async close() {} },
+    createSession: async options => {
+      assert.equal(options.customModels, undefined);
+      assert.equal(options.env.HOME, selected.env.HOME);
+      throw Error('inspect before native session');
+    },
+  };
+  const req = request('droid'); req.settings.transport = 'native_stdio';
+  req.settings.customModels = [{ model: 'selected-model', displayName: 'Chosen', baseUrl: 'https://provider.example/v1', provider: 'generic-chat-completion-api', apiKeyEnv: 'DROID_MODEL_API_KEY' }];
+  await assert.rejects(invoke(req, sdk), /inspect before native session/);
+  assert.ok(selected.env.HOME.startsWith(droidState + '/fresh-'));
+  const file = join(selected.env.HOME, '.factory/settings.json');
+  assert.deepEqual(JSON.parse(readFileSync(file)), { customModels: [{ model: 'selected-model', displayName: 'Chosen', baseUrl: 'https://provider.example/v1', provider: 'generic-chat-completion-api', apiKey: 'fixture-selected-provider-key' }] });
+  assert.equal(statSync(file).mode & 0o777, 0o600);
+  assert.equal(statSync(selected.env.HOME).mode & 0o777, 0o700);
+  assert.ok(readdirSync(selected.env.HOME).includes('.factory'));
+  delete process.env.DROID_MODEL_API_KEY;
+  await assert.rejects(invoke(req, sdk), /credential binding/);
+  req.settings.customModels[0].apiKeyEnv = 'HOME';
+  await assert.rejects(invoke(req, sdk), /credential binding/);
+});

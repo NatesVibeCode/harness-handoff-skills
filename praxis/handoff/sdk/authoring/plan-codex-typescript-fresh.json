@@ -8,7 +8,7 @@
       "spec_file": "nodes/codex-typescript-fresh/spec.json",
       "source_file": "assets/sdk_dispatch.go",
       "dispatch": {
-        "dir": "sdk/codex-typescript-fresh/3ae3026b7088e8ae139f2c9f30437da00c4a1e20341358a16e4b09039b3951a6",
+        "dir": "sdk/codex-typescript-fresh/4670f5ae14add18a22a413b3119d0c9d6f6411e6d312b6190959b4639eac5856",
         "file": "spec.json",
         "source_file": "sdk_dispatch.go",
         "package": "sdkdispatch",
@@ -133,27 +133,27 @@
   },
   "assets": [
     {
-      "rel_path": "nodes/sdk/codex-typescript-fresh/3ae3026b7088e8ae139f2c9f30437da00c4a1e20341358a16e4b09039b3951a6/runtime/harness.json",
+      "rel_path": "nodes/sdk/codex-typescript-fresh/4670f5ae14add18a22a413b3119d0c9d6f6411e6d312b6190959b4639eac5856/runtime/harness.json",
       "file": "assets/worker/harness-codex.json"
     },
     {
-      "rel_path": "nodes/sdk/codex-typescript-fresh/3ae3026b7088e8ae139f2c9f30437da00c4a1e20341358a16e4b09039b3951a6/runtime/typescript/adapters.mjs",
+      "rel_path": "nodes/sdk/codex-typescript-fresh/4670f5ae14add18a22a413b3119d0c9d6f6411e6d312b6190959b4639eac5856/runtime/typescript/adapters.mjs",
       "file": "assets/worker/sdk/typescript/adapters.mjs"
     },
     {
-      "rel_path": "nodes/sdk/codex-typescript-fresh/3ae3026b7088e8ae139f2c9f30437da00c4a1e20341358a16e4b09039b3951a6/runtime/typescript/run.mjs",
+      "rel_path": "nodes/sdk/codex-typescript-fresh/4670f5ae14add18a22a413b3119d0c9d6f6411e6d312b6190959b4639eac5856/runtime/typescript/run.mjs",
       "file": "assets/worker/sdk/typescript/run.mjs"
     },
     {
-      "rel_path": "nodes/sdk/codex-typescript-fresh/3ae3026b7088e8ae139f2c9f30437da00c4a1e20341358a16e4b09039b3951a6/runtime/typescript/contract.mjs",
+      "rel_path": "nodes/sdk/codex-typescript-fresh/4670f5ae14add18a22a413b3119d0c9d6f6411e6d312b6190959b4639eac5856/runtime/typescript/contract.mjs",
       "file": "../../../../mcp_bridge/sdk_contract.mjs"
     },
     {
-      "rel_path": "nodes/sdk/codex-typescript-fresh/3ae3026b7088e8ae139f2c9f30437da00c4a1e20341358a16e4b09039b3951a6/runtime/typescript/sdk_bindings.json",
+      "rel_path": "nodes/sdk/codex-typescript-fresh/4670f5ae14add18a22a413b3119d0c9d6f6411e6d312b6190959b4639eac5856/runtime/typescript/sdk_bindings.json",
       "file": "../../../../mcp_bridge/sdk_bindings.json"
     },
     {
-      "rel_path": "nodes/sdk/codex-typescript-fresh/3ae3026b7088e8ae139f2c9f30437da00c4a1e20341358a16e4b09039b3951a6/runtime/runtime.tar.gz",
+      "rel_path": "nodes/sdk/codex-typescript-fresh/4670f5ae14add18a22a413b3119d0c9d6f6411e6d312b6190959b4639eac5856/runtime/runtime.tar.gz",
       "file": "assets/runtime/5498ecacacfdf93c77bbc452fb4eb6ca6642d0925e2c739339eeb67924cee7db.tar.gz"
     }
   ]

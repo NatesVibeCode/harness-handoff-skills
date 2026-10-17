@@ -752,6 +752,42 @@
               "sdk_default",
               "native_stdio"
             ]
+          },
+          "customModels": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "model": {
+                  "type": "string"
+                },
+                "displayName": {
+                  "type": "string"
+                },
+                "baseUrl": {
+                  "type": "string"
+                },
+                "provider": {
+                  "type": "string"
+                },
+                "apiKeyEnv": {
+                  "type": "string",
+                  "enum": [
+                    "DROID_MODEL_API_KEY",
+                    "OPENROUTER_API_KEY",
+                    "FACTORY_API_KEY"
+                  ]
+                }
+              },
+              "required": [
+                "model",
+                "displayName",
+                "baseUrl",
+                "provider",
+                "apiKeyEnv"
+              ],
+              "additionalProperties": false
+            }
           }
         },
         "required": [
@@ -781,7 +817,9 @@
       "settings_nonempty_strings": true,
       "environment": [
         "FACTORY_API_KEY",
-        "OPENROUTER_API_KEY"
+        "OPENROUTER_API_KEY",
+        "DROID_STATE_HOME",
+        "DROID_MODEL_API_KEY"
       ]
     },
     "opencode": {

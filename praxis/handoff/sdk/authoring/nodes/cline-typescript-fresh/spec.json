@@ -322,7 +322,7 @@
           "adapter_digest": {
             "type": "string",
             "enum": [
-              "sha256:4b72ed676fb98b2e09b403e46ee9da617ade4880c8b19e278623cc547bce0081"
+              "sha256:dc174b5a0311241a3780f1c6fc55758020e61bc2ed85d1364727a2d22752ea91"
             ]
           },
           "runner_digest": {
@@ -340,7 +340,7 @@
           "bindings_digest": {
             "type": "string",
             "enum": [
-              "sha256:57305eeec8ce7697c57e31b8be6f3c31c963fe3462ce9e080a3fae83609f434a"
+              "sha256:0e26994e6cbae55055022210d203336b15e4812e699f8b0015de5575ddbd4c60"
             ]
           },
           "settings_digest": {
@@ -451,21 +451,21 @@
           "entrypoint": "ClineCore",
           "operation": "fresh",
           "adapter": "cline_ts_fresh",
-          "adapter_digest": "sha256:4b72ed676fb98b2e09b403e46ee9da617ade4880c8b19e278623cc547bce0081",
+          "adapter_digest": "sha256:dc174b5a0311241a3780f1c6fc55758020e61bc2ed85d1364727a2d22752ea91",
           "runner_digest": "sha256:a58e98b97daa23d3180cf2072beadd99d37d13d4069650413e58dcd2158fa476",
           "contract_digest": "sha256:f9483f132fbc7875483adcc2548861340e7b82e31c4a56b1f282b2b64e48d869",
-          "bindings_digest": "sha256:57305eeec8ce7697c57e31b8be6f3c31c963fe3462ce9e080a3fae83609f434a",
+          "bindings_digest": "sha256:0e26994e6cbae55055022210d203336b15e4812e699f8b0015de5575ddbd4c60",
           "dispatch_source_digest": "316eebc30b2dceeb2d6bad80b9d323a14871c92aa0cb719b2a6631d20ac0670b",
           "dispatch_pointer": "sdkdispatch.Run",
-          "runner_file": "nodes/sdk/cline-typescript-fresh/4819ab5f8b3561b108e289e737a439005dab8aa2410c0ad689dc65802fe1725a/runtime/typescript/run.mjs",
+          "runner_file": "nodes/sdk/cline-typescript-fresh/98f8b59304e2e423437df0c253828c04d1f294f204482999adffe1ad4bcdd102/runtime/typescript/run.mjs",
           "working_directory_slot": "workspace",
           "files": {
-            "nodes/sdk/cline-typescript-fresh/4819ab5f8b3561b108e289e737a439005dab8aa2410c0ad689dc65802fe1725a/runtime/typescript/adapters.mjs": "sha256:4b72ed676fb98b2e09b403e46ee9da617ade4880c8b19e278623cc547bce0081",
-            "nodes/sdk/cline-typescript-fresh/4819ab5f8b3561b108e289e737a439005dab8aa2410c0ad689dc65802fe1725a/runtime/typescript/run.mjs": "sha256:a58e98b97daa23d3180cf2072beadd99d37d13d4069650413e58dcd2158fa476",
-            "nodes/sdk/cline-typescript-fresh/4819ab5f8b3561b108e289e737a439005dab8aa2410c0ad689dc65802fe1725a/runtime/typescript/contract.mjs": "sha256:f9483f132fbc7875483adcc2548861340e7b82e31c4a56b1f282b2b64e48d869",
-            "nodes/sdk/cline-typescript-fresh/4819ab5f8b3561b108e289e737a439005dab8aa2410c0ad689dc65802fe1725a/runtime/typescript/sdk_bindings.json": "sha256:57305eeec8ce7697c57e31b8be6f3c31c963fe3462ce9e080a3fae83609f434a",
-            "nodes/sdk/cline-typescript-fresh/4819ab5f8b3561b108e289e737a439005dab8aa2410c0ad689dc65802fe1725a/runtime/runtime.tar.gz": "sha256:1f99be6ffe2b4e6a6840ffd61751ebe9ae513ae8172ab5b0c05f6c2265c9c5dc",
-            "nodes/sdk/cline-typescript-fresh/4819ab5f8b3561b108e289e737a439005dab8aa2410c0ad689dc65802fe1725a/runtime/harness.json": "sha256:61fa864fe6902efdda5f29a017693ffb3472448ec175e9c81c4adc4018258373"
+            "nodes/sdk/cline-typescript-fresh/98f8b59304e2e423437df0c253828c04d1f294f204482999adffe1ad4bcdd102/runtime/typescript/adapters.mjs": "sha256:dc174b5a0311241a3780f1c6fc55758020e61bc2ed85d1364727a2d22752ea91",
+            "nodes/sdk/cline-typescript-fresh/98f8b59304e2e423437df0c253828c04d1f294f204482999adffe1ad4bcdd102/runtime/typescript/run.mjs": "sha256:a58e98b97daa23d3180cf2072beadd99d37d13d4069650413e58dcd2158fa476",
+            "nodes/sdk/cline-typescript-fresh/98f8b59304e2e423437df0c253828c04d1f294f204482999adffe1ad4bcdd102/runtime/typescript/contract.mjs": "sha256:f9483f132fbc7875483adcc2548861340e7b82e31c4a56b1f282b2b64e48d869",
+            "nodes/sdk/cline-typescript-fresh/98f8b59304e2e423437df0c253828c04d1f294f204482999adffe1ad4bcdd102/runtime/typescript/sdk_bindings.json": "sha256:0e26994e6cbae55055022210d203336b15e4812e699f8b0015de5575ddbd4c60",
+            "nodes/sdk/cline-typescript-fresh/98f8b59304e2e423437df0c253828c04d1f294f204482999adffe1ad4bcdd102/runtime/runtime.tar.gz": "sha256:1f99be6ffe2b4e6a6840ffd61751ebe9ae513ae8172ab5b0c05f6c2265c9c5dc",
+            "nodes/sdk/cline-typescript-fresh/98f8b59304e2e423437df0c253828c04d1f294f204482999adffe1ad4bcdd102/runtime/harness.json": "sha256:61fa864fe6902efdda5f29a017693ffb3472448ec175e9c81c4adc4018258373"
           },
           "runtime": {
             "binary": "bin/node",
@@ -473,7 +473,7 @@
             "sha256": "b468fb9c67427c9d3aec07ee1105e63020923a631a9a2a00beb71a7ba3768bfd",
             "target": "darwin-arm64",
             "bundle_digest": "1f99be6ffe2b4e6a6840ffd61751ebe9ae513ae8172ab5b0c05f6c2265c9c5dc",
-            "bundle_file": "nodes/sdk/cline-typescript-fresh/4819ab5f8b3561b108e289e737a439005dab8aa2410c0ad689dc65802fe1725a/runtime/runtime.tar.gz"
+            "bundle_file": "nodes/sdk/cline-typescript-fresh/98f8b59304e2e423437df0c253828c04d1f294f204482999adffe1ad4bcdd102/runtime/runtime.tar.gz"
           },
           "environment": [
             "ANTHROPIC_API_KEY",
@@ -485,7 +485,7 @@
             "MISTRAL_API_KEY",
             "DEEPSEEK_API_KEY"
           ],
-          "contract_file": "nodes/sdk/cline-typescript-fresh/4819ab5f8b3561b108e289e737a439005dab8aa2410c0ad689dc65802fe1725a/runtime/harness.json"
+          "contract_file": "nodes/sdk/cline-typescript-fresh/98f8b59304e2e423437df0c253828c04d1f294f204482999adffe1ad4bcdd102/runtime/harness.json"
         }
       }
     },

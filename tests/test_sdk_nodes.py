@@ -58,6 +58,7 @@ def test_no_placeholder_success(session, output):
 
 
 def test_claude_forwards_settings_and_rejects_failed_terminal(monkeypatch, tmp_path):
+    monkeypatch.setenv("TMPDIR", str(tmp_path))
     seen, drained = [], []
     class Options:
         def __init__(self, **kwargs): seen.append(kwargs)
@@ -75,6 +76,7 @@ def test_claude_forwards_settings_and_rejects_failed_terminal(monkeypatch, tmp_p
     req['settings']['model'] = 'other-model'
     asyncio.run(sdk_operations.claude(req))
     assert seen[0]['model'] == 'selected'
+    assert seen[0]['env'] == {'CLAUDE_CODE_TMPDIR': str(tmp_path)}
     assert seen[1] == {**seen[0], 'model': 'other-model'}
     req['settings']['permission_mode'] = 'acceptEdits'
     asyncio.run(sdk_operations.claude(req))

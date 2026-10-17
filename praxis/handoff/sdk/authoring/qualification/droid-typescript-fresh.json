@@ -12,7 +12,16 @@
           "autonomyLevel": "off",
           "interactionMode": "auto",
           "permission": "deny_unapproved",
-          "transport": "native_stdio"
+          "transport": "native_stdio",
+          "customModels": [
+            {
+              "model": "openai/gpt-4.1-mini",
+              "displayName": "PraxisSDKQualification",
+              "baseUrl": "https://openrouter.ai/api/v1",
+              "provider": "generic-chat-completion-api",
+              "apiKeyEnv": "DROID_MODEL_API_KEY"
+            }
+          ]
         }
       },
       "assertions": [
@@ -40,7 +49,16 @@
           "autonomyLevel": "off",
           "interactionMode": "auto",
           "permission": "deny_unapproved",
-          "transport": "native_stdio"
+          "transport": "native_stdio",
+          "customModels": [
+            {
+              "model": "openai/gpt-4.1-mini",
+              "displayName": "PraxisSDKQualification",
+              "baseUrl": "https://openrouter.ai/api/v1",
+              "provider": "generic-chat-completion-api",
+              "apiKeyEnv": "DROID_MODEL_API_KEY"
+            }
+          ]
         }
       },
       "assertions": [
@@ -68,7 +86,16 @@
           "autonomyLevel": "off",
           "interactionMode": "auto",
           "permission": "deny_unapproved",
-          "transport": "native_stdio"
+          "transport": "native_stdio",
+          "customModels": [
+            {
+              "model": "openai/gpt-4.1-mini",
+              "displayName": "PraxisSDKQualification",
+              "baseUrl": "https://openrouter.ai/api/v1",
+              "provider": "generic-chat-completion-api",
+              "apiKeyEnv": "DROID_MODEL_API_KEY"
+            }
+          ]
         }
       },
       "error": "SDK operation failed: exit status 1"

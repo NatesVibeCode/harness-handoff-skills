@@ -1,4 +1,6 @@
 import net from "node:net";
+import { mkdirSync, mkdtempSync, realpathSync, statSync, writeFileSync } from "node:fs";
+import { isAbsolute, join } from "node:path";
 
 function textFrom(value) {
   if (typeof value === "string") return value;
@@ -131,20 +133,42 @@ async function codex(request, sdk) {
 
 async function droid(request, sdk) {
   const { ToolConfirmationOutcome } = sdk;
-  const { permission, transport: transportMode, ...settings } = request.settings;
+  const { permission, transport: transportMode, customModels, ...settings } = request.settings;
+  const home = process.env.DROID_STATE_HOME;
+  if (typeof home !== "string" || !isAbsolute(home) || !statSync(home).isDirectory() || realpathSync(home) !== home) {
+    throw new Error("Droid SDK requires an explicit existing canonical DROID_STATE_HOME");
+  }
+  if ((statSync(home).mode & 0o077) !== 0) throw new Error("Droid state root must be private to its execution owner");
+  const nativeHome = mkdtempSync(join(home, "fresh-"));
+  console.error(JSON.stringify({ harness: "droid", event: "native_state", directory: nativeHome.slice(home.length + 1) }));
+  const env = { ...process.env, HOME: nativeHome };
+  if (customModels !== undefined) {
+    const models = customModels.map(({ apiKeyEnv, ...model }) => {
+      if (!["DROID_MODEL_API_KEY", "OPENROUTER_API_KEY", "FACTORY_API_KEY"].includes(apiKeyEnv) || !process.env[apiKeyEnv]) {
+        throw new Error("Droid custom model requires its declared credential binding");
+      }
+      return { ...model, apiKey: process.env[apiKeyEnv] };
+    });
+    const config = join(nativeHome, ".factory");
+    mkdirSync(config, { recursive: true, mode: 0o700 });
+    // Provider choices come from typed Node settings; the execution owner
+    // supplies only the credential and private persistent native-state path.
+    writeFileSync(join(config, "settings.json"), JSON.stringify({ customModels: models }), { mode: 0o600 });
+  }
   const permissionHandler = permission === "unattended"
     ? undefined : () => ToolConfirmationOutcome.Cancel;
   const ownedTransport = transportMode === "native_stdio"
-    ? new sdk.ProcessTransport({ cwd: request.workspace, env: process.env }) : undefined;
+    ? new sdk.ProcessTransport({ cwd: request.workspace, env }) : undefined;
   let sessionId = "";
   let output = "";
   let failed = false;
   let completed = false;
   try {
     if (ownedTransport) await ownedTransport.connect();
-    const session = await sdk.createSession({ cwd: request.workspace, ...settings, permissionHandler,
+    const session = await sdk.createSession({ cwd: request.workspace, ...settings, env, permissionHandler,
       ...(ownedTransport ? { transport: ownedTransport } : {}) });
     sessionId = session.id;
+    console.error(JSON.stringify({ harness: "droid", event: "session_started", session_id: sessionId }));
     try {
       for await (const message of session.stream(request.prompt)) {
         if (message?.type === "assistant" && typeof message.text === "string") output += message.text;

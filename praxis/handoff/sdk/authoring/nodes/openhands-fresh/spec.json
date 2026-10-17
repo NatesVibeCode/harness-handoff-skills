@@ -237,7 +237,7 @@
           "adapter_digest": {
             "type": "string",
             "enum": [
-              "sha256:d73f6cd24fb2be89839d09aff12c390d579c7433c0d2e769fe607073447e3778"
+              "sha256:e9ac366350097c37df424f39544c47aff8a3e69a8a46dea967438c7835f51d97"
             ]
           },
           "runner_digest": {
@@ -255,7 +255,7 @@
           "bindings_digest": {
             "type": "string",
             "enum": [
-              "sha256:57305eeec8ce7697c57e31b8be6f3c31c963fe3462ce9e080a3fae83609f434a"
+              "sha256:0e26994e6cbae55055022210d203336b15e4812e699f8b0015de5575ddbd4c60"
             ]
           },
           "settings_digest": {
@@ -366,21 +366,21 @@
           "entrypoint": "Conversation",
           "operation": "fresh",
           "adapter": "openhands_fresh",
-          "adapter_digest": "sha256:d73f6cd24fb2be89839d09aff12c390d579c7433c0d2e769fe607073447e3778",
+          "adapter_digest": "sha256:e9ac366350097c37df424f39544c47aff8a3e69a8a46dea967438c7835f51d97",
           "runner_digest": "sha256:ceb96d17d3aade988aedba8975cbcec4318d7d4de4a03ac087b463273166a090",
           "contract_digest": "sha256:db640957ec60ef85be3038d48637ff0e357f9426ec18227e2375dd23808c9594",
-          "bindings_digest": "sha256:57305eeec8ce7697c57e31b8be6f3c31c963fe3462ce9e080a3fae83609f434a",
+          "bindings_digest": "sha256:0e26994e6cbae55055022210d203336b15e4812e699f8b0015de5575ddbd4c60",
           "dispatch_source_digest": "316eebc30b2dceeb2d6bad80b9d323a14871c92aa0cb719b2a6631d20ac0670b",
           "dispatch_pointer": "sdkdispatch.Run",
-          "runner_file": "nodes/sdk/openhands-python-fresh/256b4d168852e5f67131e573e5ba6930d93271d40237ff30581b4af778fd3524/runtime/run.py",
+          "runner_file": "nodes/sdk/openhands-python-fresh/ddddeab27af1e8a1c2dfabc8ae9264eefc4ebe5b6a4543e42f88bb9ca29a1c19/runtime/run.py",
           "working_directory_slot": "workspace",
           "files": {
-            "nodes/sdk/openhands-python-fresh/256b4d168852e5f67131e573e5ba6930d93271d40237ff30581b4af778fd3524/runtime/run.py": "sha256:ceb96d17d3aade988aedba8975cbcec4318d7d4de4a03ac087b463273166a090",
-            "nodes/sdk/openhands-python-fresh/256b4d168852e5f67131e573e5ba6930d93271d40237ff30581b4af778fd3524/runtime/mcp_bridge/sdk_operations.py": "sha256:d73f6cd24fb2be89839d09aff12c390d579c7433c0d2e769fe607073447e3778",
-            "nodes/sdk/openhands-python-fresh/256b4d168852e5f67131e573e5ba6930d93271d40237ff30581b4af778fd3524/runtime/mcp_bridge/sdk_contract.py": "sha256:db640957ec60ef85be3038d48637ff0e357f9426ec18227e2375dd23808c9594",
-            "nodes/sdk/openhands-python-fresh/256b4d168852e5f67131e573e5ba6930d93271d40237ff30581b4af778fd3524/runtime/mcp_bridge/sdk_bindings.json": "sha256:57305eeec8ce7697c57e31b8be6f3c31c963fe3462ce9e080a3fae83609f434a",
-            "nodes/sdk/openhands-python-fresh/256b4d168852e5f67131e573e5ba6930d93271d40237ff30581b4af778fd3524/runtime/runtime.tar.gz": "sha256:edde2ed97c8aedbbc768b002e4a80ee75b3235eec2e2888ee3a85ad2c0438c8c",
-            "nodes/sdk/openhands-python-fresh/256b4d168852e5f67131e573e5ba6930d93271d40237ff30581b4af778fd3524/runtime/harness.json": "sha256:019da1e1912f1dfa062df44ccca9ab4af7b2d68cc999edaf0c18cc9cbd5f11b3"
+            "nodes/sdk/openhands-python-fresh/ddddeab27af1e8a1c2dfabc8ae9264eefc4ebe5b6a4543e42f88bb9ca29a1c19/runtime/run.py": "sha256:ceb96d17d3aade988aedba8975cbcec4318d7d4de4a03ac087b463273166a090",
+            "nodes/sdk/openhands-python-fresh/ddddeab27af1e8a1c2dfabc8ae9264eefc4ebe5b6a4543e42f88bb9ca29a1c19/runtime/mcp_bridge/sdk_operations.py": "sha256:e9ac366350097c37df424f39544c47aff8a3e69a8a46dea967438c7835f51d97",
+            "nodes/sdk/openhands-python-fresh/ddddeab27af1e8a1c2dfabc8ae9264eefc4ebe5b6a4543e42f88bb9ca29a1c19/runtime/mcp_bridge/sdk_contract.py": "sha256:db640957ec60ef85be3038d48637ff0e357f9426ec18227e2375dd23808c9594",
+            "nodes/sdk/openhands-python-fresh/ddddeab27af1e8a1c2dfabc8ae9264eefc4ebe5b6a4543e42f88bb9ca29a1c19/runtime/mcp_bridge/sdk_bindings.json": "sha256:0e26994e6cbae55055022210d203336b15e4812e699f8b0015de5575ddbd4c60",
+            "nodes/sdk/openhands-python-fresh/ddddeab27af1e8a1c2dfabc8ae9264eefc4ebe5b6a4543e42f88bb9ca29a1c19/runtime/runtime.tar.gz": "sha256:edde2ed97c8aedbbc768b002e4a80ee75b3235eec2e2888ee3a85ad2c0438c8c",
+            "nodes/sdk/openhands-python-fresh/ddddeab27af1e8a1c2dfabc8ae9264eefc4ebe5b6a4543e42f88bb9ca29a1c19/runtime/harness.json": "sha256:019da1e1912f1dfa062df44ccca9ab4af7b2d68cc999edaf0c18cc9cbd5f11b3"
           },
           "runtime": {
             "binary": "python/bin/python3.13",
@@ -390,13 +390,13 @@
             "sha256": "3237648c5222017bba78737370570e4c9d5a01e552cdf2fa11f107c8d00fc06e",
             "target": "darwin-arm64",
             "bundle_digest": "edde2ed97c8aedbbc768b002e4a80ee75b3235eec2e2888ee3a85ad2c0438c8c",
-            "bundle_file": "nodes/sdk/openhands-python-fresh/256b4d168852e5f67131e573e5ba6930d93271d40237ff30581b4af778fd3524/runtime/runtime.tar.gz"
+            "bundle_file": "nodes/sdk/openhands-python-fresh/ddddeab27af1e8a1c2dfabc8ae9264eefc4ebe5b6a4543e42f88bb9ca29a1c19/runtime/runtime.tar.gz"
           },
           "environment": [
             "LLM_API_KEY",
             "LLM_BASE_URL"
           ],
-          "contract_file": "nodes/sdk/openhands-python-fresh/256b4d168852e5f67131e573e5ba6930d93271d40237ff30581b4af778fd3524/runtime/harness.json"
+          "contract_file": "nodes/sdk/openhands-python-fresh/ddddeab27af1e8a1c2dfabc8ae9264eefc4ebe5b6a4543e42f88bb9ca29a1c19/runtime/harness.json"
         }
       }
     },

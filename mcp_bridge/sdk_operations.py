@@ -32,7 +32,11 @@ def completed(session_id, output):
 
 async def claude(request):
     from claude_agent_sdk import ClaudeAgentOptions, ResultMessage, query
-    options = ClaudeAgentOptions(cwd=request['workspace'], **request['settings'])
+    temporary = os.environ.get('TMPDIR')
+    if not temporary or not Path(temporary).is_absolute() or not Path(temporary).is_dir():
+        raise RuntimeError('Claude SDK requires its execution owner temporary directory')
+    options = ClaudeAgentOptions(cwd=request['workspace'],
+                                 env={'CLAUDE_CODE_TMPDIR': temporary}, **request['settings'])
     terminal = None
     async for message in query(prompt=request['prompt'], options=options):
         if isinstance(message, ResultMessage):
