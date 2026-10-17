@@ -39,7 +39,11 @@ test('Codex maps selected model and permissions without an adapter profile', asy
   const seen = [];
   const sdk = { Codex: class {
     constructor(...args) { assert.deepEqual(args, []); }
-    startThread(options) { seen.push(options); return { id: 'fresh-id', run: async () => ({ finalResponse: 'answer' }) }; }
+    startThread(options) { seen.push(options); return { id: 'fresh-id', runStreamed: async () => ({ events: (async function* () {
+      yield { type: 'thread.started', thread_id: 'fresh-id' };
+      yield { type: 'item.completed', item: { type: 'agent_message', text: 'answer' } };
+      yield { type: 'turn.completed' };
+    })() }) }; }
   } };
   const req = request('codex');
   await invoke(req, sdk);
@@ -51,6 +55,17 @@ test('Codex maps selected model and permissions without an adapter profile', asy
     assert.deepEqual(seen.at(-1), { workingDirectory: req.workspace, ...baseline, [key]: value });
   }
   assert.deepEqual(seen[0], { workingDirectory: req.workspace, ...baseline });
+});
+
+test('Codex rejects partial output, failed turns and stream errors', async () => {
+  for (const terminal of [null, { type: 'turn.failed', error: { message: 'provider refused' } }, { type: 'error', message: 'stream refused' }]) {
+    const sdk = { Codex: class { startThread() { return { id: 'fresh-id', runStreamed: async () => ({ events: (async function* () {
+      yield { type: 'thread.started', thread_id: 'fresh-id' };
+      yield { type: 'item.completed', item: { type: 'agent_message', text: 'partial output' } };
+      if (terminal) yield terminal;
+    })() }) }; } } };
+    await assert.rejects(invoke(request('codex'), sdk), /completion|refused/);
+  }
 });
 
 test('Amp forwards visibility, mode and permission choices and requires terminal result', async () => {
@@ -160,7 +175,10 @@ for (const harness of ['amp', 'cline', 'codex', 'droid', 'opencode']) {
 }
 
 test('Codex never calls an empty result a success', async () => {
-  const sdk = { Codex: class { startThread() { return { id: 'id', run: async () => ({ finalResponse: '' }) }; } } };
+  const sdk = { Codex: class { startThread() { return { id: 'id', runStreamed: async () => ({ events: (async function* () {
+    yield { type: 'thread.started', thread_id: 'id' };
+    yield { type: 'turn.completed' };
+  })() }) }; } } };
   await assert.rejects(invoke(request('codex'), sdk), /assistant output/);
 });
 

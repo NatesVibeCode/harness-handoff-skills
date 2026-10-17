@@ -115,7 +115,7 @@ python3 scripts/build_skills.py --check
 python3 -m pytest
 python3 scripts/check_sdk_plans.py --out /path/to/new-diagnostics
 python3 scripts/fetch_sdk_material.py --out /path/to/sdk-archives
-python3 scripts/publish_sdk_nodes.py --root /path/to/atlas/data --evidence /path/to/new-publication
+python3 scripts/build_sdk_capabilities.py --out /path/to/new-builds --develop
 ```
 
 The fetch command retrieves and checks public SDK archives without installing or
@@ -148,3 +148,41 @@ remain factory-owned stages for each exact qualified scope.
 
 Gemini and Junie have no SDK binding in the selected contracts; Grok uses its
 protocol/CLI route. They are not counted among the eleven SDK implementations.
+
+
+## Qualification cases and execution custody
+
+`authoring/qualification/SLUG.json` is an independent case declaration, consumed
+by the authoring generator. It declares expected outputs, held-out inputs,
+settings changes, omitted settings and safe failures. Declaring cases does not
+claim they passed. The captured Darwin Codex cases use `/private/var/empty` as
+an empty, non-Git input directory; a Node never binds to a checkout.
+
+Codex's qualification Process selects `praxis.execution_journal.v2` and an empty
+explicit recovery policy. The caller supplies its event identity, private state
+directory and deployment key. An interrupted effect stays uncertain; the same
+event cannot authorize a fresh session. There is no automatic SDK retry.
+`forge-author invoke` accepts the corresponding `-event-id`, `-event-state-dir`
+and `-deployment-key-env` flags. Keep the same identity and journal on recovery.
+
+The tuning declaration's 300-second trial allowance addresses stalled provider
+calls, and its ten-request/$5 allowance matches this qualification scope. These
+are authored qualification selections, not hidden SDK execution defaults; change
+the declaration and qualify its new exact revision to select different values.
+
+Codex streams actual thread identity and partial assistant output to the caller's
+diagnostic channel. The Process streams redacted attempt diagnostics while the
+SDK runs and retains a failed/uncertain receipt after graceful interruption.
+A successful turn requires the SDK's `turn.completed` event and nonempty output.
+Capture stderr as well as stdout when invoking a printed package.
+
+Forge's explicit `runtime.harness_sdk` qualification custody selects an owner
+reference, optional private credential map and exact read/write paths. Native
+Codex authentication can select `CODEX_HOME` without granting the operator's
+whole home. OE's explicit `outbound` mode keeps filesystem isolation while
+permitting SDK connections and localhost listeners. It grants no new account or
+spend authority. Native AO results remain separate from development observations.
+
+Reusable declarations and Blocks are emitted by `forge-author plan`; consume
+its exact `nodes/`, `blocks/` and derived `stores.json`. Removed standalone
+Node/catalogue commands are not part of this workflow.

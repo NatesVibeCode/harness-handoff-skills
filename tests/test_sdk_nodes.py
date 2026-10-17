@@ -147,7 +147,9 @@ def test_fresh_plans_use_one_declaration_and_map_settings_through_both_layers():
         spec = json.loads((author.HERE/plan['nodes'][0]['spec_file']).read_text())
         sdk = next(d['contents']['sdk'] for d in spec['dimensions'] if d['name'] == 'handoff')
         assert sdk['bindings_digest'] == sdk_contract.digest(sdk_contract.BINDINGS_PATH.read_bytes())
-        assert not spec['proof_spec']['behavior']  # These checks do not invent real-use evidence.
+        case_file = author.HERE/'qualification'/f'{slug}.json'
+        expected_cases = json.loads(case_file.read_text())['behavior'] if case_file.exists() else []
+        assert spec['proof_spec']['behavior'] == expected_cases  # Authored expectations confer no passing evidence.
 
 
 def test_typescript_mechanics():
@@ -167,7 +169,8 @@ def test_sdk_catalogue_pins_local_dispatch_check_without_claiming_vendor_proof()
         assert stores['pointers'] == [{
             'kind': 'test', 'pointer': spec['proof_spec']['test']['pointer'],
             'digest': expected, 'path': 'assets/proof_test.go'}]
-        assert not spec['proof_spec']['behavior']
+        case_file = root/'qualification'/(path.stem.removeprefix('plan-')+'.json')
+        assert spec['proof_spec']['behavior'] == (json.loads(case_file.read_text())['behavior'] if case_file.exists() else [])
         access = next(d['contents'] for d in spec['dimensions'] if d['name'] == 'access')
         assert access['share']['identity'].startswith('sdk-execution-owner:')
     query = json.loads((root / 'atlas-reuse-query.json').read_text())
@@ -176,7 +179,7 @@ def test_sdk_catalogue_pins_local_dispatch_check_without_claiming_vendor_proof()
 
 
 def test_muse_selected_profile_is_required_and_completed_text_only(monkeypatch, tmp_path):
-    seen, closed = [], []
+    seen, closed, spawned = [], [], []
     class Turn:
         @property
         def completed(self):
@@ -190,7 +193,7 @@ def test_muse_selected_profile_is_required_and_completed_text_only(monkeypatch, 
         async def send_user_turn(self, options): return Turn()
     class Client:
         @staticmethod
-        async def spawn(options): return Client()
+        async def spawn(options): spawned.append(options); return Client()
         async def start_session(self, options): seen.append(options); return Session()
         async def close(self): closed.append(True)
     monkeypatch.setitem(sys.modules, 'muse_code', types.SimpleNamespace(
@@ -198,6 +201,7 @@ def test_muse_selected_profile_is_required_and_completed_text_only(monkeypatch, 
         SendUserTurnOptions=lambda **kw: kw, StartSessionOptions=lambda **kw: kw))
     req = request('muse', tmp_path)
     assert asyncio.run(sdk_operations.muse(req))['output'] == 'answer'
+    assert spawned[0]['capabilities'] == {'experimentalApi': True}
     assert seen == [{**req['settings'], 'workspace_root': str(tmp_path), 'require_permission_profile': True}]
     assert closed == [True]
 
@@ -318,7 +322,7 @@ def test_typescript_printed_runner_self_pin_and_stdout_channel(tmp_path):
     (package/'index.mjs').write_text(f'''import {{ writeFileSync }} from 'node:fs';
 writeFileSync({json.dumps(str(marker))}, 'imported');
 console.log('vendor diagnostic');
-export class Codex {{ startThread() {{ return {{ id: 'fixture-session', run: async () => ({{ finalResponse: 'fixture completed output' }}) }}; }} }}
+export class Codex {{ startThread() {{ return {{ id: 'fixture-session', runStreamed: async () => ({{ events: (async function*() {{ yield {{type:'thread.started',thread_id:'fixture-session'}}; yield {{type:'item.completed',item:{{type:'agent_message',text:'fixture completed output'}}}}; yield {{type:'turn.completed'}}; }})() }}) }}; }} }}
 ''')
     req = request('codex', tmp_path)
     for key, name in [('runner_digest', 'run.mjs'), ('contract_digest', 'contract.mjs'), ('adapter_digest', 'adapters.mjs')]:

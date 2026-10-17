@@ -8,7 +8,7 @@
       "spec_file": "nodes/copilot-fresh/spec.json",
       "source_file": "assets/sdk_dispatch.go",
       "dispatch": {
-        "dir": "sdk/copilot-python-fresh/c9dbbdee151cf31be9edba022e3d1e16077f4a724cf4b34dbb45147b0ee08c3c",
+        "dir": "sdk/copilot-python-fresh/b9d4b58603f3b71adef7e2dae47d5aff0338eb399c68741e9109bb7204f37008",
         "file": "spec.json",
         "source_file": "sdk_dispatch.go",
         "package": "sdkdispatch",
@@ -128,27 +128,27 @@
   },
   "assets": [
     {
-      "rel_path": "nodes/sdk/copilot-python-fresh/c9dbbdee151cf31be9edba022e3d1e16077f4a724cf4b34dbb45147b0ee08c3c/runtime/harness.json",
+      "rel_path": "nodes/sdk/copilot-python-fresh/b9d4b58603f3b71adef7e2dae47d5aff0338eb399c68741e9109bb7204f37008/runtime/harness.json",
       "file": "assets/worker/harness-copilot.json"
     },
     {
-      "rel_path": "nodes/sdk/copilot-python-fresh/c9dbbdee151cf31be9edba022e3d1e16077f4a724cf4b34dbb45147b0ee08c3c/runtime/run.py",
+      "rel_path": "nodes/sdk/copilot-python-fresh/b9d4b58603f3b71adef7e2dae47d5aff0338eb399c68741e9109bb7204f37008/runtime/run.py",
       "file": "../../../../mcp_bridge/sdk_runner.py"
     },
     {
-      "rel_path": "nodes/sdk/copilot-python-fresh/c9dbbdee151cf31be9edba022e3d1e16077f4a724cf4b34dbb45147b0ee08c3c/runtime/mcp_bridge/sdk_operations.py",
+      "rel_path": "nodes/sdk/copilot-python-fresh/b9d4b58603f3b71adef7e2dae47d5aff0338eb399c68741e9109bb7204f37008/runtime/mcp_bridge/sdk_operations.py",
       "file": "../../../../mcp_bridge/sdk_operations.py"
     },
     {
-      "rel_path": "nodes/sdk/copilot-python-fresh/c9dbbdee151cf31be9edba022e3d1e16077f4a724cf4b34dbb45147b0ee08c3c/runtime/mcp_bridge/sdk_contract.py",
+      "rel_path": "nodes/sdk/copilot-python-fresh/b9d4b58603f3b71adef7e2dae47d5aff0338eb399c68741e9109bb7204f37008/runtime/mcp_bridge/sdk_contract.py",
       "file": "../../../../mcp_bridge/sdk_contract.py"
     },
     {
-      "rel_path": "nodes/sdk/copilot-python-fresh/c9dbbdee151cf31be9edba022e3d1e16077f4a724cf4b34dbb45147b0ee08c3c/runtime/mcp_bridge/sdk_bindings.json",
+      "rel_path": "nodes/sdk/copilot-python-fresh/b9d4b58603f3b71adef7e2dae47d5aff0338eb399c68741e9109bb7204f37008/runtime/mcp_bridge/sdk_bindings.json",
       "file": "../../../../mcp_bridge/sdk_bindings.json"
     },
     {
-      "rel_path": "nodes/sdk/copilot-python-fresh/c9dbbdee151cf31be9edba022e3d1e16077f4a724cf4b34dbb45147b0ee08c3c/runtime/runtime.tar.gz",
+      "rel_path": "nodes/sdk/copilot-python-fresh/b9d4b58603f3b71adef7e2dae47d5aff0338eb399c68741e9109bb7204f37008/runtime/runtime.tar.gz",
       "file": "assets/runtime/4b61e2e8a2a4a774e512d61352043cccb6b20eefdc74a809f90b78a73ba5710a.tar.gz"
     }
   ]

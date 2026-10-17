@@ -23,7 +23,61 @@
     "effects": [
       "harness.invoke"
     ],
-    "failure": "error"
+    "failure": "error",
+    "tuning": {
+      "schema": "aeltum.node_tuning.v1",
+      "mode": "fixed",
+      "replay": "captured_inputs",
+      "capture_inputs": [
+        "prompt",
+        "workspace",
+        "settings"
+      ],
+      "parameters": {},
+      "checks": [
+        {
+          "id": "success",
+          "kind": "success",
+          "purpose": "Check independently specified output or Git trust refusal; no retry or session reuse.",
+          "outputs": [
+            "receipt"
+          ]
+        },
+        {
+          "id": "held_out",
+          "kind": "held_out",
+          "purpose": "Check independently specified output or Git trust refusal; no retry or session reuse.",
+          "outputs": [
+            "receipt"
+          ]
+        },
+        {
+          "id": "safe_failure",
+          "kind": "safe_failure",
+          "purpose": "Check independently specified output or Git trust refusal; no retry or session reuse."
+        },
+        {
+          "id": "omitted_git",
+          "kind": "safe_failure",
+          "purpose": "Check independently specified output or Git trust refusal; no retry or session reuse."
+        },
+        {
+          "id": "owner_sandbox",
+          "kind": "success",
+          "purpose": "Check independently specified output or Git trust refusal; no retry or session reuse.",
+          "outputs": [
+            "receipt"
+          ]
+        }
+      ],
+      "limits": {
+        "max_trials": 1,
+        "max_seconds": 300,
+        "max_requests": 10,
+        "max_spend_micros": 5000000
+      },
+      "live_proof": "proof_spec"
+    }
   },
   "schema": "aeltum.node_spec.v1",
   "identity": {
@@ -221,7 +275,7 @@
           "adapter_digest": {
             "type": "string",
             "enum": [
-              "sha256:49db1b0c0f4d3c008812c1e3c92d3e706504a63dd81a30bfdcdaa66a2e9cba03"
+              "sha256:4b72ed676fb98b2e09b403e46ee9da617ade4880c8b19e278623cc547bce0081"
             ]
           },
           "runner_digest": {
@@ -239,7 +293,7 @@
           "bindings_digest": {
             "type": "string",
             "enum": [
-              "sha256:5343d4127ece954a9498b62f515ffa250951b5125a846cf7db2548fb023ae528"
+              "sha256:57305eeec8ce7697c57e31b8be6f3c31c963fe3462ce9e080a3fae83609f434a"
             ]
           },
           "settings_digest": {
@@ -350,21 +404,21 @@
           "entrypoint": "Codex",
           "operation": "fresh",
           "adapter": "codex_ts_fresh",
-          "adapter_digest": "sha256:49db1b0c0f4d3c008812c1e3c92d3e706504a63dd81a30bfdcdaa66a2e9cba03",
+          "adapter_digest": "sha256:4b72ed676fb98b2e09b403e46ee9da617ade4880c8b19e278623cc547bce0081",
           "runner_digest": "sha256:a58e98b97daa23d3180cf2072beadd99d37d13d4069650413e58dcd2158fa476",
           "contract_digest": "sha256:f9483f132fbc7875483adcc2548861340e7b82e31c4a56b1f282b2b64e48d869",
-          "bindings_digest": "sha256:5343d4127ece954a9498b62f515ffa250951b5125a846cf7db2548fb023ae528",
+          "bindings_digest": "sha256:57305eeec8ce7697c57e31b8be6f3c31c963fe3462ce9e080a3fae83609f434a",
           "dispatch_source_digest": "316eebc30b2dceeb2d6bad80b9d323a14871c92aa0cb719b2a6631d20ac0670b",
           "dispatch_pointer": "sdkdispatch.Run",
-          "runner_file": "nodes/sdk/codex-typescript-fresh/0efb001dca2f2d249b13ced614f7d4f60f10126d0d6ab42765c82888965ff0e9/runtime/typescript/run.mjs",
+          "runner_file": "nodes/sdk/codex-typescript-fresh/3ae3026b7088e8ae139f2c9f30437da00c4a1e20341358a16e4b09039b3951a6/runtime/typescript/run.mjs",
           "working_directory_slot": "workspace",
           "files": {
-            "nodes/sdk/codex-typescript-fresh/0efb001dca2f2d249b13ced614f7d4f60f10126d0d6ab42765c82888965ff0e9/runtime/typescript/adapters.mjs": "sha256:49db1b0c0f4d3c008812c1e3c92d3e706504a63dd81a30bfdcdaa66a2e9cba03",
-            "nodes/sdk/codex-typescript-fresh/0efb001dca2f2d249b13ced614f7d4f60f10126d0d6ab42765c82888965ff0e9/runtime/typescript/run.mjs": "sha256:a58e98b97daa23d3180cf2072beadd99d37d13d4069650413e58dcd2158fa476",
-            "nodes/sdk/codex-typescript-fresh/0efb001dca2f2d249b13ced614f7d4f60f10126d0d6ab42765c82888965ff0e9/runtime/typescript/contract.mjs": "sha256:f9483f132fbc7875483adcc2548861340e7b82e31c4a56b1f282b2b64e48d869",
-            "nodes/sdk/codex-typescript-fresh/0efb001dca2f2d249b13ced614f7d4f60f10126d0d6ab42765c82888965ff0e9/runtime/typescript/sdk_bindings.json": "sha256:5343d4127ece954a9498b62f515ffa250951b5125a846cf7db2548fb023ae528",
-            "nodes/sdk/codex-typescript-fresh/0efb001dca2f2d249b13ced614f7d4f60f10126d0d6ab42765c82888965ff0e9/runtime/runtime.tar.gz": "sha256:5498ecacacfdf93c77bbc452fb4eb6ca6642d0925e2c739339eeb67924cee7db",
-            "nodes/sdk/codex-typescript-fresh/0efb001dca2f2d249b13ced614f7d4f60f10126d0d6ab42765c82888965ff0e9/runtime/harness.json": "sha256:76aa88a3ac4355bd63603c17df210fc8f4fbcb9d4a5299d53778800391f9035c"
+            "nodes/sdk/codex-typescript-fresh/3ae3026b7088e8ae139f2c9f30437da00c4a1e20341358a16e4b09039b3951a6/runtime/typescript/adapters.mjs": "sha256:4b72ed676fb98b2e09b403e46ee9da617ade4880c8b19e278623cc547bce0081",
+            "nodes/sdk/codex-typescript-fresh/3ae3026b7088e8ae139f2c9f30437da00c4a1e20341358a16e4b09039b3951a6/runtime/typescript/run.mjs": "sha256:a58e98b97daa23d3180cf2072beadd99d37d13d4069650413e58dcd2158fa476",
+            "nodes/sdk/codex-typescript-fresh/3ae3026b7088e8ae139f2c9f30437da00c4a1e20341358a16e4b09039b3951a6/runtime/typescript/contract.mjs": "sha256:f9483f132fbc7875483adcc2548861340e7b82e31c4a56b1f282b2b64e48d869",
+            "nodes/sdk/codex-typescript-fresh/3ae3026b7088e8ae139f2c9f30437da00c4a1e20341358a16e4b09039b3951a6/runtime/typescript/sdk_bindings.json": "sha256:57305eeec8ce7697c57e31b8be6f3c31c963fe3462ce9e080a3fae83609f434a",
+            "nodes/sdk/codex-typescript-fresh/3ae3026b7088e8ae139f2c9f30437da00c4a1e20341358a16e4b09039b3951a6/runtime/runtime.tar.gz": "sha256:5498ecacacfdf93c77bbc452fb4eb6ca6642d0925e2c739339eeb67924cee7db",
+            "nodes/sdk/codex-typescript-fresh/3ae3026b7088e8ae139f2c9f30437da00c4a1e20341358a16e4b09039b3951a6/runtime/harness.json": "sha256:76aa88a3ac4355bd63603c17df210fc8f4fbcb9d4a5299d53778800391f9035c"
           },
           "runtime": {
             "binary": "bin/node",
@@ -372,12 +426,13 @@
             "sha256": "b468fb9c67427c9d3aec07ee1105e63020923a631a9a2a00beb71a7ba3768bfd",
             "target": "darwin-arm64",
             "bundle_digest": "5498ecacacfdf93c77bbc452fb4eb6ca6642d0925e2c739339eeb67924cee7db",
-            "bundle_file": "nodes/sdk/codex-typescript-fresh/0efb001dca2f2d249b13ced614f7d4f60f10126d0d6ab42765c82888965ff0e9/runtime/runtime.tar.gz"
+            "bundle_file": "nodes/sdk/codex-typescript-fresh/3ae3026b7088e8ae139f2c9f30437da00c4a1e20341358a16e4b09039b3951a6/runtime/runtime.tar.gz"
           },
           "environment": [
-            "OPENAI_API_KEY"
+            "OPENAI_API_KEY",
+            "CODEX_HOME"
           ],
-          "contract_file": "nodes/sdk/codex-typescript-fresh/0efb001dca2f2d249b13ced614f7d4f60f10126d0d6ab42765c82888965ff0e9/runtime/harness.json"
+          "contract_file": "nodes/sdk/codex-typescript-fresh/3ae3026b7088e8ae139f2c9f30437da00c4a1e20341358a16e4b09039b3951a6/runtime/harness.json"
         }
       }
     },
@@ -391,7 +446,128 @@
     }
   ],
   "proof_spec": {
-    "behavior": [],
+    "behavior": [
+      {
+        "id": "success",
+        "source": "Independently specified native Codex behavior using a disposable fresh session in the empty system directory.",
+        "inputs": {
+          "prompt": "Reply with exactly QUALIFIED_CODEX.",
+          "workspace": "/private/var/empty",
+          "settings": {
+            "model": "gpt-6-luna",
+            "sandboxMode": "read-only",
+            "approvalPolicy": "never",
+            "networkAccessEnabled": false,
+            "webSearchMode": "disabled",
+            "skipGitRepoCheck": true
+          }
+        },
+        "assertions": [
+          {
+            "field": "receipt",
+            "path": "/output",
+            "operator": "equals",
+            "value": "QUALIFIED_CODEX"
+          },
+          {
+            "field": "receipt",
+            "path": "/session_id",
+            "operator": "non_empty"
+          }
+        ]
+      },
+      {
+        "id": "held_out",
+        "source": "Independently specified native Codex behavior using a disposable fresh session in the empty system directory.",
+        "inputs": {
+          "prompt": "What is 19 multiplied by 23? Reply with only the integer.",
+          "workspace": "/private/var/empty",
+          "settings": {
+            "model": "gpt-6-luna",
+            "sandboxMode": "read-only",
+            "approvalPolicy": "never",
+            "networkAccessEnabled": false,
+            "webSearchMode": "disabled",
+            "skipGitRepoCheck": true
+          }
+        },
+        "assertions": [
+          {
+            "field": "receipt",
+            "path": "/output",
+            "operator": "equals",
+            "value": "437"
+          },
+          {
+            "field": "receipt",
+            "path": "/session_id",
+            "operator": "non_empty"
+          }
+        ]
+      },
+      {
+        "id": "safe_failure",
+        "source": "Independently specified native Codex behavior using a disposable fresh session in the empty system directory.",
+        "inputs": {
+          "prompt": "Reply with exactly QUALIFIED_CODEX.",
+          "workspace": "/private/var/empty",
+          "settings": {
+            "model": "gpt-6-luna",
+            "sandboxMode": "read-only",
+            "approvalPolicy": "never",
+            "networkAccessEnabled": false,
+            "webSearchMode": "disabled",
+            "skipGitRepoCheck": false
+          }
+        },
+        "error": "SDK operation failed: exit status 1"
+      },
+      {
+        "id": "omitted_git",
+        "source": "Independently specified native Codex behavior using a disposable fresh session in the empty system directory.",
+        "inputs": {
+          "prompt": "Reply with exactly QUALIFIED_CODEX.",
+          "workspace": "/private/var/empty",
+          "settings": {
+            "model": "gpt-6-luna",
+            "sandboxMode": "read-only",
+            "approvalPolicy": "never",
+            "networkAccessEnabled": false,
+            "webSearchMode": "disabled"
+          }
+        },
+        "error": "SDK operation failed: exit status 1"
+      },
+      {
+        "id": "owner_sandbox",
+        "source": "Independently specified native Codex behavior using a disposable fresh session in the empty system directory.",
+        "inputs": {
+          "prompt": "Reply with exactly QUALIFIED_CODEX.",
+          "workspace": "/private/var/empty",
+          "settings": {
+            "model": "gpt-6-luna",
+            "sandboxMode": "danger-full-access",
+            "approvalPolicy": "never",
+            "networkAccessEnabled": false,
+            "webSearchMode": "disabled",
+            "skipGitRepoCheck": true
+          }
+        },
+        "assertions": [
+          {
+            "field": "receipt",
+            "path": "/output",
+            "operator": "equals",
+            "value": "QUALIFIED_CODEX"
+          },
+          {
+            "field": "receipt",
+            "path": "/session_id",
+            "operator": "non_empty"
+          }
+        ]
+      }
+    ],
     "test": {
       "pointer": "sdkdispatch.TestSDKDispatchRequiresPrintedRuntime",
       "digest": "91893f105cbc8ca2fe9fddd7b2cfb0a8c2f47244879441b1a993307a3450e753"

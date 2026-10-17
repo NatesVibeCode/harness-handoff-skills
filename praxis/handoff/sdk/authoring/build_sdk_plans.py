@@ -332,6 +332,14 @@ def make_plan(harness: str, operation: str, contract: dict, package_version: str
     contract_text = (REPO_ROOT / f"{harness}-harness-handoff/contract.json").read_text(encoding="utf-8")
     write_json(HERE / f"assets/worker/harness-{harness}.json", {"contracts": {harness: contract_text}})
     handoff["sdk"]["files"][handoff["sdk"]["contract_file"]] = raw_sha256((HERE/f"assets/worker/harness-{harness}.json").read_bytes())
+    qualification_file = HERE / "qualification" / f"{slug}.json"
+    if qualification_file.exists():
+        qualification = read_json(qualification_file)
+        if qualification.get("schema") != "harness.sdk_qualification_cases.v1":
+            raise ValueError(f"{slug}: unknown qualification case schema")
+        node["proof_spec"]["behavior"] = qualification["behavior"]
+        node["composition"]["tuning"] = qualification["tuning"]
+        plan["process"]["policy"].update(qualification.get("process_policy", {}))
     write_json(HERE / "nodes" / slug / "spec.json", node)
     write_json(HERE / f"plan-{slug}.json", plan)
     stores = read_json(HERE / "stores.json")

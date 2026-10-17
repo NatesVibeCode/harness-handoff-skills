@@ -224,7 +224,7 @@
           "adapter_digest": {
             "type": "string",
             "enum": [
-              "sha256:49db1b0c0f4d3c008812c1e3c92d3e706504a63dd81a30bfdcdaa66a2e9cba03"
+              "sha256:4b72ed676fb98b2e09b403e46ee9da617ade4880c8b19e278623cc547bce0081"
             ]
           },
           "runner_digest": {
@@ -242,7 +242,7 @@
           "bindings_digest": {
             "type": "string",
             "enum": [
-              "sha256:5343d4127ece954a9498b62f515ffa250951b5125a846cf7db2548fb023ae528"
+              "sha256:57305eeec8ce7697c57e31b8be6f3c31c963fe3462ce9e080a3fae83609f434a"
             ]
           },
           "settings_digest": {
@@ -353,21 +353,21 @@
           "entrypoint": "createOpencode",
           "operation": "fresh",
           "adapter": "opencode_ts_fresh",
-          "adapter_digest": "sha256:49db1b0c0f4d3c008812c1e3c92d3e706504a63dd81a30bfdcdaa66a2e9cba03",
+          "adapter_digest": "sha256:4b72ed676fb98b2e09b403e46ee9da617ade4880c8b19e278623cc547bce0081",
           "runner_digest": "sha256:a58e98b97daa23d3180cf2072beadd99d37d13d4069650413e58dcd2158fa476",
           "contract_digest": "sha256:f9483f132fbc7875483adcc2548861340e7b82e31c4a56b1f282b2b64e48d869",
-          "bindings_digest": "sha256:5343d4127ece954a9498b62f515ffa250951b5125a846cf7db2548fb023ae528",
+          "bindings_digest": "sha256:57305eeec8ce7697c57e31b8be6f3c31c963fe3462ce9e080a3fae83609f434a",
           "dispatch_source_digest": "316eebc30b2dceeb2d6bad80b9d323a14871c92aa0cb719b2a6631d20ac0670b",
           "dispatch_pointer": "sdkdispatch.Run",
-          "runner_file": "nodes/sdk/opencode-typescript-fresh/327876867cd0e33f9f9b88155e7cf35440ff94671d461b483933f888f4b4f2d8/runtime/typescript/run.mjs",
+          "runner_file": "nodes/sdk/opencode-typescript-fresh/ed08d114f003295e1fefb34f99b88e7a4653703dba9f29aa20e832c584c43855/runtime/typescript/run.mjs",
           "working_directory_slot": "workspace",
           "files": {
-            "nodes/sdk/opencode-typescript-fresh/327876867cd0e33f9f9b88155e7cf35440ff94671d461b483933f888f4b4f2d8/runtime/typescript/adapters.mjs": "sha256:49db1b0c0f4d3c008812c1e3c92d3e706504a63dd81a30bfdcdaa66a2e9cba03",
-            "nodes/sdk/opencode-typescript-fresh/327876867cd0e33f9f9b88155e7cf35440ff94671d461b483933f888f4b4f2d8/runtime/typescript/run.mjs": "sha256:a58e98b97daa23d3180cf2072beadd99d37d13d4069650413e58dcd2158fa476",
-            "nodes/sdk/opencode-typescript-fresh/327876867cd0e33f9f9b88155e7cf35440ff94671d461b483933f888f4b4f2d8/runtime/typescript/contract.mjs": "sha256:f9483f132fbc7875483adcc2548861340e7b82e31c4a56b1f282b2b64e48d869",
-            "nodes/sdk/opencode-typescript-fresh/327876867cd0e33f9f9b88155e7cf35440ff94671d461b483933f888f4b4f2d8/runtime/typescript/sdk_bindings.json": "sha256:5343d4127ece954a9498b62f515ffa250951b5125a846cf7db2548fb023ae528",
-            "nodes/sdk/opencode-typescript-fresh/327876867cd0e33f9f9b88155e7cf35440ff94671d461b483933f888f4b4f2d8/runtime/runtime.tar.gz": "sha256:72754a239d5c678c4c61c0fbf81a8741fec41a3b5bc9a2051fcc22347373d67f",
-            "nodes/sdk/opencode-typescript-fresh/327876867cd0e33f9f9b88155e7cf35440ff94671d461b483933f888f4b4f2d8/runtime/harness.json": "sha256:91efc6f3f17e7358955dfe3faaeacab17f4f90abd9117c83272c14132ba45534"
+            "nodes/sdk/opencode-typescript-fresh/ed08d114f003295e1fefb34f99b88e7a4653703dba9f29aa20e832c584c43855/runtime/typescript/adapters.mjs": "sha256:4b72ed676fb98b2e09b403e46ee9da617ade4880c8b19e278623cc547bce0081",
+            "nodes/sdk/opencode-typescript-fresh/ed08d114f003295e1fefb34f99b88e7a4653703dba9f29aa20e832c584c43855/runtime/typescript/run.mjs": "sha256:a58e98b97daa23d3180cf2072beadd99d37d13d4069650413e58dcd2158fa476",
+            "nodes/sdk/opencode-typescript-fresh/ed08d114f003295e1fefb34f99b88e7a4653703dba9f29aa20e832c584c43855/runtime/typescript/contract.mjs": "sha256:f9483f132fbc7875483adcc2548861340e7b82e31c4a56b1f282b2b64e48d869",
+            "nodes/sdk/opencode-typescript-fresh/ed08d114f003295e1fefb34f99b88e7a4653703dba9f29aa20e832c584c43855/runtime/typescript/sdk_bindings.json": "sha256:57305eeec8ce7697c57e31b8be6f3c31c963fe3462ce9e080a3fae83609f434a",
+            "nodes/sdk/opencode-typescript-fresh/ed08d114f003295e1fefb34f99b88e7a4653703dba9f29aa20e832c584c43855/runtime/runtime.tar.gz": "sha256:72754a239d5c678c4c61c0fbf81a8741fec41a3b5bc9a2051fcc22347373d67f",
+            "nodes/sdk/opencode-typescript-fresh/ed08d114f003295e1fefb34f99b88e7a4653703dba9f29aa20e832c584c43855/runtime/harness.json": "sha256:91efc6f3f17e7358955dfe3faaeacab17f4f90abd9117c83272c14132ba45534"
           },
           "runtime": {
             "binary": "bin/node",
@@ -375,7 +375,7 @@
             "sha256": "b468fb9c67427c9d3aec07ee1105e63020923a631a9a2a00beb71a7ba3768bfd",
             "target": "darwin-arm64",
             "bundle_digest": "72754a239d5c678c4c61c0fbf81a8741fec41a3b5bc9a2051fcc22347373d67f",
-            "bundle_file": "nodes/sdk/opencode-typescript-fresh/327876867cd0e33f9f9b88155e7cf35440ff94671d461b483933f888f4b4f2d8/runtime/runtime.tar.gz"
+            "bundle_file": "nodes/sdk/opencode-typescript-fresh/ed08d114f003295e1fefb34f99b88e7a4653703dba9f29aa20e832c584c43855/runtime/runtime.tar.gz"
           },
           "environment": [
             "ANTHROPIC_API_KEY",
@@ -387,7 +387,7 @@
             "MISTRAL_API_KEY",
             "DEEPSEEK_API_KEY"
           ],
-          "contract_file": "nodes/sdk/opencode-typescript-fresh/327876867cd0e33f9f9b88155e7cf35440ff94671d461b483933f888f4b4f2d8/runtime/harness.json"
+          "contract_file": "nodes/sdk/opencode-typescript-fresh/ed08d114f003295e1fefb34f99b88e7a4653703dba9f29aa20e832c584c43855/runtime/harness.json"
         }
       }
     },

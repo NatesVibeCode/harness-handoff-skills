@@ -1,0 +1,186 @@
+{
+  "schema": "harness.sdk_qualification_cases.v1",
+  "behavior": [
+    {
+      "id": "success",
+      "source": "Independently specified native Codex behavior using a disposable fresh session in the empty system directory.",
+      "inputs": {
+        "prompt": "Reply with exactly QUALIFIED_CODEX.",
+        "workspace": "/private/var/empty",
+        "settings": {
+          "model": "gpt-6-luna",
+          "sandboxMode": "read-only",
+          "approvalPolicy": "never",
+          "networkAccessEnabled": false,
+          "webSearchMode": "disabled",
+          "skipGitRepoCheck": true
+        }
+      },
+      "assertions": [
+        {
+          "field": "receipt",
+          "path": "/output",
+          "operator": "equals",
+          "value": "QUALIFIED_CODEX"
+        },
+        {
+          "field": "receipt",
+          "path": "/session_id",
+          "operator": "non_empty"
+        }
+      ]
+    },
+    {
+      "id": "held_out",
+      "source": "Independently specified native Codex behavior using a disposable fresh session in the empty system directory.",
+      "inputs": {
+        "prompt": "What is 19 multiplied by 23? Reply with only the integer.",
+        "workspace": "/private/var/empty",
+        "settings": {
+          "model": "gpt-6-luna",
+          "sandboxMode": "read-only",
+          "approvalPolicy": "never",
+          "networkAccessEnabled": false,
+          "webSearchMode": "disabled",
+          "skipGitRepoCheck": true
+        }
+      },
+      "assertions": [
+        {
+          "field": "receipt",
+          "path": "/output",
+          "operator": "equals",
+          "value": "437"
+        },
+        {
+          "field": "receipt",
+          "path": "/session_id",
+          "operator": "non_empty"
+        }
+      ]
+    },
+    {
+      "id": "safe_failure",
+      "source": "Independently specified native Codex behavior using a disposable fresh session in the empty system directory.",
+      "inputs": {
+        "prompt": "Reply with exactly QUALIFIED_CODEX.",
+        "workspace": "/private/var/empty",
+        "settings": {
+          "model": "gpt-6-luna",
+          "sandboxMode": "read-only",
+          "approvalPolicy": "never",
+          "networkAccessEnabled": false,
+          "webSearchMode": "disabled",
+          "skipGitRepoCheck": false
+        }
+      },
+      "error": "SDK operation failed: exit status 1"
+    },
+    {
+      "id": "omitted_git",
+      "source": "Independently specified native Codex behavior using a disposable fresh session in the empty system directory.",
+      "inputs": {
+        "prompt": "Reply with exactly QUALIFIED_CODEX.",
+        "workspace": "/private/var/empty",
+        "settings": {
+          "model": "gpt-6-luna",
+          "sandboxMode": "read-only",
+          "approvalPolicy": "never",
+          "networkAccessEnabled": false,
+          "webSearchMode": "disabled"
+        }
+      },
+      "error": "SDK operation failed: exit status 1"
+    },
+    {
+      "id": "owner_sandbox",
+      "source": "Independently specified native Codex behavior using a disposable fresh session in the empty system directory.",
+      "inputs": {
+        "prompt": "Reply with exactly QUALIFIED_CODEX.",
+        "workspace": "/private/var/empty",
+        "settings": {
+          "model": "gpt-6-luna",
+          "sandboxMode": "danger-full-access",
+          "approvalPolicy": "never",
+          "networkAccessEnabled": false,
+          "webSearchMode": "disabled",
+          "skipGitRepoCheck": true
+        }
+      },
+      "assertions": [
+        {
+          "field": "receipt",
+          "path": "/output",
+          "operator": "equals",
+          "value": "QUALIFIED_CODEX"
+        },
+        {
+          "field": "receipt",
+          "path": "/session_id",
+          "operator": "non_empty"
+        }
+      ]
+    }
+  ],
+  "tuning": {
+    "schema": "aeltum.node_tuning.v1",
+    "mode": "fixed",
+    "replay": "captured_inputs",
+    "capture_inputs": [
+      "prompt",
+      "workspace",
+      "settings"
+    ],
+    "parameters": {},
+    "checks": [
+      {
+        "id": "success",
+        "kind": "success",
+        "purpose": "Check independently specified output or Git trust refusal; no retry or session reuse.",
+        "outputs": [
+          "receipt"
+        ]
+      },
+      {
+        "id": "held_out",
+        "kind": "held_out",
+        "purpose": "Check independently specified output or Git trust refusal; no retry or session reuse.",
+        "outputs": [
+          "receipt"
+        ]
+      },
+      {
+        "id": "safe_failure",
+        "kind": "safe_failure",
+        "purpose": "Check independently specified output or Git trust refusal; no retry or session reuse."
+      },
+      {
+        "id": "omitted_git",
+        "kind": "safe_failure",
+        "purpose": "Check independently specified output or Git trust refusal; no retry or session reuse."
+      },
+      {
+        "id": "owner_sandbox",
+        "kind": "success",
+        "purpose": "Check independently specified output or Git trust refusal; no retry or session reuse.",
+        "outputs": [
+          "receipt"
+        ]
+      }
+    ],
+    "limits": {
+      "max_trials": 1,
+      "max_seconds": 300,
+      "max_requests": 10,
+      "max_spend_micros": 5000000
+    },
+    "live_proof": "proof_spec"
+  },
+  "process_policy": {
+    "execution_journal": "praxis.execution_journal.v2",
+    "recovery": {
+      "schema": "praxis.process_recovery.v2",
+      "bindings": []
+    }
+  }
+}

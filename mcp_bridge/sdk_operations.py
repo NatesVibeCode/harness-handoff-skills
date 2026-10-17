@@ -89,6 +89,7 @@ async def muse(request):
     from muse_code import MuseClient, MuseClientSpawnOptions, SendUserTurnOptions, StartSessionOptions
     client = await MuseClient.spawn(MuseClientSpawnOptions(
         muse_bin=native_runtime('muse'), args=('serve',),
+        capabilities={'experimentalApi': True},
         client_info={'name': 'harness_handoff', 'version': '1.0.0'},
     ))
     try:

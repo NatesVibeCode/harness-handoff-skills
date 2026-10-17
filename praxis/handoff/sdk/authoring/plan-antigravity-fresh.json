@@ -8,7 +8,7 @@
       "spec_file": "nodes/antigravity-fresh/spec.json",
       "source_file": "assets/sdk_dispatch.go",
       "dispatch": {
-        "dir": "sdk/antigravity-python-fresh/1c3da2872830218fd59be76ce4e82136dab27951c1cf16aa6cebbc502d651939",
+        "dir": "sdk/antigravity-python-fresh/b837b1a21579f69ed948646bf57fbf89a2c6009cd112caeaa9cace9d0fbb927e",
         "file": "spec.json",
         "source_file": "sdk_dispatch.go",
         "package": "sdkdispatch",
@@ -128,27 +128,27 @@
   },
   "assets": [
     {
-      "rel_path": "nodes/sdk/antigravity-python-fresh/1c3da2872830218fd59be76ce4e82136dab27951c1cf16aa6cebbc502d651939/runtime/harness.json",
+      "rel_path": "nodes/sdk/antigravity-python-fresh/b837b1a21579f69ed948646bf57fbf89a2c6009cd112caeaa9cace9d0fbb927e/runtime/harness.json",
       "file": "assets/worker/harness-antigravity.json"
     },
     {
-      "rel_path": "nodes/sdk/antigravity-python-fresh/1c3da2872830218fd59be76ce4e82136dab27951c1cf16aa6cebbc502d651939/runtime/run.py",
+      "rel_path": "nodes/sdk/antigravity-python-fresh/b837b1a21579f69ed948646bf57fbf89a2c6009cd112caeaa9cace9d0fbb927e/runtime/run.py",
       "file": "../../../../mcp_bridge/sdk_runner.py"
     },
     {
-      "rel_path": "nodes/sdk/antigravity-python-fresh/1c3da2872830218fd59be76ce4e82136dab27951c1cf16aa6cebbc502d651939/runtime/mcp_bridge/sdk_operations.py",
+      "rel_path": "nodes/sdk/antigravity-python-fresh/b837b1a21579f69ed948646bf57fbf89a2c6009cd112caeaa9cace9d0fbb927e/runtime/mcp_bridge/sdk_operations.py",
       "file": "../../../../mcp_bridge/sdk_operations.py"
     },
     {
-      "rel_path": "nodes/sdk/antigravity-python-fresh/1c3da2872830218fd59be76ce4e82136dab27951c1cf16aa6cebbc502d651939/runtime/mcp_bridge/sdk_contract.py",
+      "rel_path": "nodes/sdk/antigravity-python-fresh/b837b1a21579f69ed948646bf57fbf89a2c6009cd112caeaa9cace9d0fbb927e/runtime/mcp_bridge/sdk_contract.py",
       "file": "../../../../mcp_bridge/sdk_contract.py"
     },
     {
-      "rel_path": "nodes/sdk/antigravity-python-fresh/1c3da2872830218fd59be76ce4e82136dab27951c1cf16aa6cebbc502d651939/runtime/mcp_bridge/sdk_bindings.json",
+      "rel_path": "nodes/sdk/antigravity-python-fresh/b837b1a21579f69ed948646bf57fbf89a2c6009cd112caeaa9cace9d0fbb927e/runtime/mcp_bridge/sdk_bindings.json",
       "file": "../../../../mcp_bridge/sdk_bindings.json"
     },
     {
-      "rel_path": "nodes/sdk/antigravity-python-fresh/1c3da2872830218fd59be76ce4e82136dab27951c1cf16aa6cebbc502d651939/runtime/runtime.tar.gz",
+      "rel_path": "nodes/sdk/antigravity-python-fresh/b837b1a21579f69ed948646bf57fbf89a2c6009cd112caeaa9cace9d0fbb927e/runtime/runtime.tar.gz",
       "file": "assets/runtime/d169653c1290e07e7554005d0667dc1e040395b62461839dcbbf2f0f4e12a7a6.tar.gz"
     }
   ]

@@ -8,7 +8,7 @@
       "spec_file": "nodes/openhands-fresh/spec.json",
       "source_file": "assets/sdk_dispatch.go",
       "dispatch": {
-        "dir": "sdk/openhands-python-fresh/7fd523c9b19cb7d1d366cf8e76adf67217ce3b52316980294b367e7d61e992ee",
+        "dir": "sdk/openhands-python-fresh/c476387b5be1c78bfa6ffc0dafba6e11c3cde3251a6b98601eb5b7b00ad15563",
         "file": "spec.json",
         "source_file": "sdk_dispatch.go",
         "package": "sdkdispatch",
@@ -128,27 +128,27 @@
   },
   "assets": [
     {
-      "rel_path": "nodes/sdk/openhands-python-fresh/7fd523c9b19cb7d1d366cf8e76adf67217ce3b52316980294b367e7d61e992ee/runtime/harness.json",
+      "rel_path": "nodes/sdk/openhands-python-fresh/c476387b5be1c78bfa6ffc0dafba6e11c3cde3251a6b98601eb5b7b00ad15563/runtime/harness.json",
       "file": "assets/worker/harness-openhands.json"
     },
     {
-      "rel_path": "nodes/sdk/openhands-python-fresh/7fd523c9b19cb7d1d366cf8e76adf67217ce3b52316980294b367e7d61e992ee/runtime/run.py",
+      "rel_path": "nodes/sdk/openhands-python-fresh/c476387b5be1c78bfa6ffc0dafba6e11c3cde3251a6b98601eb5b7b00ad15563/runtime/run.py",
       "file": "../../../../mcp_bridge/sdk_runner.py"
     },
     {
-      "rel_path": "nodes/sdk/openhands-python-fresh/7fd523c9b19cb7d1d366cf8e76adf67217ce3b52316980294b367e7d61e992ee/runtime/mcp_bridge/sdk_operations.py",
+      "rel_path": "nodes/sdk/openhands-python-fresh/c476387b5be1c78bfa6ffc0dafba6e11c3cde3251a6b98601eb5b7b00ad15563/runtime/mcp_bridge/sdk_operations.py",
       "file": "../../../../mcp_bridge/sdk_operations.py"
     },
     {
-      "rel_path": "nodes/sdk/openhands-python-fresh/7fd523c9b19cb7d1d366cf8e76adf67217ce3b52316980294b367e7d61e992ee/runtime/mcp_bridge/sdk_contract.py",
+      "rel_path": "nodes/sdk/openhands-python-fresh/c476387b5be1c78bfa6ffc0dafba6e11c3cde3251a6b98601eb5b7b00ad15563/runtime/mcp_bridge/sdk_contract.py",
       "file": "../../../../mcp_bridge/sdk_contract.py"
     },
     {
-      "rel_path": "nodes/sdk/openhands-python-fresh/7fd523c9b19cb7d1d366cf8e76adf67217ce3b52316980294b367e7d61e992ee/runtime/mcp_bridge/sdk_bindings.json",
+      "rel_path": "nodes/sdk/openhands-python-fresh/c476387b5be1c78bfa6ffc0dafba6e11c3cde3251a6b98601eb5b7b00ad15563/runtime/mcp_bridge/sdk_bindings.json",
       "file": "../../../../mcp_bridge/sdk_bindings.json"
     },
     {
-      "rel_path": "nodes/sdk/openhands-python-fresh/7fd523c9b19cb7d1d366cf8e76adf67217ce3b52316980294b367e7d61e992ee/runtime/runtime.tar.gz",
+      "rel_path": "nodes/sdk/openhands-python-fresh/c476387b5be1c78bfa6ffc0dafba6e11c3cde3251a6b98601eb5b7b00ad15563/runtime/runtime.tar.gz",
       "file": "assets/runtime/edde2ed97c8aedbbc768b002e4a80ee75b3235eec2e2888ee3a85ad2c0438c8c.tar.gz"
     }
   ]

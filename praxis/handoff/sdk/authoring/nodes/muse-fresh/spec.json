@@ -198,7 +198,7 @@
           "adapter_digest": {
             "type": "string",
             "enum": [
-              "sha256:5025a631b40daee1d190617f92fce4a3cb332e66fd81e770865be989452327d5"
+              "sha256:d73f6cd24fb2be89839d09aff12c390d579c7433c0d2e769fe607073447e3778"
             ]
           },
           "runner_digest": {
@@ -216,7 +216,7 @@
           "bindings_digest": {
             "type": "string",
             "enum": [
-              "sha256:5343d4127ece954a9498b62f515ffa250951b5125a846cf7db2548fb023ae528"
+              "sha256:57305eeec8ce7697c57e31b8be6f3c31c963fe3462ce9e080a3fae83609f434a"
             ]
           },
           "settings_digest": {
@@ -327,21 +327,21 @@
           "entrypoint": "MuseClient",
           "operation": "fresh",
           "adapter": "muse_fresh",
-          "adapter_digest": "sha256:5025a631b40daee1d190617f92fce4a3cb332e66fd81e770865be989452327d5",
+          "adapter_digest": "sha256:d73f6cd24fb2be89839d09aff12c390d579c7433c0d2e769fe607073447e3778",
           "runner_digest": "sha256:349de0b3d76a8cabb376c79bf47892c7dc68001969fe96299cc0ece9a8e9a5c6",
           "contract_digest": "sha256:db640957ec60ef85be3038d48637ff0e357f9426ec18227e2375dd23808c9594",
-          "bindings_digest": "sha256:5343d4127ece954a9498b62f515ffa250951b5125a846cf7db2548fb023ae528",
+          "bindings_digest": "sha256:57305eeec8ce7697c57e31b8be6f3c31c963fe3462ce9e080a3fae83609f434a",
           "dispatch_source_digest": "316eebc30b2dceeb2d6bad80b9d323a14871c92aa0cb719b2a6631d20ac0670b",
           "dispatch_pointer": "sdkdispatch.Run",
-          "runner_file": "nodes/sdk/muse-python-fresh/23914dd1ae84fa61f174eaa0f527a65ec48c7bd226542258569955ca2a79a874/runtime/run.py",
+          "runner_file": "nodes/sdk/muse-python-fresh/ade6e719d6f9beef4ad827386a363675cd4617fb55dbc8bc7c878e6fdc2b9f5c/runtime/run.py",
           "working_directory_slot": "workspace",
           "files": {
-            "nodes/sdk/muse-python-fresh/23914dd1ae84fa61f174eaa0f527a65ec48c7bd226542258569955ca2a79a874/runtime/run.py": "sha256:349de0b3d76a8cabb376c79bf47892c7dc68001969fe96299cc0ece9a8e9a5c6",
-            "nodes/sdk/muse-python-fresh/23914dd1ae84fa61f174eaa0f527a65ec48c7bd226542258569955ca2a79a874/runtime/mcp_bridge/sdk_operations.py": "sha256:5025a631b40daee1d190617f92fce4a3cb332e66fd81e770865be989452327d5",
-            "nodes/sdk/muse-python-fresh/23914dd1ae84fa61f174eaa0f527a65ec48c7bd226542258569955ca2a79a874/runtime/mcp_bridge/sdk_contract.py": "sha256:db640957ec60ef85be3038d48637ff0e357f9426ec18227e2375dd23808c9594",
-            "nodes/sdk/muse-python-fresh/23914dd1ae84fa61f174eaa0f527a65ec48c7bd226542258569955ca2a79a874/runtime/mcp_bridge/sdk_bindings.json": "sha256:5343d4127ece954a9498b62f515ffa250951b5125a846cf7db2548fb023ae528",
-            "nodes/sdk/muse-python-fresh/23914dd1ae84fa61f174eaa0f527a65ec48c7bd226542258569955ca2a79a874/runtime/runtime.tar.gz": "sha256:3246acd5d46429945b44fcd26a9122966210d5c2f77295c4a6ac35870c09fc9a",
-            "nodes/sdk/muse-python-fresh/23914dd1ae84fa61f174eaa0f527a65ec48c7bd226542258569955ca2a79a874/runtime/harness.json": "sha256:45226bce9f34afb917465da0306df1bbe84b4815983e2da1acc6725dc33f589f"
+            "nodes/sdk/muse-python-fresh/ade6e719d6f9beef4ad827386a363675cd4617fb55dbc8bc7c878e6fdc2b9f5c/runtime/run.py": "sha256:349de0b3d76a8cabb376c79bf47892c7dc68001969fe96299cc0ece9a8e9a5c6",
+            "nodes/sdk/muse-python-fresh/ade6e719d6f9beef4ad827386a363675cd4617fb55dbc8bc7c878e6fdc2b9f5c/runtime/mcp_bridge/sdk_operations.py": "sha256:d73f6cd24fb2be89839d09aff12c390d579c7433c0d2e769fe607073447e3778",
+            "nodes/sdk/muse-python-fresh/ade6e719d6f9beef4ad827386a363675cd4617fb55dbc8bc7c878e6fdc2b9f5c/runtime/mcp_bridge/sdk_contract.py": "sha256:db640957ec60ef85be3038d48637ff0e357f9426ec18227e2375dd23808c9594",
+            "nodes/sdk/muse-python-fresh/ade6e719d6f9beef4ad827386a363675cd4617fb55dbc8bc7c878e6fdc2b9f5c/runtime/mcp_bridge/sdk_bindings.json": "sha256:57305eeec8ce7697c57e31b8be6f3c31c963fe3462ce9e080a3fae83609f434a",
+            "nodes/sdk/muse-python-fresh/ade6e719d6f9beef4ad827386a363675cd4617fb55dbc8bc7c878e6fdc2b9f5c/runtime/runtime.tar.gz": "sha256:3246acd5d46429945b44fcd26a9122966210d5c2f77295c4a6ac35870c09fc9a",
+            "nodes/sdk/muse-python-fresh/ade6e719d6f9beef4ad827386a363675cd4617fb55dbc8bc7c878e6fdc2b9f5c/runtime/harness.json": "sha256:45226bce9f34afb917465da0306df1bbe84b4815983e2da1acc6725dc33f589f"
           },
           "runtime": {
             "binary": "python/bin/python3.13",
@@ -351,12 +351,12 @@
             "sha256": "3237648c5222017bba78737370570e4c9d5a01e552cdf2fa11f107c8d00fc06e",
             "target": "darwin-arm64",
             "bundle_digest": "3246acd5d46429945b44fcd26a9122966210d5c2f77295c4a6ac35870c09fc9a",
-            "bundle_file": "nodes/sdk/muse-python-fresh/23914dd1ae84fa61f174eaa0f527a65ec48c7bd226542258569955ca2a79a874/runtime/runtime.tar.gz"
+            "bundle_file": "nodes/sdk/muse-python-fresh/ade6e719d6f9beef4ad827386a363675cd4617fb55dbc8bc7c878e6fdc2b9f5c/runtime/runtime.tar.gz"
           },
           "environment": [
             "META_API_KEY"
           ],
-          "contract_file": "nodes/sdk/muse-python-fresh/23914dd1ae84fa61f174eaa0f527a65ec48c7bd226542258569955ca2a79a874/runtime/harness.json"
+          "contract_file": "nodes/sdk/muse-python-fresh/ade6e719d6f9beef4ad827386a363675cd4617fb55dbc8bc7c878e6fdc2b9f5c/runtime/harness.json"
         }
       }
     },

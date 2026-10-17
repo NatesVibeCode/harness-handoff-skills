@@ -8,7 +8,7 @@
       "spec_file": "nodes/amp-typescript-fresh/spec.json",
       "source_file": "assets/sdk_dispatch.go",
       "dispatch": {
-        "dir": "sdk/amp-typescript-fresh/7dbffc624d160fafbec80a6f513d56e3434f0ae94113f1b7181b7b2a5faba671",
+        "dir": "sdk/amp-typescript-fresh/39078f6efeaa3bf4d53865bc420d46c64c6af075260970c91d4e1a0e692f6250",
         "file": "spec.json",
         "source_file": "sdk_dispatch.go",
         "package": "sdkdispatch",
@@ -128,27 +128,27 @@
   },
   "assets": [
     {
-      "rel_path": "nodes/sdk/amp-typescript-fresh/7dbffc624d160fafbec80a6f513d56e3434f0ae94113f1b7181b7b2a5faba671/runtime/harness.json",
+      "rel_path": "nodes/sdk/amp-typescript-fresh/39078f6efeaa3bf4d53865bc420d46c64c6af075260970c91d4e1a0e692f6250/runtime/harness.json",
       "file": "assets/worker/harness-amp.json"
     },
     {
-      "rel_path": "nodes/sdk/amp-typescript-fresh/7dbffc624d160fafbec80a6f513d56e3434f0ae94113f1b7181b7b2a5faba671/runtime/typescript/adapters.mjs",
+      "rel_path": "nodes/sdk/amp-typescript-fresh/39078f6efeaa3bf4d53865bc420d46c64c6af075260970c91d4e1a0e692f6250/runtime/typescript/adapters.mjs",
       "file": "assets/worker/sdk/typescript/adapters.mjs"
     },
     {
-      "rel_path": "nodes/sdk/amp-typescript-fresh/7dbffc624d160fafbec80a6f513d56e3434f0ae94113f1b7181b7b2a5faba671/runtime/typescript/run.mjs",
+      "rel_path": "nodes/sdk/amp-typescript-fresh/39078f6efeaa3bf4d53865bc420d46c64c6af075260970c91d4e1a0e692f6250/runtime/typescript/run.mjs",
       "file": "assets/worker/sdk/typescript/run.mjs"
     },
     {
-      "rel_path": "nodes/sdk/amp-typescript-fresh/7dbffc624d160fafbec80a6f513d56e3434f0ae94113f1b7181b7b2a5faba671/runtime/typescript/contract.mjs",
+      "rel_path": "nodes/sdk/amp-typescript-fresh/39078f6efeaa3bf4d53865bc420d46c64c6af075260970c91d4e1a0e692f6250/runtime/typescript/contract.mjs",
       "file": "../../../../mcp_bridge/sdk_contract.mjs"
     },
     {
-      "rel_path": "nodes/sdk/amp-typescript-fresh/7dbffc624d160fafbec80a6f513d56e3434f0ae94113f1b7181b7b2a5faba671/runtime/typescript/sdk_bindings.json",
+      "rel_path": "nodes/sdk/amp-typescript-fresh/39078f6efeaa3bf4d53865bc420d46c64c6af075260970c91d4e1a0e692f6250/runtime/typescript/sdk_bindings.json",
       "file": "../../../../mcp_bridge/sdk_bindings.json"
     },
     {
-      "rel_path": "nodes/sdk/amp-typescript-fresh/7dbffc624d160fafbec80a6f513d56e3434f0ae94113f1b7181b7b2a5faba671/runtime/runtime.tar.gz",
+      "rel_path": "nodes/sdk/amp-typescript-fresh/39078f6efeaa3bf4d53865bc420d46c64c6af075260970c91d4e1a0e692f6250/runtime/runtime.tar.gz",
       "file": "assets/runtime/675391d18a195b97b352ffcd062046b23159416ed05f6c34c4394332005ddc8c.tar.gz"
     }
   ]

@@ -203,7 +203,7 @@
           "adapter_digest": {
             "type": "string",
             "enum": [
-              "sha256:5025a631b40daee1d190617f92fce4a3cb332e66fd81e770865be989452327d5"
+              "sha256:d73f6cd24fb2be89839d09aff12c390d579c7433c0d2e769fe607073447e3778"
             ]
           },
           "runner_digest": {
@@ -221,7 +221,7 @@
           "bindings_digest": {
             "type": "string",
             "enum": [
-              "sha256:5343d4127ece954a9498b62f515ffa250951b5125a846cf7db2548fb023ae528"
+              "sha256:57305eeec8ce7697c57e31b8be6f3c31c963fe3462ce9e080a3fae83609f434a"
             ]
           },
           "settings_digest": {
@@ -332,21 +332,21 @@
           "entrypoint": "Agent",
           "operation": "fresh",
           "adapter": "cursor_fresh",
-          "adapter_digest": "sha256:5025a631b40daee1d190617f92fce4a3cb332e66fd81e770865be989452327d5",
+          "adapter_digest": "sha256:d73f6cd24fb2be89839d09aff12c390d579c7433c0d2e769fe607073447e3778",
           "runner_digest": "sha256:349de0b3d76a8cabb376c79bf47892c7dc68001969fe96299cc0ece9a8e9a5c6",
           "contract_digest": "sha256:db640957ec60ef85be3038d48637ff0e357f9426ec18227e2375dd23808c9594",
-          "bindings_digest": "sha256:5343d4127ece954a9498b62f515ffa250951b5125a846cf7db2548fb023ae528",
+          "bindings_digest": "sha256:57305eeec8ce7697c57e31b8be6f3c31c963fe3462ce9e080a3fae83609f434a",
           "dispatch_source_digest": "316eebc30b2dceeb2d6bad80b9d323a14871c92aa0cb719b2a6631d20ac0670b",
           "dispatch_pointer": "sdkdispatch.Run",
-          "runner_file": "nodes/sdk/cursor-python-fresh/72cbdac314e9e7f7b7c23772ec2c4e135eaede885e070dfc46108f0284d97ec5/runtime/run.py",
+          "runner_file": "nodes/sdk/cursor-python-fresh/e8e7b57a17ec6e0fdcd63a12e3439a010596218b7f1586644d20b66641e4cb5c/runtime/run.py",
           "working_directory_slot": "workspace",
           "files": {
-            "nodes/sdk/cursor-python-fresh/72cbdac314e9e7f7b7c23772ec2c4e135eaede885e070dfc46108f0284d97ec5/runtime/run.py": "sha256:349de0b3d76a8cabb376c79bf47892c7dc68001969fe96299cc0ece9a8e9a5c6",
-            "nodes/sdk/cursor-python-fresh/72cbdac314e9e7f7b7c23772ec2c4e135eaede885e070dfc46108f0284d97ec5/runtime/mcp_bridge/sdk_operations.py": "sha256:5025a631b40daee1d190617f92fce4a3cb332e66fd81e770865be989452327d5",
-            "nodes/sdk/cursor-python-fresh/72cbdac314e9e7f7b7c23772ec2c4e135eaede885e070dfc46108f0284d97ec5/runtime/mcp_bridge/sdk_contract.py": "sha256:db640957ec60ef85be3038d48637ff0e357f9426ec18227e2375dd23808c9594",
-            "nodes/sdk/cursor-python-fresh/72cbdac314e9e7f7b7c23772ec2c4e135eaede885e070dfc46108f0284d97ec5/runtime/mcp_bridge/sdk_bindings.json": "sha256:5343d4127ece954a9498b62f515ffa250951b5125a846cf7db2548fb023ae528",
-            "nodes/sdk/cursor-python-fresh/72cbdac314e9e7f7b7c23772ec2c4e135eaede885e070dfc46108f0284d97ec5/runtime/runtime.tar.gz": "sha256:68764ef906cdd0b1e69961e2bc18ef4face87691cbb044f189daa61856349067",
-            "nodes/sdk/cursor-python-fresh/72cbdac314e9e7f7b7c23772ec2c4e135eaede885e070dfc46108f0284d97ec5/runtime/harness.json": "sha256:e75c5096c45c39049f0cc824e73b5fcc608fd15b2d7cd35487e0ea886b5fad47"
+            "nodes/sdk/cursor-python-fresh/e8e7b57a17ec6e0fdcd63a12e3439a010596218b7f1586644d20b66641e4cb5c/runtime/run.py": "sha256:349de0b3d76a8cabb376c79bf47892c7dc68001969fe96299cc0ece9a8e9a5c6",
+            "nodes/sdk/cursor-python-fresh/e8e7b57a17ec6e0fdcd63a12e3439a010596218b7f1586644d20b66641e4cb5c/runtime/mcp_bridge/sdk_operations.py": "sha256:d73f6cd24fb2be89839d09aff12c390d579c7433c0d2e769fe607073447e3778",
+            "nodes/sdk/cursor-python-fresh/e8e7b57a17ec6e0fdcd63a12e3439a010596218b7f1586644d20b66641e4cb5c/runtime/mcp_bridge/sdk_contract.py": "sha256:db640957ec60ef85be3038d48637ff0e357f9426ec18227e2375dd23808c9594",
+            "nodes/sdk/cursor-python-fresh/e8e7b57a17ec6e0fdcd63a12e3439a010596218b7f1586644d20b66641e4cb5c/runtime/mcp_bridge/sdk_bindings.json": "sha256:57305eeec8ce7697c57e31b8be6f3c31c963fe3462ce9e080a3fae83609f434a",
+            "nodes/sdk/cursor-python-fresh/e8e7b57a17ec6e0fdcd63a12e3439a010596218b7f1586644d20b66641e4cb5c/runtime/runtime.tar.gz": "sha256:68764ef906cdd0b1e69961e2bc18ef4face87691cbb044f189daa61856349067",
+            "nodes/sdk/cursor-python-fresh/e8e7b57a17ec6e0fdcd63a12e3439a010596218b7f1586644d20b66641e4cb5c/runtime/harness.json": "sha256:e75c5096c45c39049f0cc824e73b5fcc608fd15b2d7cd35487e0ea886b5fad47"
           },
           "runtime": {
             "binary": "python/bin/python3.13",
@@ -356,12 +356,12 @@
             "sha256": "3237648c5222017bba78737370570e4c9d5a01e552cdf2fa11f107c8d00fc06e",
             "target": "darwin-arm64",
             "bundle_digest": "68764ef906cdd0b1e69961e2bc18ef4face87691cbb044f189daa61856349067",
-            "bundle_file": "nodes/sdk/cursor-python-fresh/72cbdac314e9e7f7b7c23772ec2c4e135eaede885e070dfc46108f0284d97ec5/runtime/runtime.tar.gz"
+            "bundle_file": "nodes/sdk/cursor-python-fresh/e8e7b57a17ec6e0fdcd63a12e3439a010596218b7f1586644d20b66641e4cb5c/runtime/runtime.tar.gz"
           },
           "environment": [
             "CURSOR_API_KEY"
           ],
-          "contract_file": "nodes/sdk/cursor-python-fresh/72cbdac314e9e7f7b7c23772ec2c4e135eaede885e070dfc46108f0284d97ec5/runtime/harness.json"
+          "contract_file": "nodes/sdk/cursor-python-fresh/e8e7b57a17ec6e0fdcd63a12e3439a010596218b7f1586644d20b66641e4cb5c/runtime/harness.json"
         }
       }
     },

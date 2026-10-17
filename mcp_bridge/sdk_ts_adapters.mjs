@@ -107,10 +107,26 @@ async function codex(request, sdk) {
   if (request.operation !== "fresh") throw new Error("Codex SDK route supports fresh sessions only");
   const codexClient = new sdk.Codex();
   const thread = codexClient.startThread({ workingDirectory: request.workspace, ...request.settings });
-  const result = await thread.run(request.prompt);
+  const turn = await thread.runStreamed(request.prompt);
+  let output = "";
+  let completed = false;
+  for await (const event of turn.events) {
+    if (event.type === "thread.started") {
+      console.error(JSON.stringify({ harness: "codex", event: event.type, session_id: event.thread_id }));
+    } else if (event.type === "item.completed" && event.item.type === "agent_message") {
+      output = event.item.text;
+      console.error(JSON.stringify({ harness: "codex", event: "assistant_output", session_id: thread.id, text: output }));
+    } else if (event.type === "turn.completed") {
+      completed = true;
+    } else if (event.type === "turn.failed" || event.type === "error") {
+      throw new Error(event.error?.message ?? event.message ?? "Codex SDK turn failed");
+    }
+  }
+  if (!completed) throw new Error("Codex SDK stream ended without successful completion");
   const sessionId = typeof thread.id === "string" ? thread.id : "";
   if (!sessionId) throw new Error("Codex SDK did not expose the fresh thread id");
-  return { session_id: sessionId, output: textFrom(result) };
+  if (typeof output !== "string" || !output.trim()) throw new Error("Codex SDK completed without assistant output");
+  return { session_id: sessionId, output };
 }
 
 async function droid(request, sdk) {

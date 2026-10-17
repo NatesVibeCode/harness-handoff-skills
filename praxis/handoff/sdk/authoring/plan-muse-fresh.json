@@ -8,7 +8,7 @@
       "spec_file": "nodes/muse-fresh/spec.json",
       "source_file": "assets/sdk_dispatch.go",
       "dispatch": {
-        "dir": "sdk/muse-python-fresh/23914dd1ae84fa61f174eaa0f527a65ec48c7bd226542258569955ca2a79a874",
+        "dir": "sdk/muse-python-fresh/ade6e719d6f9beef4ad827386a363675cd4617fb55dbc8bc7c878e6fdc2b9f5c",
         "file": "spec.json",
         "source_file": "sdk_dispatch.go",
         "package": "sdkdispatch",
@@ -128,27 +128,27 @@
   },
   "assets": [
     {
-      "rel_path": "nodes/sdk/muse-python-fresh/23914dd1ae84fa61f174eaa0f527a65ec48c7bd226542258569955ca2a79a874/runtime/harness.json",
+      "rel_path": "nodes/sdk/muse-python-fresh/ade6e719d6f9beef4ad827386a363675cd4617fb55dbc8bc7c878e6fdc2b9f5c/runtime/harness.json",
       "file": "assets/worker/harness-muse.json"
     },
     {
-      "rel_path": "nodes/sdk/muse-python-fresh/23914dd1ae84fa61f174eaa0f527a65ec48c7bd226542258569955ca2a79a874/runtime/run.py",
+      "rel_path": "nodes/sdk/muse-python-fresh/ade6e719d6f9beef4ad827386a363675cd4617fb55dbc8bc7c878e6fdc2b9f5c/runtime/run.py",
       "file": "../../../../mcp_bridge/sdk_runner.py"
     },
     {
-      "rel_path": "nodes/sdk/muse-python-fresh/23914dd1ae84fa61f174eaa0f527a65ec48c7bd226542258569955ca2a79a874/runtime/mcp_bridge/sdk_operations.py",
+      "rel_path": "nodes/sdk/muse-python-fresh/ade6e719d6f9beef4ad827386a363675cd4617fb55dbc8bc7c878e6fdc2b9f5c/runtime/mcp_bridge/sdk_operations.py",
       "file": "../../../../mcp_bridge/sdk_operations.py"
     },
     {
-      "rel_path": "nodes/sdk/muse-python-fresh/23914dd1ae84fa61f174eaa0f527a65ec48c7bd226542258569955ca2a79a874/runtime/mcp_bridge/sdk_contract.py",
+      "rel_path": "nodes/sdk/muse-python-fresh/ade6e719d6f9beef4ad827386a363675cd4617fb55dbc8bc7c878e6fdc2b9f5c/runtime/mcp_bridge/sdk_contract.py",
       "file": "../../../../mcp_bridge/sdk_contract.py"
     },
     {
-      "rel_path": "nodes/sdk/muse-python-fresh/23914dd1ae84fa61f174eaa0f527a65ec48c7bd226542258569955ca2a79a874/runtime/mcp_bridge/sdk_bindings.json",
+      "rel_path": "nodes/sdk/muse-python-fresh/ade6e719d6f9beef4ad827386a363675cd4617fb55dbc8bc7c878e6fdc2b9f5c/runtime/mcp_bridge/sdk_bindings.json",
       "file": "../../../../mcp_bridge/sdk_bindings.json"
     },
     {
-      "rel_path": "nodes/sdk/muse-python-fresh/23914dd1ae84fa61f174eaa0f527a65ec48c7bd226542258569955ca2a79a874/runtime/runtime.tar.gz",
+      "rel_path": "nodes/sdk/muse-python-fresh/ade6e719d6f9beef4ad827386a363675cd4617fb55dbc8bc7c878e6fdc2b9f5c/runtime/runtime.tar.gz",
       "file": "assets/runtime/3246acd5d46429945b44fcd26a9122966210d5c2f77295c4a6ac35870c09fc9a.tar.gz"
     }
   ]
