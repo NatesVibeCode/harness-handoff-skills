@@ -85,6 +85,11 @@
             ]
           }
         ]
+      },
+      "execution_journal": "praxis.execution_journal.v2",
+      "recovery": {
+        "schema": "praxis.process_recovery.v2",
+        "bindings": []
       }
     },
     "blocks": [

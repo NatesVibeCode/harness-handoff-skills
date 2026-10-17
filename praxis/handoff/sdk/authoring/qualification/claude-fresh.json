@@ -1,0 +1,143 @@
+{
+  "schema": "harness.sdk_qualification_cases.v1",
+  "behavior": [
+    {
+      "id": "success",
+      "source": "Literal and arithmetic expectations specified before execution. Invalid model changes only the selected model while holding prompt, permissions and workspace constant.",
+      "inputs": {
+        "prompt": "Reply with exactly SDK_QUALIFIED. Do not use tools.",
+        "workspace": "/private/var/empty",
+        "settings": {
+          "model": "deepseek/deepseek-v4-flash-0731",
+          "permission_mode": "dontAsk",
+          "allowed_tools": [],
+          "disallowed_tools": [
+            "Bash",
+            "Write",
+            "Edit",
+            "WebFetch",
+            "WebSearch",
+            "Task"
+          ]
+        }
+      },
+      "assertions": [
+        {
+          "field": "receipt",
+          "path": "/output",
+          "operator": "equals",
+          "value": "SDK_QUALIFIED"
+        },
+        {
+          "field": "receipt",
+          "path": "/session_id",
+          "operator": "non_empty"
+        }
+      ]
+    },
+    {
+      "id": "held_out",
+      "source": "Literal and arithmetic expectations specified before execution. Invalid model changes only the selected model while holding prompt, permissions and workspace constant.",
+      "inputs": {
+        "prompt": "What is 19 multiplied by 23? Reply with only the integer. Do not use tools.",
+        "workspace": "/private/var/empty",
+        "settings": {
+          "model": "deepseek/deepseek-v4-flash-0731",
+          "permission_mode": "dontAsk",
+          "allowed_tools": [],
+          "disallowed_tools": [
+            "Bash",
+            "Write",
+            "Edit",
+            "WebFetch",
+            "WebSearch",
+            "Task"
+          ]
+        }
+      },
+      "assertions": [
+        {
+          "field": "receipt",
+          "path": "/output",
+          "operator": "equals",
+          "value": "437"
+        },
+        {
+          "field": "receipt",
+          "path": "/session_id",
+          "operator": "non_empty"
+        }
+      ]
+    },
+    {
+      "id": "invalid_model",
+      "source": "Literal and arithmetic expectations specified before execution. Invalid model changes only the selected model while holding prompt, permissions and workspace constant.",
+      "inputs": {
+        "prompt": "Reply with exactly SDK_QUALIFIED. Do not use tools.",
+        "workspace": "/private/var/empty",
+        "settings": {
+          "model": "qualification-no-such-model-20261016",
+          "permission_mode": "dontAsk",
+          "allowed_tools": [],
+          "disallowed_tools": [
+            "Bash",
+            "Write",
+            "Edit",
+            "WebFetch",
+            "WebSearch",
+            "Task"
+          ]
+        }
+      },
+      "error": "SDK operation failed: exit status 1"
+    }
+  ],
+  "tuning": {
+    "schema": "aeltum.node_tuning.v1",
+    "mode": "fixed",
+    "replay": "captured_inputs",
+    "capture_inputs": [
+      "prompt",
+      "workspace",
+      "settings"
+    ],
+    "parameters": {},
+    "checks": [
+      {
+        "id": "success",
+        "kind": "success",
+        "purpose": "Require the specified answer or refusal of the explicitly nonexistent model.",
+        "outputs": [
+          "receipt"
+        ]
+      },
+      {
+        "id": "held_out",
+        "kind": "held_out",
+        "purpose": "Require the specified answer or refusal of the explicitly nonexistent model.",
+        "outputs": [
+          "receipt"
+        ]
+      },
+      {
+        "id": "invalid_model",
+        "kind": "safe_failure",
+        "purpose": "Require the specified answer or refusal of the explicitly nonexistent model."
+      }
+    ],
+    "limits": {
+      "max_trials": 1,
+      "max_seconds": 300,
+      "max_requests": 6,
+      "max_spend_micros": 5000000
+    },
+    "live_proof": "proof_spec"
+  },
+  "process_policy": {
+    "execution_journal": "praxis.execution_journal.v2",
+    "recovery": {
+      "schema": "praxis.process_recovery.v2",
+      "bindings": []
+    }
+  }
+}

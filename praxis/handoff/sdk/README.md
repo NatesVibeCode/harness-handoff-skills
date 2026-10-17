@@ -2,7 +2,7 @@
 
 This directory contains **eleven fresh SDK Nodes and eleven reusable pinned
 Blocks**. Each has passed the native plan checks and built a standalone unsigned
-Process package through the SDK support branch of `forge-author`.
+Process package through the installed `forge-author`.
 [`capabilities.json`](capabilities.json) records the exact Node, Block and Process
 revisions; [`blocks/`](blocks/) contains the Forge-produced Block artifacts.
 Admission and release remain separate from unsigned development execution.
@@ -135,8 +135,8 @@ use; unknown CLI parsers cannot select or block the explicit SDK executor.
 Runtime capture and relocation checks cover all eleven Darwin ARM64 capsules.
 Those checks prove captured material and import mechanics; the declaration keeps
 vendor qualification separate. The committed proof test checks that direct Go
-dispatch cannot bypass the printed runtime. Its empty behavior declaration does
-not claim real provider qualification.
+dispatch cannot bypass the printed runtime. Independent behavior declarations cover Codex and seven other SDK routes. The
+three remaining declarations have no provider qualification claim.
 
 For admission, author representative success, held-out and safe-failure cases
 for the selected operation/configuration. Supply exact material and explicit
@@ -186,3 +186,8 @@ spend authority. Native AO results remain separate from development observations
 Reusable declarations and Blocks are emitted by `forge-author plan`; consume
 its exact `nodes/`, `blocks/` and derived `stores.json`. Removed standalone
 Node/catalogue commands are not part of this workflow.
+
+Qualification also distinguishes startup refusal from a started, uncertain SDK
+attempt. A missing workspace must fail before launch; replay retains that failure
+and its unsigned development identity. The Process completion suite exercises
+this refusal, while each Node proof separately exercises SDK/provider failures.
