@@ -26,7 +26,9 @@ if (!isAbsolute(request.workspace) || !statSync(request.workspace).isDirectory()
 }
 const runtimeMajor = Number(process.versions.node.split(".")[0]);
 if (runtimeMajor < Number(binding.minimum_runtime)) throw new Error("Node.js runtime is below the SDK contract minimum");
-const packageJsonPath = realpathSync(join(process.cwd(), "node_modules", ...request.distribution.split("/"), "package.json"));
+const dependencyRoot = process.env.PRAXIS_SDK_RUNTIME_ROOT;
+if (!dependencyRoot) throw new Error("Captured SDK runtime is required");
+const packageJsonPath = realpathSync(join(dependencyRoot, "node_modules", ...request.distribution.split("/"), "package.json"));
 const packageRoot = dirname(packageJsonPath);
 const packageDoc = JSON.parse(readFileSync(packageJsonPath, "utf8"));
 if (packageDoc.name !== request.distribution || packageDoc.version !== request.version) {

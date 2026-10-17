@@ -1,18 +1,105 @@
 {
   "schema": "harness.sdk_runtime_pins.v1",
-  "target": "darwin-arm64",
   "runtimes": {
-    "python": {
-      "binary": "python3",
-      "sha256": "cbf84109626aa1013bbe408fbb9590bd0f1c1548f038b2221c6b8b87de26ca43",
+    "amp": {
+      "binary": "bin/node",
+      "arguments": [],
+      "sha256": "b468fb9c67427c9d3aec07ee1105e63020923a631a9a2a00beb71a7ba3768bfd",
+      "target": "darwin-arm64",
+      "bundle_digest": "675391d18a195b97b352ffcd062046b23159416ed05f6c34c4394332005ddc8c",
+      "bundle_file": "675391d18a195b97b352ffcd062046b23159416ed05f6c34c4394332005ddc8c.tar.gz"
+    },
+    "antigravity": {
+      "binary": "python/bin/python3.13",
       "arguments": [
         "-I"
-      ]
+      ],
+      "sha256": "3237648c5222017bba78737370570e4c9d5a01e552cdf2fa11f107c8d00fc06e",
+      "target": "darwin-arm64",
+      "bundle_digest": "d169653c1290e07e7554005d0667dc1e040395b62461839dcbbf2f0f4e12a7a6",
+      "bundle_file": "d169653c1290e07e7554005d0667dc1e040395b62461839dcbbf2f0f4e12a7a6.tar.gz"
     },
-    "typescript": {
-      "binary": "node",
-      "sha256": "1ef99ea25fe70c9b67e7efe768ef8ee22148d3cabc703db6131b57aeb617d040",
-      "arguments": []
+    "claude": {
+      "binary": "python/bin/python3.13",
+      "arguments": [
+        "-I"
+      ],
+      "sha256": "3237648c5222017bba78737370570e4c9d5a01e552cdf2fa11f107c8d00fc06e",
+      "target": "darwin-arm64",
+      "bundle_digest": "46cb5437afac515aad24c610a457a58079ff957c4d2183df69f89b6f28d980d6",
+      "bundle_file": "46cb5437afac515aad24c610a457a58079ff957c4d2183df69f89b6f28d980d6.tar.gz"
+    },
+    "cline": {
+      "binary": "bin/node",
+      "arguments": [],
+      "sha256": "b468fb9c67427c9d3aec07ee1105e63020923a631a9a2a00beb71a7ba3768bfd",
+      "target": "darwin-arm64",
+      "bundle_digest": "1f99be6ffe2b4e6a6840ffd61751ebe9ae513ae8172ab5b0c05f6c2265c9c5dc",
+      "bundle_file": "1f99be6ffe2b4e6a6840ffd61751ebe9ae513ae8172ab5b0c05f6c2265c9c5dc.tar.gz"
+    },
+    "codex": {
+      "binary": "bin/node",
+      "arguments": [],
+      "sha256": "b468fb9c67427c9d3aec07ee1105e63020923a631a9a2a00beb71a7ba3768bfd",
+      "target": "darwin-arm64",
+      "bundle_digest": "5498ecacacfdf93c77bbc452fb4eb6ca6642d0925e2c739339eeb67924cee7db",
+      "bundle_file": "5498ecacacfdf93c77bbc452fb4eb6ca6642d0925e2c739339eeb67924cee7db.tar.gz"
+    },
+    "copilot": {
+      "binary": "python/bin/python3.13",
+      "arguments": [
+        "-I"
+      ],
+      "sha256": "3237648c5222017bba78737370570e4c9d5a01e552cdf2fa11f107c8d00fc06e",
+      "target": "darwin-arm64",
+      "bundle_digest": "4b61e2e8a2a4a774e512d61352043cccb6b20eefdc74a809f90b78a73ba5710a",
+      "bundle_file": "4b61e2e8a2a4a774e512d61352043cccb6b20eefdc74a809f90b78a73ba5710a.tar.gz"
+    },
+    "cursor": {
+      "binary": "python/bin/python3.13",
+      "arguments": [
+        "-I"
+      ],
+      "sha256": "3237648c5222017bba78737370570e4c9d5a01e552cdf2fa11f107c8d00fc06e",
+      "target": "darwin-arm64",
+      "bundle_digest": "68764ef906cdd0b1e69961e2bc18ef4face87691cbb044f189daa61856349067",
+      "bundle_file": "68764ef906cdd0b1e69961e2bc18ef4face87691cbb044f189daa61856349067.tar.gz"
+    },
+    "droid": {
+      "binary": "bin/node",
+      "arguments": [],
+      "sha256": "b468fb9c67427c9d3aec07ee1105e63020923a631a9a2a00beb71a7ba3768bfd",
+      "target": "darwin-arm64",
+      "bundle_digest": "f6f46fe9c73dd1758d8aecacbf2057fe2555aa26c523e3bd3f6e33676cfba369",
+      "bundle_file": "f6f46fe9c73dd1758d8aecacbf2057fe2555aa26c523e3bd3f6e33676cfba369.tar.gz"
+    },
+    "muse": {
+      "binary": "python/bin/python3.13",
+      "arguments": [
+        "-I"
+      ],
+      "sha256": "3237648c5222017bba78737370570e4c9d5a01e552cdf2fa11f107c8d00fc06e",
+      "target": "darwin-arm64",
+      "bundle_digest": "3246acd5d46429945b44fcd26a9122966210d5c2f77295c4a6ac35870c09fc9a",
+      "bundle_file": "3246acd5d46429945b44fcd26a9122966210d5c2f77295c4a6ac35870c09fc9a.tar.gz"
+    },
+    "opencode": {
+      "binary": "bin/node",
+      "arguments": [],
+      "sha256": "b468fb9c67427c9d3aec07ee1105e63020923a631a9a2a00beb71a7ba3768bfd",
+      "target": "darwin-arm64",
+      "bundle_digest": "72754a239d5c678c4c61c0fbf81a8741fec41a3b5bc9a2051fcc22347373d67f",
+      "bundle_file": "72754a239d5c678c4c61c0fbf81a8741fec41a3b5bc9a2051fcc22347373d67f.tar.gz"
+    },
+    "openhands": {
+      "binary": "python/bin/python3.13",
+      "arguments": [
+        "-I"
+      ],
+      "sha256": "3237648c5222017bba78737370570e4c9d5a01e552cdf2fa11f107c8d00fc06e",
+      "target": "darwin-arm64",
+      "bundle_digest": "edde2ed97c8aedbbc768b002e4a80ee75b3235eec2e2888ee3a85ad2c0438c8c",
+      "bundle_file": "edde2ed97c8aedbbc768b002e4a80ee75b3235eec2e2888ee3a85ad2c0438c8c.tar.gz"
     }
   }
 }

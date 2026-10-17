@@ -8,7 +8,7 @@
       "spec_file": "nodes/claude-fresh/spec.json",
       "source_file": "assets/sdk_dispatch.go",
       "dispatch": {
-        "dir": "sdk/claude-python-fresh/a7b514f87585b81b7693ef5a3dcabb517b9478b85c58d19ba8dcefbee363e0fb",
+        "dir": "sdk/claude-python-fresh/8c9a76daa39e3bd7f782b3fa0bff69b43423194462e2d7aa61191a61ea7e740a",
         "file": "spec.json",
         "source_file": "sdk_dispatch.go",
         "package": "sdkdispatch",
@@ -128,24 +128,28 @@
   },
   "assets": [
     {
-      "rel_path": "nodes/sdk/claude-python-fresh/a7b514f87585b81b7693ef5a3dcabb517b9478b85c58d19ba8dcefbee363e0fb/runtime/harness.json",
+      "rel_path": "nodes/sdk/claude-python-fresh/8c9a76daa39e3bd7f782b3fa0bff69b43423194462e2d7aa61191a61ea7e740a/runtime/harness.json",
       "file": "assets/worker/harness-claude.json"
     },
     {
-      "rel_path": "nodes/sdk/claude-python-fresh/a7b514f87585b81b7693ef5a3dcabb517b9478b85c58d19ba8dcefbee363e0fb/runtime/run.py",
+      "rel_path": "nodes/sdk/claude-python-fresh/8c9a76daa39e3bd7f782b3fa0bff69b43423194462e2d7aa61191a61ea7e740a/runtime/run.py",
       "file": "../../../../mcp_bridge/sdk_runner.py"
     },
     {
-      "rel_path": "nodes/sdk/claude-python-fresh/a7b514f87585b81b7693ef5a3dcabb517b9478b85c58d19ba8dcefbee363e0fb/runtime/mcp_bridge/sdk_operations.py",
+      "rel_path": "nodes/sdk/claude-python-fresh/8c9a76daa39e3bd7f782b3fa0bff69b43423194462e2d7aa61191a61ea7e740a/runtime/mcp_bridge/sdk_operations.py",
       "file": "../../../../mcp_bridge/sdk_operations.py"
     },
     {
-      "rel_path": "nodes/sdk/claude-python-fresh/a7b514f87585b81b7693ef5a3dcabb517b9478b85c58d19ba8dcefbee363e0fb/runtime/mcp_bridge/sdk_contract.py",
+      "rel_path": "nodes/sdk/claude-python-fresh/8c9a76daa39e3bd7f782b3fa0bff69b43423194462e2d7aa61191a61ea7e740a/runtime/mcp_bridge/sdk_contract.py",
       "file": "../../../../mcp_bridge/sdk_contract.py"
     },
     {
-      "rel_path": "nodes/sdk/claude-python-fresh/a7b514f87585b81b7693ef5a3dcabb517b9478b85c58d19ba8dcefbee363e0fb/runtime/mcp_bridge/sdk_bindings.json",
+      "rel_path": "nodes/sdk/claude-python-fresh/8c9a76daa39e3bd7f782b3fa0bff69b43423194462e2d7aa61191a61ea7e740a/runtime/mcp_bridge/sdk_bindings.json",
       "file": "../../../../mcp_bridge/sdk_bindings.json"
+    },
+    {
+      "rel_path": "nodes/sdk/claude-python-fresh/8c9a76daa39e3bd7f782b3fa0bff69b43423194462e2d7aa61191a61ea7e740a/runtime/runtime.tar.gz",
+      "file": "assets/runtime/46cb5437afac515aad24c610a457a58079ff957c4d2183df69f89b6f28d980d6.tar.gz"
     }
   ]
 }

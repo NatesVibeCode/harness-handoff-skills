@@ -114,26 +114,35 @@ async function codex(request, sdk) {
 }
 
 async function droid(request, sdk) {
-  const { DroidMessageType, ToolConfirmationOutcome } = sdk;
-  const { permission, ...settings } = request.settings;
+  const { ToolConfirmationOutcome } = sdk;
+  const { permission, transport: transportMode, ...settings } = request.settings;
   const permissionHandler = permission === "unattended"
     ? undefined : () => ToolConfirmationOutcome.Cancel;
-  const session = await sdk.createSession({ cwd: request.workspace, ...settings, permissionHandler });
-  const sessionId = session.id;
+  const ownedTransport = transportMode === "native_stdio"
+    ? new sdk.ProcessTransport({ cwd: request.workspace, env: process.env }) : undefined;
+  let sessionId = "";
   let output = "";
   let failed = false;
   let completed = false;
   try {
-    for await (const message of session.stream(request.prompt)) {
-      if (message?.type === DroidMessageType.Assistant && typeof message.text === "string") output += message.text;
-      if (message?.type === DroidMessageType.Error) failed = true;
-      if (message?.type === DroidMessageType.Result) {
-        completed = true;
-        if (message.success !== true) failed = true;
+    if (ownedTransport) await ownedTransport.connect();
+    const session = await sdk.createSession({ cwd: request.workspace, ...settings, permissionHandler,
+      ...(ownedTransport ? { transport: ownedTransport } : {}) });
+    sessionId = session.id;
+    try {
+      for await (const message of session.stream(request.prompt)) {
+        if (message?.type === "assistant" && typeof message.text === "string") output += message.text;
+        if (message?.type === "error") failed = true;
+        if (message?.type === "result") {
+          completed = true;
+          if (message.success !== true) failed = true;
+        }
       }
+    } finally {
+      await session.close();
     }
   } finally {
-    await session.close();
+    if (ownedTransport) await ownedTransport.close();
   }
   if (failed || !completed) throw new Error("Droid SDK turn returned no successful terminal result");
   if (!output.trim()) throw new Error("Droid SDK operation returned no assistant output");

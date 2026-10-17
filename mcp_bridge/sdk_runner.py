@@ -8,6 +8,7 @@ import importlib
 import importlib.metadata
 import importlib.util
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -23,6 +24,16 @@ def run(request: dict) -> dict:
     if not isinstance(request, dict):
         raise ValueError('SDK request must be an object')
     base = Path(__file__).resolve().parent
+    runtime_root = os.environ.get('PRAXIS_SDK_RUNTIME_ROOT')
+    if not runtime_root:
+        raise RuntimeError('Captured SDK runtime is required')
+    runtime = Path(runtime_root).resolve(strict=True)
+    selection = json.loads((runtime / 'runtime.json').read_text())
+    for path in reversed(selection.get('python_path', [])):
+        selected = (runtime / path).resolve(strict=True)
+        if not selected.is_relative_to(runtime) or not selected.is_dir():
+            raise RuntimeError('SDK dependency path leaves captured material')
+        sys.path.insert(0, str(selected))
     # Verify every project runtime source before importing any of it or a vendor.
     for path, key in [(Path(__file__).resolve(), 'runner_digest'),
                       (base / 'mcp_bridge/sdk_contract.py', 'contract_digest'),

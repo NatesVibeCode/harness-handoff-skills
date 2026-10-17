@@ -120,6 +120,13 @@
               "deny_unapproved",
               "unattended"
             ]
+          },
+          "transport": {
+            "type": "string",
+            "enum": [
+              "sdk_default",
+              "native_stdio"
+            ]
           }
         },
         "required": [
@@ -213,13 +220,13 @@
           "adapter_digest": {
             "type": "string",
             "enum": [
-              "sha256:2146a8e3816740d1ad542a129b8938c598ed1d55ed47137df7447fa9cd96795f"
+              "sha256:49db1b0c0f4d3c008812c1e3c92d3e706504a63dd81a30bfdcdaa66a2e9cba03"
             ]
           },
           "runner_digest": {
             "type": "string",
             "enum": [
-              "sha256:ab166ee42f2f1b178990c42d143eaa91f6187fdd913c0ff3abb85dcd4a75f6a5"
+              "sha256:a58e98b97daa23d3180cf2072beadd99d37d13d4069650413e58dcd2158fa476"
             ]
           },
           "contract_digest": {
@@ -231,7 +238,7 @@
           "bindings_digest": {
             "type": "string",
             "enum": [
-              "sha256:6c2c77a581018991a6e25e1109d49d1ea63bd6133f33e8123e7b8fc7acc0e05f"
+              "sha256:5343d4127ece954a9498b62f515ffa250951b5125a846cf7db2548fb023ae528"
             ]
           },
           "settings_digest": {
@@ -315,7 +322,7 @@
       "name": "access",
       "contents": {
         "share": {
-          "identity": "operator-sdk-account:droid",
+          "identity": "sdk-execution-owner:droid",
           "digests": [
             "834f2d71448639d7b881e3424a26b274bbd95e93460dd749843968e9d1dff96e"
           ]
@@ -342,30 +349,35 @@
           "entrypoint": "createSession",
           "operation": "fresh",
           "adapter": "droid_ts_fresh",
-          "adapter_digest": "sha256:2146a8e3816740d1ad542a129b8938c598ed1d55ed47137df7447fa9cd96795f",
-          "runner_digest": "sha256:ab166ee42f2f1b178990c42d143eaa91f6187fdd913c0ff3abb85dcd4a75f6a5",
+          "adapter_digest": "sha256:49db1b0c0f4d3c008812c1e3c92d3e706504a63dd81a30bfdcdaa66a2e9cba03",
+          "runner_digest": "sha256:a58e98b97daa23d3180cf2072beadd99d37d13d4069650413e58dcd2158fa476",
           "contract_digest": "sha256:f9483f132fbc7875483adcc2548861340e7b82e31c4a56b1f282b2b64e48d869",
-          "bindings_digest": "sha256:6c2c77a581018991a6e25e1109d49d1ea63bd6133f33e8123e7b8fc7acc0e05f",
+          "bindings_digest": "sha256:5343d4127ece954a9498b62f515ffa250951b5125a846cf7db2548fb023ae528",
           "dispatch_source_digest": "316eebc30b2dceeb2d6bad80b9d323a14871c92aa0cb719b2a6631d20ac0670b",
           "dispatch_pointer": "sdkdispatch.Run",
-          "runner_file": "nodes/sdk/droid-typescript-fresh/168586a93f85a7cfb965bee193246b872d9da778a3e9f861cd3545c978e3ef11/runtime/typescript/run.mjs",
+          "runner_file": "nodes/sdk/droid-typescript-fresh/d0323ee40bdc1a31bbfb22ac8227707f918b160861454505d3c0148cef46970f/runtime/typescript/run.mjs",
           "working_directory_slot": "workspace",
           "files": {
-            "nodes/sdk/droid-typescript-fresh/168586a93f85a7cfb965bee193246b872d9da778a3e9f861cd3545c978e3ef11/runtime/typescript/adapters.mjs": "sha256:2146a8e3816740d1ad542a129b8938c598ed1d55ed47137df7447fa9cd96795f",
-            "nodes/sdk/droid-typescript-fresh/168586a93f85a7cfb965bee193246b872d9da778a3e9f861cd3545c978e3ef11/runtime/typescript/run.mjs": "sha256:ab166ee42f2f1b178990c42d143eaa91f6187fdd913c0ff3abb85dcd4a75f6a5",
-            "nodes/sdk/droid-typescript-fresh/168586a93f85a7cfb965bee193246b872d9da778a3e9f861cd3545c978e3ef11/runtime/typescript/contract.mjs": "sha256:f9483f132fbc7875483adcc2548861340e7b82e31c4a56b1f282b2b64e48d869",
-            "nodes/sdk/droid-typescript-fresh/168586a93f85a7cfb965bee193246b872d9da778a3e9f861cd3545c978e3ef11/runtime/typescript/sdk_bindings.json": "sha256:6c2c77a581018991a6e25e1109d49d1ea63bd6133f33e8123e7b8fc7acc0e05f",
-            "nodes/sdk/droid-typescript-fresh/168586a93f85a7cfb965bee193246b872d9da778a3e9f861cd3545c978e3ef11/runtime/harness.json": "sha256:6643d4aaff4383edee6f33c1d73415a25bd20bb1977d17213bcde1211ff53d97"
+            "nodes/sdk/droid-typescript-fresh/d0323ee40bdc1a31bbfb22ac8227707f918b160861454505d3c0148cef46970f/runtime/typescript/adapters.mjs": "sha256:49db1b0c0f4d3c008812c1e3c92d3e706504a63dd81a30bfdcdaa66a2e9cba03",
+            "nodes/sdk/droid-typescript-fresh/d0323ee40bdc1a31bbfb22ac8227707f918b160861454505d3c0148cef46970f/runtime/typescript/run.mjs": "sha256:a58e98b97daa23d3180cf2072beadd99d37d13d4069650413e58dcd2158fa476",
+            "nodes/sdk/droid-typescript-fresh/d0323ee40bdc1a31bbfb22ac8227707f918b160861454505d3c0148cef46970f/runtime/typescript/contract.mjs": "sha256:f9483f132fbc7875483adcc2548861340e7b82e31c4a56b1f282b2b64e48d869",
+            "nodes/sdk/droid-typescript-fresh/d0323ee40bdc1a31bbfb22ac8227707f918b160861454505d3c0148cef46970f/runtime/typescript/sdk_bindings.json": "sha256:5343d4127ece954a9498b62f515ffa250951b5125a846cf7db2548fb023ae528",
+            "nodes/sdk/droid-typescript-fresh/d0323ee40bdc1a31bbfb22ac8227707f918b160861454505d3c0148cef46970f/runtime/runtime.tar.gz": "sha256:f6f46fe9c73dd1758d8aecacbf2057fe2555aa26c523e3bd3f6e33676cfba369",
+            "nodes/sdk/droid-typescript-fresh/d0323ee40bdc1a31bbfb22ac8227707f918b160861454505d3c0148cef46970f/runtime/harness.json": "sha256:6643d4aaff4383edee6f33c1d73415a25bd20bb1977d17213bcde1211ff53d97"
           },
           "runtime": {
-            "binary": "node",
-            "sha256": "1ef99ea25fe70c9b67e7efe768ef8ee22148d3cabc703db6131b57aeb617d040",
-            "arguments": []
+            "binary": "bin/node",
+            "arguments": [],
+            "sha256": "b468fb9c67427c9d3aec07ee1105e63020923a631a9a2a00beb71a7ba3768bfd",
+            "target": "darwin-arm64",
+            "bundle_digest": "f6f46fe9c73dd1758d8aecacbf2057fe2555aa26c523e3bd3f6e33676cfba369",
+            "bundle_file": "nodes/sdk/droid-typescript-fresh/d0323ee40bdc1a31bbfb22ac8227707f918b160861454505d3c0148cef46970f/runtime/runtime.tar.gz"
           },
           "environment": [
-            "FACTORY_API_KEY"
+            "FACTORY_API_KEY",
+            "OPENROUTER_API_KEY"
           ],
-          "contract_file": "nodes/sdk/droid-typescript-fresh/168586a93f85a7cfb965bee193246b872d9da778a3e9f861cd3545c978e3ef11/runtime/harness.json"
+          "contract_file": "nodes/sdk/droid-typescript-fresh/d0323ee40bdc1a31bbfb22ac8227707f918b160861454505d3c0148cef46970f/runtime/harness.json"
         }
       }
     },
@@ -381,8 +393,8 @@
   "proof_spec": {
     "behavior": [],
     "test": {
-      "pointer": "",
-      "digest": ""
+      "pointer": "sdkdispatch.TestSDKDispatchRequiresPrintedRuntime",
+      "digest": "91893f105cbc8ca2fe9fddd7b2cfb0a8c2f47244879441b1a993307a3450e753"
     },
     "target": "sdk-runtime",
     "mode": "real_service"

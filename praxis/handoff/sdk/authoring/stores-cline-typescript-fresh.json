@@ -26,7 +26,14 @@
   "nodes": [],
   "demands": [],
   "capabilities": [],
-  "pointers": [],
+  "pointers": [
+    {
+      "kind": "test",
+      "pointer": "sdkdispatch.TestSDKDispatchRequiresPrintedRuntime",
+      "digest": "91893f105cbc8ca2fe9fddd7b2cfb0a8c2f47244879441b1a993307a3450e753",
+      "path": "assets/proof_test.go"
+    }
+  ],
   "routes": [],
   "prompts": [],
   "interpreters": [],

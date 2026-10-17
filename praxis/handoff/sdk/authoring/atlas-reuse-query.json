@@ -1,71 +1,24 @@
 {
   "schema": "atlas.reuse_query.v1",
   "purpose_terms": [
-    "Amp TypeScript SDK execute exact thread continuation and history",
-    "Cline TypeScript SDK ClineCore fresh exact session continuation and message history",
-    "Codex TypeScript SDK fresh thread with audit permission profile",
-    "Factory Droid TypeScript SDK fresh session and exact resume",
-    "OpenCode TypeScript SDK private local server fresh exact session continuation and history",
-    "Claude Agent SDK query fresh task and exact resume",
-    "Cursor SDK Agent.create send and Agent.resume",
-    "GitHub Copilot SDK create_session and resume_session",
-    "Muse Code SDK start_session and resume_session",
-    "Google Antigravity SDK Agent.chat and SDK-owned restore",
-    "OpenHands SDK Conversation send_message and run",
-    "typed SDK task execution receipt for an explicitly selected harness"
+    "fresh SDK session",
+    "typed SDK task execution receipt",
+    "explicit caller settings",
+    "Claude Agent SDK",
+    "Cursor SDK",
+    "GitHub Copilot SDK",
+    "Muse Code SDK",
+    "Google Antigravity SDK",
+    "OpenHands SDK",
+    "Amp SDK",
+    "Cline SDK",
+    "Codex SDK",
+    "Factory Droid SDK",
+    "OpenCode SDK"
   ],
-  "inputs": [
-    {
-      "name": "request",
-      "type": {
-        "type": "object",
-        "properties": {
-          "harness": {
-            "type": "string",
-            "enum": ["amp", "antigravity", "claude", "cline", "codex", "copilot", "cursor", "droid", "muse", "opencode", "openhands"]
-          },
-          "language": {"type": "string", "enum": ["python", "typescript"]},
-          "sdk_package": {
-            "type": "string",
-            "enum": ["claude_agent_sdk", "cursor_sdk", "copilot", "muse_code", "google.antigravity", "openhands.sdk", "@ampcode/sdk", "@cline/sdk", "@openai/codex-sdk", "@factory/droid-sdk", "@opencode-ai/sdk"]
-          },
-          "operation": {"type": "string", "enum": ["fresh", "resume", "history"]},
-          "route": {"type": "string", "enum": ["sdk"]},
-          "prompt": {"type": "string"},
-          "session_id": {"type": "string"},
-          "session_owner": {"type": "string", "enum": ["operator_owned"]},
-          "workspace": {"type": "string"},
-          "model": {"type": "string"},
-          "provider_id": {"type": "string"},
-          "approval": {"type": "string", "enum": ["default", "restricted", "unattended", "native", "deny_unapproved", "audit"]}
-        },
-        "required": ["harness", "language", "sdk_package", "operation", "route"],
-        "additionalProperties": false
-      },
-      "semantic": "harness.sdk.invoke.request.v1",
-      "required": true
-    }
-  ],
-  "outputs": [
-    {
-      "name": "receipt",
-      "type": {
-        "type": "object",
-        "properties": {
-          "harness": {"type": "string"},
-          "sdk_package": {"type": "string"},
-          "operation": {"type": "string"},
-          "route": {"type": "string", "enum": ["sdk"]},
-          "session_id": {"type": "string"},
-          "output": {"type": "string"},
-          "status": {"type": "string", "enum": ["completed", "sent", "refused", "error"]}
-        },
-        "required": ["harness", "sdk_package", "operation", "route", "session_id", "output", "status"],
-        "additionalProperties": false
-      },
-      "semantic": "harness.sdk.invoke.receipt.v1",
-      "required": true
-    }
-  ],
-  "allowed_effects": ["harness.invoke"]
+  "inputs": [],
+  "outputs": [],
+  "allowed_effects": [
+    "harness.invoke"
+  ]
 }

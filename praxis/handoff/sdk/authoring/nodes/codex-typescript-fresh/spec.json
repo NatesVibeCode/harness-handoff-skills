@@ -124,6 +124,9 @@
               "cached",
               "live"
             ]
+          },
+          "skipGitRepoCheck": {
+            "type": "boolean"
           }
         },
         "required": [
@@ -218,13 +221,13 @@
           "adapter_digest": {
             "type": "string",
             "enum": [
-              "sha256:2146a8e3816740d1ad542a129b8938c598ed1d55ed47137df7447fa9cd96795f"
+              "sha256:49db1b0c0f4d3c008812c1e3c92d3e706504a63dd81a30bfdcdaa66a2e9cba03"
             ]
           },
           "runner_digest": {
             "type": "string",
             "enum": [
-              "sha256:ab166ee42f2f1b178990c42d143eaa91f6187fdd913c0ff3abb85dcd4a75f6a5"
+              "sha256:a58e98b97daa23d3180cf2072beadd99d37d13d4069650413e58dcd2158fa476"
             ]
           },
           "contract_digest": {
@@ -236,7 +239,7 @@
           "bindings_digest": {
             "type": "string",
             "enum": [
-              "sha256:6c2c77a581018991a6e25e1109d49d1ea63bd6133f33e8123e7b8fc7acc0e05f"
+              "sha256:5343d4127ece954a9498b62f515ffa250951b5125a846cf7db2548fb023ae528"
             ]
           },
           "settings_digest": {
@@ -320,7 +323,7 @@
       "name": "access",
       "contents": {
         "share": {
-          "identity": "operator-sdk-account:codex",
+          "identity": "sdk-execution-owner:codex",
           "digests": [
             "ca012495160888970dae73c51da22f9be0f1119cb79cbd8ea53bb11e4dd0a3f0"
           ]
@@ -347,30 +350,34 @@
           "entrypoint": "Codex",
           "operation": "fresh",
           "adapter": "codex_ts_fresh",
-          "adapter_digest": "sha256:2146a8e3816740d1ad542a129b8938c598ed1d55ed47137df7447fa9cd96795f",
-          "runner_digest": "sha256:ab166ee42f2f1b178990c42d143eaa91f6187fdd913c0ff3abb85dcd4a75f6a5",
+          "adapter_digest": "sha256:49db1b0c0f4d3c008812c1e3c92d3e706504a63dd81a30bfdcdaa66a2e9cba03",
+          "runner_digest": "sha256:a58e98b97daa23d3180cf2072beadd99d37d13d4069650413e58dcd2158fa476",
           "contract_digest": "sha256:f9483f132fbc7875483adcc2548861340e7b82e31c4a56b1f282b2b64e48d869",
-          "bindings_digest": "sha256:6c2c77a581018991a6e25e1109d49d1ea63bd6133f33e8123e7b8fc7acc0e05f",
+          "bindings_digest": "sha256:5343d4127ece954a9498b62f515ffa250951b5125a846cf7db2548fb023ae528",
           "dispatch_source_digest": "316eebc30b2dceeb2d6bad80b9d323a14871c92aa0cb719b2a6631d20ac0670b",
           "dispatch_pointer": "sdkdispatch.Run",
-          "runner_file": "nodes/sdk/codex-typescript-fresh/3156bc2aff72da65f595b8be5c7caeefbec79f6085e9228212d181f2e0ab9cd9/runtime/typescript/run.mjs",
+          "runner_file": "nodes/sdk/codex-typescript-fresh/0efb001dca2f2d249b13ced614f7d4f60f10126d0d6ab42765c82888965ff0e9/runtime/typescript/run.mjs",
           "working_directory_slot": "workspace",
           "files": {
-            "nodes/sdk/codex-typescript-fresh/3156bc2aff72da65f595b8be5c7caeefbec79f6085e9228212d181f2e0ab9cd9/runtime/typescript/adapters.mjs": "sha256:2146a8e3816740d1ad542a129b8938c598ed1d55ed47137df7447fa9cd96795f",
-            "nodes/sdk/codex-typescript-fresh/3156bc2aff72da65f595b8be5c7caeefbec79f6085e9228212d181f2e0ab9cd9/runtime/typescript/run.mjs": "sha256:ab166ee42f2f1b178990c42d143eaa91f6187fdd913c0ff3abb85dcd4a75f6a5",
-            "nodes/sdk/codex-typescript-fresh/3156bc2aff72da65f595b8be5c7caeefbec79f6085e9228212d181f2e0ab9cd9/runtime/typescript/contract.mjs": "sha256:f9483f132fbc7875483adcc2548861340e7b82e31c4a56b1f282b2b64e48d869",
-            "nodes/sdk/codex-typescript-fresh/3156bc2aff72da65f595b8be5c7caeefbec79f6085e9228212d181f2e0ab9cd9/runtime/typescript/sdk_bindings.json": "sha256:6c2c77a581018991a6e25e1109d49d1ea63bd6133f33e8123e7b8fc7acc0e05f",
-            "nodes/sdk/codex-typescript-fresh/3156bc2aff72da65f595b8be5c7caeefbec79f6085e9228212d181f2e0ab9cd9/runtime/harness.json": "sha256:76aa88a3ac4355bd63603c17df210fc8f4fbcb9d4a5299d53778800391f9035c"
+            "nodes/sdk/codex-typescript-fresh/0efb001dca2f2d249b13ced614f7d4f60f10126d0d6ab42765c82888965ff0e9/runtime/typescript/adapters.mjs": "sha256:49db1b0c0f4d3c008812c1e3c92d3e706504a63dd81a30bfdcdaa66a2e9cba03",
+            "nodes/sdk/codex-typescript-fresh/0efb001dca2f2d249b13ced614f7d4f60f10126d0d6ab42765c82888965ff0e9/runtime/typescript/run.mjs": "sha256:a58e98b97daa23d3180cf2072beadd99d37d13d4069650413e58dcd2158fa476",
+            "nodes/sdk/codex-typescript-fresh/0efb001dca2f2d249b13ced614f7d4f60f10126d0d6ab42765c82888965ff0e9/runtime/typescript/contract.mjs": "sha256:f9483f132fbc7875483adcc2548861340e7b82e31c4a56b1f282b2b64e48d869",
+            "nodes/sdk/codex-typescript-fresh/0efb001dca2f2d249b13ced614f7d4f60f10126d0d6ab42765c82888965ff0e9/runtime/typescript/sdk_bindings.json": "sha256:5343d4127ece954a9498b62f515ffa250951b5125a846cf7db2548fb023ae528",
+            "nodes/sdk/codex-typescript-fresh/0efb001dca2f2d249b13ced614f7d4f60f10126d0d6ab42765c82888965ff0e9/runtime/runtime.tar.gz": "sha256:5498ecacacfdf93c77bbc452fb4eb6ca6642d0925e2c739339eeb67924cee7db",
+            "nodes/sdk/codex-typescript-fresh/0efb001dca2f2d249b13ced614f7d4f60f10126d0d6ab42765c82888965ff0e9/runtime/harness.json": "sha256:76aa88a3ac4355bd63603c17df210fc8f4fbcb9d4a5299d53778800391f9035c"
           },
           "runtime": {
-            "binary": "node",
-            "sha256": "1ef99ea25fe70c9b67e7efe768ef8ee22148d3cabc703db6131b57aeb617d040",
-            "arguments": []
+            "binary": "bin/node",
+            "arguments": [],
+            "sha256": "b468fb9c67427c9d3aec07ee1105e63020923a631a9a2a00beb71a7ba3768bfd",
+            "target": "darwin-arm64",
+            "bundle_digest": "5498ecacacfdf93c77bbc452fb4eb6ca6642d0925e2c739339eeb67924cee7db",
+            "bundle_file": "nodes/sdk/codex-typescript-fresh/0efb001dca2f2d249b13ced614f7d4f60f10126d0d6ab42765c82888965ff0e9/runtime/runtime.tar.gz"
           },
           "environment": [
             "OPENAI_API_KEY"
           ],
-          "contract_file": "nodes/sdk/codex-typescript-fresh/3156bc2aff72da65f595b8be5c7caeefbec79f6085e9228212d181f2e0ab9cd9/runtime/harness.json"
+          "contract_file": "nodes/sdk/codex-typescript-fresh/0efb001dca2f2d249b13ced614f7d4f60f10126d0d6ab42765c82888965ff0e9/runtime/harness.json"
         }
       }
     },
@@ -386,8 +393,8 @@
   "proof_spec": {
     "behavior": [],
     "test": {
-      "pointer": "",
-      "digest": ""
+      "pointer": "sdkdispatch.TestSDKDispatchRequiresPrintedRuntime",
+      "digest": "91893f105cbc8ca2fe9fddd7b2cfb0a8c2f47244879441b1a993307a3450e753"
     },
     "target": "sdk-runtime",
     "mode": "real_service"

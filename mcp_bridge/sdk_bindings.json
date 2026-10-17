@@ -139,7 +139,8 @@
       "settings_nonempty_strings": true,
       "environment": [
         "ANTHROPIC_API_KEY",
-        "ANTHROPIC_BASE_URL"
+        "ANTHROPIC_BASE_URL",
+        "ANTHROPIC_AUTH_TOKEN"
       ]
     },
     "copilot": {
@@ -165,6 +166,39 @@
               "deny_unapproved",
               "unattended"
             ]
+          },
+          "provider": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "openai",
+                  "azure",
+                  "anthropic"
+                ]
+              },
+              "base_url": {
+                "type": "string"
+              },
+              "api_key_env": {
+                "type": "string"
+              },
+              "wire_api": {
+                "type": "string",
+                "enum": [
+                  "completions",
+                  "responses"
+                ]
+              }
+            },
+            "required": [
+              "type",
+              "base_url",
+              "api_key_env",
+              "wire_api"
+            ],
+            "additionalProperties": false
           }
         },
         "required": [
@@ -189,7 +223,8 @@
       "environment": [
         "COPILOT_API_KEY",
         "GITHUB_TOKEN",
-        "GH_TOKEN"
+        "GH_TOKEN",
+        "OPENROUTER_API_KEY"
       ]
     },
     "cursor": {
@@ -252,7 +287,7 @@
     "muse": {
       "language": "python",
       "distribution": "muse-code-sdk",
-      "version": "1.4.7",
+      "version": "1.4.10",
       "module": "muse_code",
       "entrypoint": "MuseClient",
       "minimum_runtime": "3.10",
@@ -284,9 +319,9 @@
         ]
       },
       "material": {
-        "url": "https://files.pythonhosted.org/packages/69/bf/533f6a536e9c6422974b30dfb645b52cf37c1f873765f288335a4eed4b86/muse_code_sdk-1.4.7-py3-none-any.whl",
-        "sha256": "c9df344d71f08ec93155c27f5eb35f3730947d2fa3be4095cb4baf6bbbfc3109",
-        "archive": "muse_code_sdk-1.4.7-py3-none-any.whl",
+        "url": "https://files.pythonhosted.org/packages/bd/de/57ee930f0183e490bfb9a2531153d57a20295b911d384a0d5989fe9168ca/muse_code_sdk-1.4.10-py3-none-any.whl",
+        "sha256": "26e7d63461724b51d785b21c75a74f8b336b42df59979121c4ec533326c832f9",
+        "archive": "muse_code_sdk-1.4.10-py3-none-any.whl",
         "license": "MIT",
         "declared_dependencies": [
           "pydantic==2.13.5"
@@ -296,20 +331,19 @@
       "additional_material": [
         {
           "distribution": "muse-code-msp",
-          "version": "1.4.7",
+          "version": "1.4.10",
           "module": "muse_code_msp",
-          "url": "https://files.pythonhosted.org/packages/20/23/d5f5dc8091fbad52586a81fb81cabd235d740833b2fd1ea2ba6415788a62/muse_code_msp-1.4.7-py3-none-any.whl",
-          "sha256": "4cceb2f13a514b2d110a6f9b44ba68ea94efca74b62c8bbe78d4a175afe4458b",
-          "archive": "muse_code_msp-1.4.7-py3-none-any.whl",
+          "url": "https://files.pythonhosted.org/packages/88/47/935eeac5699db881b14e279f36b58f17d8a6c1a37c0cb56c9c40a77a7bb1/muse_code_msp-1.4.10-py3-none-any.whl",
+          "sha256": "a198411ec56aabf34efa3f9021bf07835e088b1572cb525aa52d3ecea520008a",
+          "archive": "muse_code_msp-1.4.10-py3-none-any.whl",
           "license": "MIT",
           "declared_dependencies": [],
-          "reason": "muse-code-sdk 1.4.7 imports muse_code_msp but does not declare it"
+          "reason": "Pin the exact MSP wire schema to the selected 1.4.10 host"
         }
       ],
       "settings_nonempty_strings": true,
       "environment": [
-        "META_API_KEY",
-        "MUSE_EXPERIMENTAL_SDK_ENABLED"
+        "META_API_KEY"
       ]
     },
     "openhands": {
@@ -642,6 +676,9 @@
               "cached",
               "live"
             ]
+          },
+          "skipGitRepoCheck": {
+            "type": "boolean"
           }
         },
         "required": [
@@ -707,6 +744,13 @@
               "deny_unapproved",
               "unattended"
             ]
+          },
+          "transport": {
+            "type": "string",
+            "enum": [
+              "sdk_default",
+              "native_stdio"
+            ]
           }
         },
         "required": [
@@ -735,7 +779,8 @@
       },
       "settings_nonempty_strings": true,
       "environment": [
-        "FACTORY_API_KEY"
+        "FACTORY_API_KEY",
+        "OPENROUTER_API_KEY"
       ]
     },
     "opencode": {

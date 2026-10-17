@@ -202,13 +202,13 @@
           "adapter_digest": {
             "type": "string",
             "enum": [
-              "sha256:7389df391628385d7a8406cc14f6e4e35b0ae4671bb8b9f3152371fd96635e2d"
+              "sha256:5025a631b40daee1d190617f92fce4a3cb332e66fd81e770865be989452327d5"
             ]
           },
           "runner_digest": {
             "type": "string",
             "enum": [
-              "sha256:1544ed4341fa87faebd2c383ec21450af45519f7bdff5dd404d50108445d7996"
+              "sha256:349de0b3d76a8cabb376c79bf47892c7dc68001969fe96299cc0ece9a8e9a5c6"
             ]
           },
           "contract_digest": {
@@ -220,7 +220,7 @@
           "bindings_digest": {
             "type": "string",
             "enum": [
-              "sha256:6c2c77a581018991a6e25e1109d49d1ea63bd6133f33e8123e7b8fc7acc0e05f"
+              "sha256:5343d4127ece954a9498b62f515ffa250951b5125a846cf7db2548fb023ae528"
             ]
           },
           "settings_digest": {
@@ -304,7 +304,7 @@
       "name": "access",
       "contents": {
         "share": {
-          "identity": "operator-sdk-account:antigravity",
+          "identity": "sdk-execution-owner:antigravity",
           "digests": [
             "909f8821614164dbb64c702ce002b61dfe290ca3745a55cab82c2a5bb8032001"
           ]
@@ -331,32 +331,36 @@
           "entrypoint": "Agent",
           "operation": "fresh",
           "adapter": "antigravity_fresh",
-          "adapter_digest": "sha256:7389df391628385d7a8406cc14f6e4e35b0ae4671bb8b9f3152371fd96635e2d",
-          "runner_digest": "sha256:1544ed4341fa87faebd2c383ec21450af45519f7bdff5dd404d50108445d7996",
+          "adapter_digest": "sha256:5025a631b40daee1d190617f92fce4a3cb332e66fd81e770865be989452327d5",
+          "runner_digest": "sha256:349de0b3d76a8cabb376c79bf47892c7dc68001969fe96299cc0ece9a8e9a5c6",
           "contract_digest": "sha256:db640957ec60ef85be3038d48637ff0e357f9426ec18227e2375dd23808c9594",
-          "bindings_digest": "sha256:6c2c77a581018991a6e25e1109d49d1ea63bd6133f33e8123e7b8fc7acc0e05f",
+          "bindings_digest": "sha256:5343d4127ece954a9498b62f515ffa250951b5125a846cf7db2548fb023ae528",
           "dispatch_source_digest": "316eebc30b2dceeb2d6bad80b9d323a14871c92aa0cb719b2a6631d20ac0670b",
           "dispatch_pointer": "sdkdispatch.Run",
-          "runner_file": "nodes/sdk/antigravity-python-fresh/53a4127addc7e90c7ff2275c26d8cc8e5e78e6895c034c5c131763d0552f4dd2/runtime/run.py",
+          "runner_file": "nodes/sdk/antigravity-python-fresh/1c3da2872830218fd59be76ce4e82136dab27951c1cf16aa6cebbc502d651939/runtime/run.py",
           "working_directory_slot": "workspace",
           "files": {
-            "nodes/sdk/antigravity-python-fresh/53a4127addc7e90c7ff2275c26d8cc8e5e78e6895c034c5c131763d0552f4dd2/runtime/run.py": "sha256:1544ed4341fa87faebd2c383ec21450af45519f7bdff5dd404d50108445d7996",
-            "nodes/sdk/antigravity-python-fresh/53a4127addc7e90c7ff2275c26d8cc8e5e78e6895c034c5c131763d0552f4dd2/runtime/mcp_bridge/sdk_operations.py": "sha256:7389df391628385d7a8406cc14f6e4e35b0ae4671bb8b9f3152371fd96635e2d",
-            "nodes/sdk/antigravity-python-fresh/53a4127addc7e90c7ff2275c26d8cc8e5e78e6895c034c5c131763d0552f4dd2/runtime/mcp_bridge/sdk_contract.py": "sha256:db640957ec60ef85be3038d48637ff0e357f9426ec18227e2375dd23808c9594",
-            "nodes/sdk/antigravity-python-fresh/53a4127addc7e90c7ff2275c26d8cc8e5e78e6895c034c5c131763d0552f4dd2/runtime/mcp_bridge/sdk_bindings.json": "sha256:6c2c77a581018991a6e25e1109d49d1ea63bd6133f33e8123e7b8fc7acc0e05f",
-            "nodes/sdk/antigravity-python-fresh/53a4127addc7e90c7ff2275c26d8cc8e5e78e6895c034c5c131763d0552f4dd2/runtime/harness.json": "sha256:10f695d223d8e09ff8d2cd093344883e1cd1b2dc49750335945a8de0667cbc6e"
+            "nodes/sdk/antigravity-python-fresh/1c3da2872830218fd59be76ce4e82136dab27951c1cf16aa6cebbc502d651939/runtime/run.py": "sha256:349de0b3d76a8cabb376c79bf47892c7dc68001969fe96299cc0ece9a8e9a5c6",
+            "nodes/sdk/antigravity-python-fresh/1c3da2872830218fd59be76ce4e82136dab27951c1cf16aa6cebbc502d651939/runtime/mcp_bridge/sdk_operations.py": "sha256:5025a631b40daee1d190617f92fce4a3cb332e66fd81e770865be989452327d5",
+            "nodes/sdk/antigravity-python-fresh/1c3da2872830218fd59be76ce4e82136dab27951c1cf16aa6cebbc502d651939/runtime/mcp_bridge/sdk_contract.py": "sha256:db640957ec60ef85be3038d48637ff0e357f9426ec18227e2375dd23808c9594",
+            "nodes/sdk/antigravity-python-fresh/1c3da2872830218fd59be76ce4e82136dab27951c1cf16aa6cebbc502d651939/runtime/mcp_bridge/sdk_bindings.json": "sha256:5343d4127ece954a9498b62f515ffa250951b5125a846cf7db2548fb023ae528",
+            "nodes/sdk/antigravity-python-fresh/1c3da2872830218fd59be76ce4e82136dab27951c1cf16aa6cebbc502d651939/runtime/runtime.tar.gz": "sha256:d169653c1290e07e7554005d0667dc1e040395b62461839dcbbf2f0f4e12a7a6",
+            "nodes/sdk/antigravity-python-fresh/1c3da2872830218fd59be76ce4e82136dab27951c1cf16aa6cebbc502d651939/runtime/harness.json": "sha256:10f695d223d8e09ff8d2cd093344883e1cd1b2dc49750335945a8de0667cbc6e"
           },
           "runtime": {
-            "binary": "python3",
-            "sha256": "cbf84109626aa1013bbe408fbb9590bd0f1c1548f038b2221c6b8b87de26ca43",
+            "binary": "python/bin/python3.13",
             "arguments": [
               "-I"
-            ]
+            ],
+            "sha256": "3237648c5222017bba78737370570e4c9d5a01e552cdf2fa11f107c8d00fc06e",
+            "target": "darwin-arm64",
+            "bundle_digest": "d169653c1290e07e7554005d0667dc1e040395b62461839dcbbf2f0f4e12a7a6",
+            "bundle_file": "nodes/sdk/antigravity-python-fresh/1c3da2872830218fd59be76ce4e82136dab27951c1cf16aa6cebbc502d651939/runtime/runtime.tar.gz"
           },
           "environment": [
             "GEMINI_API_KEY"
           ],
-          "contract_file": "nodes/sdk/antigravity-python-fresh/53a4127addc7e90c7ff2275c26d8cc8e5e78e6895c034c5c131763d0552f4dd2/runtime/harness.json"
+          "contract_file": "nodes/sdk/antigravity-python-fresh/1c3da2872830218fd59be76ce4e82136dab27951c1cf16aa6cebbc502d651939/runtime/harness.json"
         }
       }
     },
@@ -372,8 +376,8 @@
   "proof_spec": {
     "behavior": [],
     "test": {
-      "pointer": "",
-      "digest": ""
+      "pointer": "sdkdispatch.TestSDKDispatchRequiresPrintedRuntime",
+      "digest": "91893f105cbc8ca2fe9fddd7b2cfb0a8c2f47244879441b1a993307a3450e753"
     },
     "target": "sdk-runtime",
     "mode": "real_service"

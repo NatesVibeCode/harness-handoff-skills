@@ -8,6 +8,7 @@ __pycache__/
 venv/
 /build/
 /dist/
+/praxis/handoff/sdk/authoring/assets/runtime/
 .env
 .env.*
 !.env.example

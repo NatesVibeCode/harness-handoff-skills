@@ -103,6 +103,39 @@
               "deny_unapproved",
               "unattended"
             ]
+          },
+          "provider": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "openai",
+                  "azure",
+                  "anthropic"
+                ]
+              },
+              "base_url": {
+                "type": "string"
+              },
+              "api_key_env": {
+                "type": "string"
+              },
+              "wire_api": {
+                "type": "string",
+                "enum": [
+                  "completions",
+                  "responses"
+                ]
+              }
+            },
+            "required": [
+              "type",
+              "base_url",
+              "api_key_env",
+              "wire_api"
+            ],
+            "additionalProperties": false
           }
         },
         "required": [
@@ -194,13 +227,13 @@
           "adapter_digest": {
             "type": "string",
             "enum": [
-              "sha256:7389df391628385d7a8406cc14f6e4e35b0ae4671bb8b9f3152371fd96635e2d"
+              "sha256:5025a631b40daee1d190617f92fce4a3cb332e66fd81e770865be989452327d5"
             ]
           },
           "runner_digest": {
             "type": "string",
             "enum": [
-              "sha256:1544ed4341fa87faebd2c383ec21450af45519f7bdff5dd404d50108445d7996"
+              "sha256:349de0b3d76a8cabb376c79bf47892c7dc68001969fe96299cc0ece9a8e9a5c6"
             ]
           },
           "contract_digest": {
@@ -212,7 +245,7 @@
           "bindings_digest": {
             "type": "string",
             "enum": [
-              "sha256:6c2c77a581018991a6e25e1109d49d1ea63bd6133f33e8123e7b8fc7acc0e05f"
+              "sha256:5343d4127ece954a9498b62f515ffa250951b5125a846cf7db2548fb023ae528"
             ]
           },
           "settings_digest": {
@@ -296,7 +329,7 @@
       "name": "access",
       "contents": {
         "share": {
-          "identity": "operator-sdk-account:copilot",
+          "identity": "sdk-execution-owner:copilot",
           "digests": [
             "d07017ebb95ed103475eec05c337261d6204cb75eb478be24693dba61d882017"
           ]
@@ -323,34 +356,39 @@
           "entrypoint": "CopilotClient",
           "operation": "fresh",
           "adapter": "copilot_fresh",
-          "adapter_digest": "sha256:7389df391628385d7a8406cc14f6e4e35b0ae4671bb8b9f3152371fd96635e2d",
-          "runner_digest": "sha256:1544ed4341fa87faebd2c383ec21450af45519f7bdff5dd404d50108445d7996",
+          "adapter_digest": "sha256:5025a631b40daee1d190617f92fce4a3cb332e66fd81e770865be989452327d5",
+          "runner_digest": "sha256:349de0b3d76a8cabb376c79bf47892c7dc68001969fe96299cc0ece9a8e9a5c6",
           "contract_digest": "sha256:db640957ec60ef85be3038d48637ff0e357f9426ec18227e2375dd23808c9594",
-          "bindings_digest": "sha256:6c2c77a581018991a6e25e1109d49d1ea63bd6133f33e8123e7b8fc7acc0e05f",
+          "bindings_digest": "sha256:5343d4127ece954a9498b62f515ffa250951b5125a846cf7db2548fb023ae528",
           "dispatch_source_digest": "316eebc30b2dceeb2d6bad80b9d323a14871c92aa0cb719b2a6631d20ac0670b",
           "dispatch_pointer": "sdkdispatch.Run",
-          "runner_file": "nodes/sdk/copilot-python-fresh/49c82b9e754ecf075d48288b7edd6a1bc9a6e9d185896f55afb22c46b90a6fd5/runtime/run.py",
+          "runner_file": "nodes/sdk/copilot-python-fresh/c9dbbdee151cf31be9edba022e3d1e16077f4a724cf4b34dbb45147b0ee08c3c/runtime/run.py",
           "working_directory_slot": "workspace",
           "files": {
-            "nodes/sdk/copilot-python-fresh/49c82b9e754ecf075d48288b7edd6a1bc9a6e9d185896f55afb22c46b90a6fd5/runtime/run.py": "sha256:1544ed4341fa87faebd2c383ec21450af45519f7bdff5dd404d50108445d7996",
-            "nodes/sdk/copilot-python-fresh/49c82b9e754ecf075d48288b7edd6a1bc9a6e9d185896f55afb22c46b90a6fd5/runtime/mcp_bridge/sdk_operations.py": "sha256:7389df391628385d7a8406cc14f6e4e35b0ae4671bb8b9f3152371fd96635e2d",
-            "nodes/sdk/copilot-python-fresh/49c82b9e754ecf075d48288b7edd6a1bc9a6e9d185896f55afb22c46b90a6fd5/runtime/mcp_bridge/sdk_contract.py": "sha256:db640957ec60ef85be3038d48637ff0e357f9426ec18227e2375dd23808c9594",
-            "nodes/sdk/copilot-python-fresh/49c82b9e754ecf075d48288b7edd6a1bc9a6e9d185896f55afb22c46b90a6fd5/runtime/mcp_bridge/sdk_bindings.json": "sha256:6c2c77a581018991a6e25e1109d49d1ea63bd6133f33e8123e7b8fc7acc0e05f",
-            "nodes/sdk/copilot-python-fresh/49c82b9e754ecf075d48288b7edd6a1bc9a6e9d185896f55afb22c46b90a6fd5/runtime/harness.json": "sha256:4f7f50242c07d3303fe3e63bdfe43bec1aebc608c88e6a8bb5f269a90c4c19ef"
+            "nodes/sdk/copilot-python-fresh/c9dbbdee151cf31be9edba022e3d1e16077f4a724cf4b34dbb45147b0ee08c3c/runtime/run.py": "sha256:349de0b3d76a8cabb376c79bf47892c7dc68001969fe96299cc0ece9a8e9a5c6",
+            "nodes/sdk/copilot-python-fresh/c9dbbdee151cf31be9edba022e3d1e16077f4a724cf4b34dbb45147b0ee08c3c/runtime/mcp_bridge/sdk_operations.py": "sha256:5025a631b40daee1d190617f92fce4a3cb332e66fd81e770865be989452327d5",
+            "nodes/sdk/copilot-python-fresh/c9dbbdee151cf31be9edba022e3d1e16077f4a724cf4b34dbb45147b0ee08c3c/runtime/mcp_bridge/sdk_contract.py": "sha256:db640957ec60ef85be3038d48637ff0e357f9426ec18227e2375dd23808c9594",
+            "nodes/sdk/copilot-python-fresh/c9dbbdee151cf31be9edba022e3d1e16077f4a724cf4b34dbb45147b0ee08c3c/runtime/mcp_bridge/sdk_bindings.json": "sha256:5343d4127ece954a9498b62f515ffa250951b5125a846cf7db2548fb023ae528",
+            "nodes/sdk/copilot-python-fresh/c9dbbdee151cf31be9edba022e3d1e16077f4a724cf4b34dbb45147b0ee08c3c/runtime/runtime.tar.gz": "sha256:4b61e2e8a2a4a774e512d61352043cccb6b20eefdc74a809f90b78a73ba5710a",
+            "nodes/sdk/copilot-python-fresh/c9dbbdee151cf31be9edba022e3d1e16077f4a724cf4b34dbb45147b0ee08c3c/runtime/harness.json": "sha256:4f7f50242c07d3303fe3e63bdfe43bec1aebc608c88e6a8bb5f269a90c4c19ef"
           },
           "runtime": {
-            "binary": "python3",
-            "sha256": "cbf84109626aa1013bbe408fbb9590bd0f1c1548f038b2221c6b8b87de26ca43",
+            "binary": "python/bin/python3.13",
             "arguments": [
               "-I"
-            ]
+            ],
+            "sha256": "3237648c5222017bba78737370570e4c9d5a01e552cdf2fa11f107c8d00fc06e",
+            "target": "darwin-arm64",
+            "bundle_digest": "4b61e2e8a2a4a774e512d61352043cccb6b20eefdc74a809f90b78a73ba5710a",
+            "bundle_file": "nodes/sdk/copilot-python-fresh/c9dbbdee151cf31be9edba022e3d1e16077f4a724cf4b34dbb45147b0ee08c3c/runtime/runtime.tar.gz"
           },
           "environment": [
             "COPILOT_API_KEY",
             "GITHUB_TOKEN",
-            "GH_TOKEN"
+            "GH_TOKEN",
+            "OPENROUTER_API_KEY"
           ],
-          "contract_file": "nodes/sdk/copilot-python-fresh/49c82b9e754ecf075d48288b7edd6a1bc9a6e9d185896f55afb22c46b90a6fd5/runtime/harness.json"
+          "contract_file": "nodes/sdk/copilot-python-fresh/c9dbbdee151cf31be9edba022e3d1e16077f4a724cf4b34dbb45147b0ee08c3c/runtime/harness.json"
         }
       }
     },
@@ -366,8 +404,8 @@
   "proof_spec": {
     "behavior": [],
     "test": {
-      "pointer": "",
-      "digest": ""
+      "pointer": "sdkdispatch.TestSDKDispatchRequiresPrintedRuntime",
+      "digest": "91893f105cbc8ca2fe9fddd7b2cfb0a8c2f47244879441b1a993307a3450e753"
     },
     "target": "sdk-runtime",
     "mode": "real_service"

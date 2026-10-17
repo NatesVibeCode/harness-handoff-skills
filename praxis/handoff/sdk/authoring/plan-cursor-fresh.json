@@ -8,7 +8,7 @@
       "spec_file": "nodes/cursor-fresh/spec.json",
       "source_file": "assets/sdk_dispatch.go",
       "dispatch": {
-        "dir": "sdk/cursor-python-fresh/1892cb9eaefea10e8a5db73ed8e1ae417b0bba6908628ee3bf47de46dd983954",
+        "dir": "sdk/cursor-python-fresh/72cbdac314e9e7f7b7c23772ec2c4e135eaede885e070dfc46108f0284d97ec5",
         "file": "spec.json",
         "source_file": "sdk_dispatch.go",
         "package": "sdkdispatch",
@@ -128,24 +128,28 @@
   },
   "assets": [
     {
-      "rel_path": "nodes/sdk/cursor-python-fresh/1892cb9eaefea10e8a5db73ed8e1ae417b0bba6908628ee3bf47de46dd983954/runtime/harness.json",
+      "rel_path": "nodes/sdk/cursor-python-fresh/72cbdac314e9e7f7b7c23772ec2c4e135eaede885e070dfc46108f0284d97ec5/runtime/harness.json",
       "file": "assets/worker/harness-cursor.json"
     },
     {
-      "rel_path": "nodes/sdk/cursor-python-fresh/1892cb9eaefea10e8a5db73ed8e1ae417b0bba6908628ee3bf47de46dd983954/runtime/run.py",
+      "rel_path": "nodes/sdk/cursor-python-fresh/72cbdac314e9e7f7b7c23772ec2c4e135eaede885e070dfc46108f0284d97ec5/runtime/run.py",
       "file": "../../../../mcp_bridge/sdk_runner.py"
     },
     {
-      "rel_path": "nodes/sdk/cursor-python-fresh/1892cb9eaefea10e8a5db73ed8e1ae417b0bba6908628ee3bf47de46dd983954/runtime/mcp_bridge/sdk_operations.py",
+      "rel_path": "nodes/sdk/cursor-python-fresh/72cbdac314e9e7f7b7c23772ec2c4e135eaede885e070dfc46108f0284d97ec5/runtime/mcp_bridge/sdk_operations.py",
       "file": "../../../../mcp_bridge/sdk_operations.py"
     },
     {
-      "rel_path": "nodes/sdk/cursor-python-fresh/1892cb9eaefea10e8a5db73ed8e1ae417b0bba6908628ee3bf47de46dd983954/runtime/mcp_bridge/sdk_contract.py",
+      "rel_path": "nodes/sdk/cursor-python-fresh/72cbdac314e9e7f7b7c23772ec2c4e135eaede885e070dfc46108f0284d97ec5/runtime/mcp_bridge/sdk_contract.py",
       "file": "../../../../mcp_bridge/sdk_contract.py"
     },
     {
-      "rel_path": "nodes/sdk/cursor-python-fresh/1892cb9eaefea10e8a5db73ed8e1ae417b0bba6908628ee3bf47de46dd983954/runtime/mcp_bridge/sdk_bindings.json",
+      "rel_path": "nodes/sdk/cursor-python-fresh/72cbdac314e9e7f7b7c23772ec2c4e135eaede885e070dfc46108f0284d97ec5/runtime/mcp_bridge/sdk_bindings.json",
       "file": "../../../../mcp_bridge/sdk_bindings.json"
+    },
+    {
+      "rel_path": "nodes/sdk/cursor-python-fresh/72cbdac314e9e7f7b7c23772ec2c4e135eaede885e070dfc46108f0284d97ec5/runtime/runtime.tar.gz",
+      "file": "assets/runtime/68764ef906cdd0b1e69961e2bc18ef4face87691cbb044f189daa61856349067.tar.gz"
     }
   ]
 }

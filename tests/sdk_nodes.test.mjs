@@ -95,8 +95,7 @@ test('Cline maps each tool policy and always disposes its owned runtime', async 
 
 test('Droid maps native autonomy and requires a successful terminal result', async () => {
   let options, closed = 0, terminal = true;
-  const sdk = { DroidMessageType: { Assistant: 'assistant', Error: 'error', Result: 'result' },
-    ToolConfirmationOutcome: { Cancel: 'cancel' },
+  const sdk = { ToolConfirmationOutcome: { Cancel: 'cancel' },
     createSession: async o => {
       options = o;
       return { id: 'fresh-id', async *stream() { yield { type: 'assistant', text: 'answer' }; if (terminal) yield { type: 'result', success: true }; },
@@ -133,6 +132,25 @@ test('OpenCode binds both requests to the workspace and closes its owned server'
   error = true;
   await assert.rejects(invoke(req, sdk), /assistant error/);
   assert.equal(closed, 2);
+});
+
+test('Droid native stdio is explicit SDK configuration and closes on failed creation', async () => {
+  let connected = 0, closed = 0;
+  const sdk = {
+    ToolConfirmationOutcome: { Cancel: 'cancel' },
+    ProcessTransport: class {
+      constructor(options) { assert.equal(options.cwd, process.cwd()); }
+      async connect() { connected++; }
+      async close() { closed++; }
+    },
+    createSession: async options => {
+      assert.ok(options.transport instanceof sdk.ProcessTransport);
+      throw Error('owned creation failure');
+    },
+  };
+  const req = request('droid'); req.settings.transport = 'native_stdio';
+  await assert.rejects(invoke(req, sdk), /owned creation failure/);
+  assert.equal(connected, 1); assert.equal(closed, 1);
 });
 
 for (const harness of ['amp', 'cline', 'codex', 'droid', 'opencode']) {

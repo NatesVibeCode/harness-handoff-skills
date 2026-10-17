@@ -184,7 +184,7 @@ def node_spec(harness: str, operation: str, contract: dict, package_version: str
             "runner_file": "worker/sdk/typescript/run.mjs" if language == "typescript" else "worker/sdk/run.py",
             "working_directory_slot": "workspace",
             "files": {},
-            "runtime": read_json(HERE / "runtime-pins.json")["runtimes"][language],
+            "runtime": read_json(HERE / "runtime-pins.json")["runtimes"][harness],
             "environment": BINDINGS[harness]["environment"],
         },
     }
@@ -207,7 +207,7 @@ def node_spec(harness: str, operation: str, contract: dict, package_version: str
                 "name": "access",
                 "contents": {
                     "share": {
-                        "identity": f"operator-sdk-account:{harness}",
+                        "identity": f"sdk-execution-owner:{harness}",
                         "digests": [digest.removeprefix("sha256:")],
                     }
                 },
@@ -216,7 +216,10 @@ def node_spec(harness: str, operation: str, contract: dict, package_version: str
             {"name": "fields", "contents": None},
             {"name": "field_types", "contents": None},
         ],
-        "proof_spec": {"behavior": [], "test": {"pointer": "", "digest": ""}, "target": "sdk-runtime", "mode": "real_service"},
+        "proof_spec": {"behavior": [], "test": {
+            "pointer": "sdkdispatch.TestSDKDispatchRequiresPrintedRuntime",
+            "digest": hashlib.sha256(b"praxis.test.go.v1\x00" + (HERE / "assets/proof_test.go").read_bytes()).hexdigest(),
+        }, "target": "sdk-runtime", "mode": "real_service"},
         "usage": {
             "purpose": f"Invoke exactly one {harness} {language.title()} SDK {operation} operation through its pinned adapter and return a bound receipt.",
             "use_when": [f"an explicit {harness} SDK {operation} operation is selected"],
@@ -312,12 +315,20 @@ def make_plan(harness: str, operation: str, contract: dict, package_version: str
     private_dir = f"sdk/{harness}-{language}-{operation}/{material_id}"
     plan["nodes"][0]["dispatch"]["dir"] = private_dir
     sdk_root = f"nodes/{private_dir}/runtime"
+    runtime_bundle = handoff_material(node)["runtime"]["bundle_file"]
+    plan["assets"].append({"rel_path": "worker/sdk/runtime.tar.gz", "file": f"assets/runtime/{runtime_bundle}"})
     for asset in plan["assets"]:
         asset["rel_path"] = asset["rel_path"].replace("worker/harness.json", sdk_root + "/harness.json").replace("worker/sdk/", sdk_root + "/")
     handoff = next(d["contents"] for d in node["dimensions"] if d["name"] == "handoff")
     handoff["sdk"]["runner_file"] = f"{sdk_root}/typescript/run.mjs" if language == "typescript" else f"{sdk_root}/run.py"
     handoff["sdk"]["contract_file"] = f"{sdk_root}/harness.json"
-    handoff["sdk"]["files"] = {a["rel_path"]: raw_sha256((HERE/a["file"]).read_bytes()) for a in plan["assets"] if not a["rel_path"].endswith("/harness.json")}
+    handoff["sdk"]["runtime"]["bundle_file"] = f"{sdk_root}/runtime.tar.gz"
+    handoff["sdk"]["files"] = {
+        a["rel_path"]: ("sha256:" + handoff["sdk"]["runtime"]["bundle_digest"]
+                        if a["file"].startswith("assets/runtime/")
+                        else raw_sha256((HERE/a["file"]).read_bytes()))
+        for a in plan["assets"] if not a["rel_path"].endswith("/harness.json")
+    }
     contract_text = (REPO_ROOT / f"{harness}-harness-handoff/contract.json").read_text(encoding="utf-8")
     write_json(HERE / f"assets/worker/harness-{harness}.json", {"contracts": {harness: contract_text}})
     handoff["sdk"]["files"][handoff["sdk"]["contract_file"]] = raw_sha256((HERE/f"assets/worker/harness-{harness}.json").read_bytes())
@@ -325,6 +336,8 @@ def make_plan(harness: str, operation: str, contract: dict, package_version: str
     write_json(HERE / f"plan-{slug}.json", plan)
     stores = read_json(HERE / "stores.json")
     stores["contracts"] = [item for item in stores["contracts"] if item["name"] == harness]
+    stores["pointers"] = [{"kind": "test", "pointer": node["proof_spec"]["test"]["pointer"],
+                           "digest": node["proof_spec"]["test"]["digest"], "path": "assets/proof_test.go"}]
     write_json(HERE / f"stores-{slug}.json", stores)
 
 

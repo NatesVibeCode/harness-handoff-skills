@@ -5,6 +5,22 @@ happens here. SDK-owned subprocesses remain part of the selected SDK binding.
 """
 from __future__ import annotations
 
+import json
+import os
+from pathlib import Path
+
+
+def native_runtime(name):
+    root = os.environ.get('PRAXIS_SDK_RUNTIME_ROOT')
+    if not root:
+        return name
+    selected = json.loads((Path(root) / 'runtime.json').read_text())['native'][name]
+    runtime = Path(root).resolve(strict=True)
+    executable = (runtime / selected).resolve(strict=True)
+    if not executable.is_relative_to(runtime) or not executable.is_file():
+        raise RuntimeError('SDK executable leaves captured material')
+    return str(executable)
+
 
 def completed(session_id, output):
     if not isinstance(session_id, str) or not session_id.strip():
@@ -20,11 +36,13 @@ async def claude(request):
     terminal = None
     async for message in query(prompt=request['prompt'], options=options):
         if isinstance(message, ResultMessage):
-            if message.is_error:
-                raise RuntimeError('Claude SDK returned an error result')
             terminal = message
     if terminal is None:
         raise RuntimeError('Claude SDK ended without a terminal result')
+    if terminal.is_error:
+        detail = {key: getattr(terminal, key, None)
+                  for key in ('session_id', 'subtype', 'result', 'errors')}
+        raise RuntimeError('Claude SDK returned an error result: ' + json.dumps(detail))
     return completed(terminal.session_id, terminal.result)
 
 
@@ -46,11 +64,20 @@ async def copilot(request):
     from copilot.session import PermissionHandler, PermissionNoResult
     settings = request['settings']
     handler = PermissionHandler.approve_all if settings['permission'] == 'unattended' else lambda *_: PermissionNoResult()
-    async with CopilotClient() as client:
-        async with await client.create_session(
-            model=settings['model'], working_directory=request['workspace'],
-            on_permission_request=handler,
-        ) as session:
+    options = {}
+    if os.environ.get('PRAXIS_SDK_RUNTIME_ROOT'):
+        from copilot import RuntimeConnection
+        options['connection'] = RuntimeConnection.for_stdio(path=native_runtime('copilot-runtime'))
+    session_options = dict(model=settings['model'], working_directory=request['workspace'],
+                           on_permission_request=handler)
+    if 'provider' in settings:
+        provider = dict(settings['provider'])
+        credential_name = provider.pop('api_key_env')
+        provider['api_key'] = os.environ[credential_name]
+        session_options['provider'] = provider
+        options['use_logged_in_user'] = False
+    async with CopilotClient(**options) as client:
+        async with await client.create_session(**session_options) as session:
             # send_and_wait waits for root idle, rejects errors, and returns the
             # final assistant message. A send acknowledgment cannot be success.
             response = await session.send_and_wait(request['prompt'])
@@ -61,8 +88,8 @@ async def copilot(request):
 async def muse(request):
     from muse_code import MuseClient, MuseClientSpawnOptions, SendUserTurnOptions, StartSessionOptions
     client = await MuseClient.spawn(MuseClientSpawnOptions(
-        muse_bin='muse', args=('serve',),
-        client_info={'name': 'harness-handoff', 'version': '1.0.0'},
+        muse_bin=native_runtime('muse'), args=('serve',),
+        client_info={'name': 'harness_handoff', 'version': '1.0.0'},
     ))
     try:
         session = await client.start_session(StartSessionOptions(

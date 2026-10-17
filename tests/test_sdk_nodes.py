@@ -1,6 +1,7 @@
 """Local mechanics only. These fixtures are never Node admission evidence."""
 import asyncio
 import copy
+import hashlib
 import json
 import subprocess
 import sys
@@ -57,13 +58,17 @@ def test_no_placeholder_success(session, output):
 
 
 def test_claude_forwards_settings_and_rejects_failed_terminal(monkeypatch, tmp_path):
-    seen = []
+    seen, drained = [], []
     class Options:
         def __init__(self, **kwargs): seen.append(kwargs)
     class Result:
-        def __init__(self, error=False): self.is_error, self.session_id, self.result = error, 'fresh-id', 'answer'
+        def __init__(self, error=False):
+            self.is_error, self.session_id, self.result = error, 'fresh-id', 'answer'
+            self.subtype, self.errors = 'error_during_execution' if error else 'success', ['provider refused'] if error else []
     error = False
-    async def query(**kwargs): yield Result(error)
+    async def query(**kwargs):
+        yield Result(error)
+        drained.append(True)
     monkeypatch.setitem(sys.modules, 'claude_agent_sdk', types.SimpleNamespace(ClaudeAgentOptions=Options, ResultMessage=Result, query=query))
     req = request('claude', tmp_path)
     assert asyncio.run(sdk_operations.claude(req))['output'] == 'answer'
@@ -75,7 +80,10 @@ def test_claude_forwards_settings_and_rejects_failed_terminal(monkeypatch, tmp_p
     asyncio.run(sdk_operations.claude(req))
     assert seen[2] == {**seen[1], 'permission_mode': 'acceptEdits'}
     error = True
-    with pytest.raises(RuntimeError, match='error result'): asyncio.run(sdk_operations.claude(req))
+    with pytest.raises(RuntimeError, match='error result') as failure:
+        asyncio.run(sdk_operations.claude(req))
+    assert 'provider refused' in str(failure.value) and 'fresh-id' in str(failure.value)
+    assert len(drained) == 4
 
 
 def test_cursor_requires_successful_terminal_and_never_stringifies_objects(monkeypatch, tmp_path):
@@ -105,6 +113,7 @@ def test_copilot_uses_workspace_and_completed_message(monkeypatch, tmp_path):
         async def __aexit__(self, *args): pass
         async def send_and_wait(self, prompt): return response
     class Client:
+        def __init__(self, **kwargs): pass
         async def __aenter__(self): return self
         async def __aexit__(self, *args): pass
         async def create_session(self, **kwargs): seen.append(kwargs); return Session()
@@ -115,6 +124,12 @@ def test_copilot_uses_workspace_and_completed_message(monkeypatch, tmp_path):
     assert asyncio.run(sdk_operations.copilot(req))['output'] == 'actual assistant output'
     assert seen[0]['working_directory'] == str(tmp_path)
     assert isinstance(seen[0]['on_permission_request'](), no)
+    monkeypatch.setenv('OPENROUTER_API_KEY', 'local-fixture')
+    req['settings']['provider'] = {'type': 'openai', 'base_url': 'https://provider.invalid/v1',
+                                 'api_key_env': 'OPENROUTER_API_KEY', 'wire_api': 'completions'}
+    asyncio.run(sdk_operations.copilot(req))
+    assert seen[-1]['provider'] == {'type': 'openai', 'base_url': 'https://provider.invalid/v1',
+                                    'api_key': 'local-fixture', 'wire_api': 'completions'}
     response.data.content = None
     with pytest.raises(RuntimeError, match='assistant output'): asyncio.run(sdk_operations.copilot(req))
 
@@ -137,6 +152,27 @@ def test_fresh_plans_use_one_declaration_and_map_settings_through_both_layers():
 
 def test_typescript_mechanics():
     subprocess.run(['node', '--test', 'tests/sdk_nodes.test.mjs'], cwd=ROOT, check=True, timeout=60)
+
+
+def test_sdk_catalogue_pins_local_dispatch_check_without_claiming_vendor_proof():
+    root = ROOT / 'praxis/handoff/sdk/authoring'
+    test = (root / 'assets/proof_test.go').read_bytes()
+    expected = hashlib.sha256(b'praxis.test.go.v1\x00' + test).hexdigest()
+    for path in root.glob('plan-*-fresh.json'):
+        plan = json.loads(path.read_text())
+        spec = json.loads((root / plan['nodes'][0]['spec_file']).read_text())
+        stores = json.loads((root / ('stores-' + path.stem.removeprefix('plan-') + '.json')).read_text())
+        assert spec['proof_spec']['test'] == {
+            'pointer': 'sdkdispatch.TestSDKDispatchRequiresPrintedRuntime', 'digest': expected}
+        assert stores['pointers'] == [{
+            'kind': 'test', 'pointer': spec['proof_spec']['test']['pointer'],
+            'digest': expected, 'path': 'assets/proof_test.go'}]
+        assert not spec['proof_spec']['behavior']
+        access = next(d['contents'] for d in spec['dimensions'] if d['name'] == 'access')
+        assert access['share']['identity'].startswith('sdk-execution-owner:')
+    query = json.loads((root / 'atlas-reuse-query.json').read_text())
+    assert query['inputs'] == query['outputs'] == []
+    assert all('audit' not in term and 'resume' not in term for term in query['purpose_terms'])
 
 
 def test_muse_selected_profile_is_required_and_completed_text_only(monkeypatch, tmp_path):
@@ -228,7 +264,9 @@ def test_python_printed_runner_checks_sources_before_import_and_keeps_stdout_jso
     for source, destination in [('sdk_runner.py', stage/'run.py'), ('sdk_contract.py', stage/'mcp_bridge/sdk_contract.py'),
                                 ('sdk_operations.py', stage/'mcp_bridge/sdk_operations.py'), ('sdk_bindings.json', stage/'mcp_bridge/sdk_bindings.json')]:
         shutil.copyfile(ROOT/'mcp_bridge'/source, destination)
-    packages = tmp_path/'packages'; packages.mkdir()
+    runtime = tmp_path/'runtime'; runtime.mkdir()
+    packages = runtime/'packages'; packages.mkdir()
+    (runtime/'runtime.json').write_text(json.dumps({'python_path': ['packages'], 'native': {}}))
     package = packages/'claude_agent_sdk.py'
     marker = tmp_path/'imported'
     package.write_text(f'''from pathlib import Path
@@ -248,9 +286,9 @@ async def query(**kwargs):
     req = request('claude', tmp_path)
     for key, path in [('runner_digest', stage/'run.py'), ('contract_digest', stage/'mcp_bridge/sdk_contract.py'), ('adapter_digest', stage/'mcp_bridge/sdk_operations.py')]:
         req[key] = sdk_contract.digest(path.read_bytes())
-    env = {**os.environ, 'PYTHONPATH': str(packages)}
+    env = {**os.environ, 'PRAXIS_SDK_RUNTIME_ROOT': str(runtime)}
     def run(payload):
-        return subprocess.run([sys.executable, str(stage/'run.py')], input=json.dumps(payload), text=True, capture_output=True, env=env, cwd=tmp_path, timeout=15)
+        return subprocess.run([sys.executable, '-I', str(stage/'run.py')], input=json.dumps(payload), text=True, capture_output=True, env=env, cwd=tmp_path, timeout=15)
     changed = copy.deepcopy(req); changed['settings']['invented'] = True
     refused = run(changed)
     assert refused.returncode == 1 and not marker.exists() and not refused.stdout
@@ -267,11 +305,13 @@ async def query(**kwargs):
 
 
 def test_typescript_printed_runner_self_pin_and_stdout_channel(tmp_path):
+    import os
     import shutil
     stage = tmp_path/'stage'; stage.mkdir()
     for source, dest in [('sdk_ts_runner.mjs', 'run.mjs'), ('sdk_ts_adapters.mjs', 'adapters.mjs'), ('sdk_contract.mjs', 'contract.mjs'), ('sdk_bindings.json', 'sdk_bindings.json')]:
         shutil.copyfile(ROOT/'mcp_bridge'/source, stage/dest)
-    package = tmp_path/'node_modules/@openai/codex-sdk'; package.mkdir(parents=True)
+    runtime = tmp_path/'runtime'; runtime.mkdir()
+    package = runtime/'node_modules/@openai/codex-sdk'; package.mkdir(parents=True)
     binding = BINDINGS['codex']
     (package/'package.json').write_text(json.dumps({'name': binding['distribution'], 'version': binding['version'], 'type': 'module', 'exports': {'.': {'import': './index.mjs'}}}))
     marker = tmp_path/'imported'
@@ -284,7 +324,7 @@ export class Codex {{ startThread() {{ return {{ id: 'fixture-session', run: asy
     for key, name in [('runner_digest', 'run.mjs'), ('contract_digest', 'contract.mjs'), ('adapter_digest', 'adapters.mjs')]:
         req[key] = sdk_contract.digest((stage/name).read_bytes())
     def run(payload):
-        return subprocess.run(['node', str(stage/'run.mjs'), str(stage/'adapters.mjs')], input=json.dumps(payload), text=True, capture_output=True, cwd=tmp_path, timeout=15)
+        return subprocess.run(['node', str(stage/'run.mjs'), str(stage/'adapters.mjs')], input=json.dumps(payload), text=True, capture_output=True, env={**os.environ, 'PRAXIS_SDK_RUNTIME_ROOT': str(runtime)}, cwd=tmp_path, timeout=15)
     changed = copy.deepcopy(req); changed['settings']['invented'] = True
     refused = run(changed)
     assert refused.returncode != 0 and not marker.exists() and not refused.stdout
@@ -388,4 +428,9 @@ def test_sdk_blocks_and_material_have_exact_private_bindings():
         claimed_paths |= paths
         assert paths == set(sdk['files'])
         for asset in plan['assets']:
-            assert sdk['files'][asset['rel_path']] == sdk_contract.digest((root/'authoring'/asset['file']).read_bytes())
+            if asset['file'].startswith('assets/runtime/'):
+                assert asset['rel_path'] == sdk['runtime']['bundle_file']
+                assert sdk['files'][asset['rel_path']] == 'sha256:' + sdk['runtime']['bundle_digest']
+                assert Path(asset['file']).name == sdk['runtime']['bundle_digest'] + '.tar.gz'
+            else:
+                assert sdk['files'][asset['rel_path']] == sdk_contract.digest((root/'authoring'/asset['file']).read_bytes())

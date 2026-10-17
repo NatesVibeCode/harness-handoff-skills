@@ -212,13 +212,13 @@
           "adapter_digest": {
             "type": "string",
             "enum": [
-              "sha256:7389df391628385d7a8406cc14f6e4e35b0ae4671bb8b9f3152371fd96635e2d"
+              "sha256:5025a631b40daee1d190617f92fce4a3cb332e66fd81e770865be989452327d5"
             ]
           },
           "runner_digest": {
             "type": "string",
             "enum": [
-              "sha256:1544ed4341fa87faebd2c383ec21450af45519f7bdff5dd404d50108445d7996"
+              "sha256:349de0b3d76a8cabb376c79bf47892c7dc68001969fe96299cc0ece9a8e9a5c6"
             ]
           },
           "contract_digest": {
@@ -230,7 +230,7 @@
           "bindings_digest": {
             "type": "string",
             "enum": [
-              "sha256:6c2c77a581018991a6e25e1109d49d1ea63bd6133f33e8123e7b8fc7acc0e05f"
+              "sha256:5343d4127ece954a9498b62f515ffa250951b5125a846cf7db2548fb023ae528"
             ]
           },
           "settings_digest": {
@@ -314,7 +314,7 @@
       "name": "access",
       "contents": {
         "share": {
-          "identity": "operator-sdk-account:claude",
+          "identity": "sdk-execution-owner:claude",
           "digests": [
             "c926b2ebcc89cb06a0c0a15375f23c03a7bbd18ee1e05eef032a5b0735dc6a49"
           ]
@@ -341,33 +341,38 @@
           "entrypoint": "query",
           "operation": "fresh",
           "adapter": "claude_fresh",
-          "adapter_digest": "sha256:7389df391628385d7a8406cc14f6e4e35b0ae4671bb8b9f3152371fd96635e2d",
-          "runner_digest": "sha256:1544ed4341fa87faebd2c383ec21450af45519f7bdff5dd404d50108445d7996",
+          "adapter_digest": "sha256:5025a631b40daee1d190617f92fce4a3cb332e66fd81e770865be989452327d5",
+          "runner_digest": "sha256:349de0b3d76a8cabb376c79bf47892c7dc68001969fe96299cc0ece9a8e9a5c6",
           "contract_digest": "sha256:db640957ec60ef85be3038d48637ff0e357f9426ec18227e2375dd23808c9594",
-          "bindings_digest": "sha256:6c2c77a581018991a6e25e1109d49d1ea63bd6133f33e8123e7b8fc7acc0e05f",
+          "bindings_digest": "sha256:5343d4127ece954a9498b62f515ffa250951b5125a846cf7db2548fb023ae528",
           "dispatch_source_digest": "316eebc30b2dceeb2d6bad80b9d323a14871c92aa0cb719b2a6631d20ac0670b",
           "dispatch_pointer": "sdkdispatch.Run",
-          "runner_file": "nodes/sdk/claude-python-fresh/a7b514f87585b81b7693ef5a3dcabb517b9478b85c58d19ba8dcefbee363e0fb/runtime/run.py",
+          "runner_file": "nodes/sdk/claude-python-fresh/8c9a76daa39e3bd7f782b3fa0bff69b43423194462e2d7aa61191a61ea7e740a/runtime/run.py",
           "working_directory_slot": "workspace",
           "files": {
-            "nodes/sdk/claude-python-fresh/a7b514f87585b81b7693ef5a3dcabb517b9478b85c58d19ba8dcefbee363e0fb/runtime/run.py": "sha256:1544ed4341fa87faebd2c383ec21450af45519f7bdff5dd404d50108445d7996",
-            "nodes/sdk/claude-python-fresh/a7b514f87585b81b7693ef5a3dcabb517b9478b85c58d19ba8dcefbee363e0fb/runtime/mcp_bridge/sdk_operations.py": "sha256:7389df391628385d7a8406cc14f6e4e35b0ae4671bb8b9f3152371fd96635e2d",
-            "nodes/sdk/claude-python-fresh/a7b514f87585b81b7693ef5a3dcabb517b9478b85c58d19ba8dcefbee363e0fb/runtime/mcp_bridge/sdk_contract.py": "sha256:db640957ec60ef85be3038d48637ff0e357f9426ec18227e2375dd23808c9594",
-            "nodes/sdk/claude-python-fresh/a7b514f87585b81b7693ef5a3dcabb517b9478b85c58d19ba8dcefbee363e0fb/runtime/mcp_bridge/sdk_bindings.json": "sha256:6c2c77a581018991a6e25e1109d49d1ea63bd6133f33e8123e7b8fc7acc0e05f",
-            "nodes/sdk/claude-python-fresh/a7b514f87585b81b7693ef5a3dcabb517b9478b85c58d19ba8dcefbee363e0fb/runtime/harness.json": "sha256:e6f5884713e119d5b956180891a2e27356541e61e5ff1936d79d0846965d4ead"
+            "nodes/sdk/claude-python-fresh/8c9a76daa39e3bd7f782b3fa0bff69b43423194462e2d7aa61191a61ea7e740a/runtime/run.py": "sha256:349de0b3d76a8cabb376c79bf47892c7dc68001969fe96299cc0ece9a8e9a5c6",
+            "nodes/sdk/claude-python-fresh/8c9a76daa39e3bd7f782b3fa0bff69b43423194462e2d7aa61191a61ea7e740a/runtime/mcp_bridge/sdk_operations.py": "sha256:5025a631b40daee1d190617f92fce4a3cb332e66fd81e770865be989452327d5",
+            "nodes/sdk/claude-python-fresh/8c9a76daa39e3bd7f782b3fa0bff69b43423194462e2d7aa61191a61ea7e740a/runtime/mcp_bridge/sdk_contract.py": "sha256:db640957ec60ef85be3038d48637ff0e357f9426ec18227e2375dd23808c9594",
+            "nodes/sdk/claude-python-fresh/8c9a76daa39e3bd7f782b3fa0bff69b43423194462e2d7aa61191a61ea7e740a/runtime/mcp_bridge/sdk_bindings.json": "sha256:5343d4127ece954a9498b62f515ffa250951b5125a846cf7db2548fb023ae528",
+            "nodes/sdk/claude-python-fresh/8c9a76daa39e3bd7f782b3fa0bff69b43423194462e2d7aa61191a61ea7e740a/runtime/runtime.tar.gz": "sha256:46cb5437afac515aad24c610a457a58079ff957c4d2183df69f89b6f28d980d6",
+            "nodes/sdk/claude-python-fresh/8c9a76daa39e3bd7f782b3fa0bff69b43423194462e2d7aa61191a61ea7e740a/runtime/harness.json": "sha256:e6f5884713e119d5b956180891a2e27356541e61e5ff1936d79d0846965d4ead"
           },
           "runtime": {
-            "binary": "python3",
-            "sha256": "cbf84109626aa1013bbe408fbb9590bd0f1c1548f038b2221c6b8b87de26ca43",
+            "binary": "python/bin/python3.13",
             "arguments": [
               "-I"
-            ]
+            ],
+            "sha256": "3237648c5222017bba78737370570e4c9d5a01e552cdf2fa11f107c8d00fc06e",
+            "target": "darwin-arm64",
+            "bundle_digest": "46cb5437afac515aad24c610a457a58079ff957c4d2183df69f89b6f28d980d6",
+            "bundle_file": "nodes/sdk/claude-python-fresh/8c9a76daa39e3bd7f782b3fa0bff69b43423194462e2d7aa61191a61ea7e740a/runtime/runtime.tar.gz"
           },
           "environment": [
             "ANTHROPIC_API_KEY",
-            "ANTHROPIC_BASE_URL"
+            "ANTHROPIC_BASE_URL",
+            "ANTHROPIC_AUTH_TOKEN"
           ],
-          "contract_file": "nodes/sdk/claude-python-fresh/a7b514f87585b81b7693ef5a3dcabb517b9478b85c58d19ba8dcefbee363e0fb/runtime/harness.json"
+          "contract_file": "nodes/sdk/claude-python-fresh/8c9a76daa39e3bd7f782b3fa0bff69b43423194462e2d7aa61191a61ea7e740a/runtime/harness.json"
         }
       }
     },
@@ -383,8 +388,8 @@
   "proof_spec": {
     "behavior": [],
     "test": {
-      "pointer": "",
-      "digest": ""
+      "pointer": "sdkdispatch.TestSDKDispatchRequiresPrintedRuntime",
+      "digest": "91893f105cbc8ca2fe9fddd7b2cfb0a8c2f47244879441b1a993307a3450e753"
     },
     "target": "sdk-runtime",
     "mode": "real_service"

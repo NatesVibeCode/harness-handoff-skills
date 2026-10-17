@@ -349,3 +349,70 @@ The globally installed factory has not been replaced. Full vendor runtime
 closure, authorized account success/safe failure and interruption recovery,
 admission/release, Atlas catalogue promotion and native AO consumption remain
 unproven. No harness provider calls, remote jobs, spend or FL work occurred.
+
+
+## 2026-10-16 — Captured SDK runtimes, installed factory and Atlas publication
+
+All eleven fresh SDK Nodes and pinned Blocks build through the installed
+`/Users/nate/.local/bin/forge-author`. The generic SDK support was integrated
+into the factory checkout with three-way merges preserving existing edits, then
+installed through `scripts/install-tools.sh`. `forge-author status -summary`
+reports all three installed factory tools current. Forge implementation commits
+are `ea319d9` and `baee098` on `codex/harness-sdk-support-20261016`.
+
+Each Node now carries a SHA-256-pinned Darwin ARM64 runtime capsule: portable
+Python 3.13.13 or Node 24.22.0, its SDK dependencies and metadata, and required
+native executables. All eleven relocated SDK imports pass. Capture records file
+hashes/modes; the launcher verifies the bytes read while extracting and checks
+its executable before launch. SDK imports resolve inside the capsule, independently
+of the caller's working directory. Large runtime archives remain local material,
+outside Git and the Python wheel; their exact pins are committed.
+
+Native `node` authoring and `catalog` publication pass for all eleven declarations.
+They are published into the local Atlas data root; its ordinary stores manifest
+includes their contract and dispatch-test references. A subsequent native `reuse`
+returns all eleven exact Node revisions, all reusable, with no inventory gaps.
+The pinned Go test checks the dispatch boundary only. Empty vendor behavior
+case declarations do not assert qualification or admission.
+
+Current-source development calls passed for **Claude, Codex, Copilot, Droid,
+OpenCode, Cline and OpenHands**. Each returned independently expected
+`SDK_QUALIFIED` output, a fresh session identity distinct from previous attempts,
+and the exact current Node pin in its Process receipt. Working directories were
+empty, non-Git directories. Copilot used its supported custom-provider option;
+Droid used its supported `ProcessTransport` stdio route with a native custom
+model. Neither required a separate GitHub or Factory credential. Claude used the
+existing bearer-token route after adding the missing declared
+`ANTHROPIC_AUTH_TOKEN` variable. Codex used the existing native account.
+
+Real execution exposed and repaired three mistakes hidden by local fixtures:
+Droid exports message discriminants rather than the invented message enum;
+OpenCode SDK 1.19.0 needs its matching official executable rather than an ambient
+similarly named package; and Muse enforces its exact host/MSP fingerprint and a
+machine-safe client name. Muse SDK/MSP 1.4.10 now match the captured host, and
+its actual handshake/model listing passes. Claude error details are retained,
+and its stream drains before raising a failed terminal result. Failed attempts
+remain separate evidence and were not relabeled as successes.
+
+The project suite passes **350 tests, no skips**. Skill generation prints
+`OK 14 handoff skill trees + 1 review skill match skills-src/`. Focused integrated
+Forge checks pass in `forge`, `proof`, `forge/egress_bundle` and
+`cmd/forge-author`; the final runtime/observer recheck also passes. The wheel
+contains all eleven Blocks, runtime pins, capture/publication tools and the
+pinned dispatch test. Diff checks pass. No skill prose changed.
+
+Evidence root:
+`/Users/nate/Documents/Codex/2026-10-16/harness-handoff-correction/`.
+The final records are `sdk-completion-report.json`,
+`sdk-development-auth-binding/summary.json`, `sdk-catalog-auth-binding/`,
+`sdk-pytest-auth-binding.txt`, `sdk-integrated-go-checks.txt`,
+`sdk-final-proof-checks.txt`, `sdk-installed-status.txt`, and the named
+`sdk-live-debug/*-current-source` captures plus `claude-auth-binding`.
+The observed aggregate OpenRouter account usage increased by about **$0.13**
+against the authorized $5 ceiling; the ledger records settlement snapshots and
+keeps native harness account routes separate. No new accounts were created.
+
+These are unsigned development and catalogue results. Native SDK proof mechanics
+are implemented and checked with explicitly owned local fixtures; real vendor
+admission, release and native AO qualification have not been asserted. The
+readiness flags retain those distinctions. No FL implementation or data changed.

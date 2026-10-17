@@ -12,17 +12,17 @@
       "capability": "amp-typescript-fresh",
       "node": {
         "name": "harness.sdk.typescript.amp.fresh",
-        "digest": "40f00becaa046021dd682e9d2af8b9f3366a0925703b48571b3e1dc0c26aa51e"
+        "digest": "aa659494fed837ed122c85bb8d40f6d2a80e9ad5b104f45a7c4b6922c8f82f75"
       },
       "node_spec": "authoring/nodes/amp-typescript-fresh/spec.json",
       "block": {
         "name": "harness.sdk.typescript.amp.fresh",
-        "digest": "af355b0641da71d0a9cd15556cc1acc7baf1b5512b65bf7843d471d747f06edc"
+        "digest": "bc6281af247285b5e1b14dcc38cbdd66a1a79537969e99fccaa35399b3225f9e"
       },
       "block_file": "blocks/amp-typescript-fresh.json",
       "process": {
         "name": "harness.sdk.typescript.amp.fresh",
-        "digest": "6da1306522030247c3865b6ca3767561640d2d0ccd0376a041d34fab957d1345"
+        "digest": "a1b71c44768e5cb904a6f398c6c777a267b49984f0817a59dae9c51dfa4b7e1e"
       },
       "plan": "authoring/plan-amp-typescript-fresh.json"
     },
@@ -30,17 +30,17 @@
       "capability": "antigravity-fresh",
       "node": {
         "name": "harness.sdk.antigravity.fresh",
-        "digest": "79c669da0d60ce750205f395159089419de6be51bcd9054795e64579dbe77651"
+        "digest": "2beec947f05d07cb94c06ca4208ba6ffbb0dc69a0881cf2b219bc67c92561afc"
       },
       "node_spec": "authoring/nodes/antigravity-fresh/spec.json",
       "block": {
         "name": "harness.sdk.antigravity.fresh",
-        "digest": "aa2a2a723c6ff73058cb074c1b6251366dc127d43c13e24746cbe53743c944a8"
+        "digest": "8f0036304df670d4b579c0b8bb5042334f6da86e79851c5aba8fe92350a04682"
       },
       "block_file": "blocks/antigravity-fresh.json",
       "process": {
         "name": "harness.sdk.antigravity.fresh",
-        "digest": "ea9abec8b60f93e9ba867298698b5df5a0dba6da07a8ad72f7dfb47a5659e22e"
+        "digest": "37ac1eca2d30492e38a850b60ed52e26e08705ce25f10ca3abe34461eb42a754"
       },
       "plan": "authoring/plan-antigravity-fresh.json"
     },
@@ -48,17 +48,17 @@
       "capability": "claude-fresh",
       "node": {
         "name": "harness.sdk.claude.fresh",
-        "digest": "814b939af7ad1b70be7d20a096d816c58c6adc39c27bcd8750fe233d4a18fe24"
+        "digest": "81970d79e722fc2e8d16389e32a103c4ea2a7d8f82d19b81a74e425ac4b86acf"
       },
       "node_spec": "authoring/nodes/claude-fresh/spec.json",
       "block": {
         "name": "harness.sdk.claude.fresh",
-        "digest": "2251c6622627b2e9bc26c6ca20f1cf54952390f1058514c6a5345bc7250d94df"
+        "digest": "e8c62f93393d733990c0d1cf9c07a4126415789e8894168e1b21010b71b0f47c"
       },
       "block_file": "blocks/claude-fresh.json",
       "process": {
         "name": "harness.sdk.claude.fresh",
-        "digest": "eea89c5b554d522da73e885f1ffb5e52f1d1315eb22896da2ae14d4759d2dfbc"
+        "digest": "469841e946a921537ca450ac20eda7e6df0a5cce1e87e6225548e3839d028303"
       },
       "plan": "authoring/plan-claude-fresh.json"
     },
@@ -66,17 +66,17 @@
       "capability": "cline-typescript-fresh",
       "node": {
         "name": "harness.sdk.typescript.cline.fresh",
-        "digest": "1a63b497ab2f41c442d3fb89e229fe54919e02921965e57412ba2d60d4380aa9"
+        "digest": "6d69ba8d4bb6060834609080ac133b4d2cdcbf47272c7cbba6549b5f6b34f765"
       },
       "node_spec": "authoring/nodes/cline-typescript-fresh/spec.json",
       "block": {
         "name": "harness.sdk.typescript.cline.fresh",
-        "digest": "ab90e1231e0f99e9e505bca4abefb83321c28a992516089ec78bfbdfd7e6dabc"
+        "digest": "5228eeba283bee560c4b2918c634a8f0cda7dff40977d0d525ef41a08fe4a456"
       },
       "block_file": "blocks/cline-typescript-fresh.json",
       "process": {
         "name": "harness.sdk.typescript.cline.fresh",
-        "digest": "6d3fbd40f18b5292f4fc584e724b07767fb9a0466fe5c7192354d9f3b62ccd69"
+        "digest": "4553cdd18083e3b98e3e161c5f467efaeca1986006dd87f4dfee87bf8d7d17e9"
       },
       "plan": "authoring/plan-cline-typescript-fresh.json"
     },
@@ -84,17 +84,17 @@
       "capability": "codex-typescript-fresh",
       "node": {
         "name": "harness.sdk.typescript.codex.fresh",
-        "digest": "fcda91656929b257f205f724dd2c772d983059e93582db1b6554bb96055132d2"
+        "digest": "ea9e6579b29a439d6ab4c76f0e11944c1dea418579d0af0350cf960d6278b011"
       },
       "node_spec": "authoring/nodes/codex-typescript-fresh/spec.json",
       "block": {
         "name": "harness.sdk.typescript.codex.fresh",
-        "digest": "8c425b7935c49c6a0fa23f54f689c5deabb7c3bd946453c90e3b18435dc705c4"
+        "digest": "d21ff84f22db20af455beb9e0e098fd2a0a5a38a7a83e5a974920716a10244f1"
       },
       "block_file": "blocks/codex-typescript-fresh.json",
       "process": {
         "name": "harness.sdk.typescript.codex.fresh",
-        "digest": "8098e97c0a1172193e87cda55da74b70fe0ba9e497361d420ece12b4cc50d326"
+        "digest": "49311c01e519bd0906675aa9128e0b8fb7329ea15781616539dadba0d0181a56"
       },
       "plan": "authoring/plan-codex-typescript-fresh.json"
     },
@@ -102,17 +102,17 @@
       "capability": "copilot-fresh",
       "node": {
         "name": "harness.sdk.copilot.fresh",
-        "digest": "d0d3df83b031080701577bb99b83fb3e5dea242b6a1b0453295b60f78313beb4"
+        "digest": "f5d8bb33917784d668c4549fe32a936b4112090b0403ba7802da0e1fafed441c"
       },
       "node_spec": "authoring/nodes/copilot-fresh/spec.json",
       "block": {
         "name": "harness.sdk.copilot.fresh",
-        "digest": "2aada4b312bbc8d5c5ae98d047daf673db1fcad514d079de0e071beb8f8d7044"
+        "digest": "f93db2ef9621855061424a7f440d0f6c70b285d96a6fc7511c37ed4902b2a38a"
       },
       "block_file": "blocks/copilot-fresh.json",
       "process": {
         "name": "harness.sdk.copilot.fresh",
-        "digest": "dedd8d0942a5a01fc9cb8f4904c606fb09db8da254c5d4b6bbb6d68588ef6116"
+        "digest": "57fcce5eec7905309734fa94a00d9c98b3a826d4084229cec94c5d01c8081626"
       },
       "plan": "authoring/plan-copilot-fresh.json"
     },
@@ -120,17 +120,17 @@
       "capability": "cursor-fresh",
       "node": {
         "name": "harness.sdk.cursor.fresh",
-        "digest": "c949121e61d29037ffd609b705c662fa01d93e288980916642ef475e38137af7"
+        "digest": "e0efeb3cd87ad055d8faf014e58d4843066689d8fcaeb75dfdca1ae867ec1ed1"
       },
       "node_spec": "authoring/nodes/cursor-fresh/spec.json",
       "block": {
         "name": "harness.sdk.cursor.fresh",
-        "digest": "6f6f8158de1c9a670ad9397f2e19b5569507663d44d3023ecababf2b7f319c5e"
+        "digest": "747a46d60ae1f180b782d05ee2512a3078ea1effd5d243631ed338b2d3a8d5c6"
       },
       "block_file": "blocks/cursor-fresh.json",
       "process": {
         "name": "harness.sdk.cursor.fresh",
-        "digest": "e4d83bf86d4bb813c87ff0b1ce6db33703e3cf44a99c6b142429773b42da7855"
+        "digest": "481fe7ebe3bbf196d4b07acc6dff028eb880f0e07bc0686a225caf09b318a163"
       },
       "plan": "authoring/plan-cursor-fresh.json"
     },
@@ -138,17 +138,17 @@
       "capability": "droid-typescript-fresh",
       "node": {
         "name": "harness.sdk.typescript.droid.fresh",
-        "digest": "1d1706c82b04933c9f599cc2f421a9af21be24ed0ce83dc5c2b67be20470ca70"
+        "digest": "d1f6a5ba30a0433995daf2ca0038091360995036e0108e259d822f52cee651f3"
       },
       "node_spec": "authoring/nodes/droid-typescript-fresh/spec.json",
       "block": {
         "name": "harness.sdk.typescript.droid.fresh",
-        "digest": "595ea8df585d97e037c0d7802582f0a37bf213f97a82faf5ce768e8cdf382c8c"
+        "digest": "7cea1a86441feafa71b4857333a21749d419f46e3a4cfbd5ff0b8917a5fbf942"
       },
       "block_file": "blocks/droid-typescript-fresh.json",
       "process": {
         "name": "harness.sdk.typescript.droid.fresh",
-        "digest": "43f258d47c8791309aff3fec5c2c10f344f45ca8a00ebdbd2e78514abfa2ec28"
+        "digest": "3db6d08d832be667659b8698855fcafe1593603316a39a2467369320aa058c60"
       },
       "plan": "authoring/plan-droid-typescript-fresh.json"
     },
@@ -156,17 +156,17 @@
       "capability": "muse-fresh",
       "node": {
         "name": "harness.sdk.muse.fresh",
-        "digest": "f056dfb9ebbedf10f54b6a5f799893edfb0b88623535a79a74dd07b7096d8a95"
+        "digest": "3cbb6016e5da42a7c676fe4b4f15170e37aa5d6ec0c1b7f22f2f1bdbc54f2aeb"
       },
       "node_spec": "authoring/nodes/muse-fresh/spec.json",
       "block": {
         "name": "harness.sdk.muse.fresh",
-        "digest": "f9425cda75b22b16b096f5dc1075a5687fe6d99e4c14d77e6243ede2378a7e58"
+        "digest": "a64afb18c817734ae39ea6e0fcd519dd8a2bac1607ec66c806620a997c13be09"
       },
       "block_file": "blocks/muse-fresh.json",
       "process": {
         "name": "harness.sdk.muse.fresh",
-        "digest": "0cdc45f283f77ece5c2b2b9132b2c35fcd75a6855dd56f70916459a61a589871"
+        "digest": "a3f1798024d7d1abb93c02854f25ec8246c8c8211a6f61cbed33ba7c04592c5d"
       },
       "plan": "authoring/plan-muse-fresh.json"
     },
@@ -174,17 +174,17 @@
       "capability": "opencode-typescript-fresh",
       "node": {
         "name": "harness.sdk.typescript.opencode.fresh",
-        "digest": "1a9d67f9a1117e3568bca8a845f3fbbac546699af880d81b68e13ee0f44c8963"
+        "digest": "4c9f1f59f8e7f6dd4d14d4a8a871f499c6b84fdb345a2d43fe1869924877bbeb"
       },
       "node_spec": "authoring/nodes/opencode-typescript-fresh/spec.json",
       "block": {
         "name": "harness.sdk.typescript.opencode.fresh",
-        "digest": "24263275b0dd749284329df98859bbac4290ab295c2d6c51f9d10bebe9a651d9"
+        "digest": "e2f17e08b3cf61e0714c241b05e06b344f44444b2e771b3f104bbcbcccea93d0"
       },
       "block_file": "blocks/opencode-typescript-fresh.json",
       "process": {
         "name": "harness.sdk.typescript.opencode.fresh",
-        "digest": "8675fd95db2fa1d8db8bf05112066ff0f421b9f1d144a442f6aeccba51d4abc3"
+        "digest": "45133eab44a6f5fb935323a13efc9dfe2993255b15261aee814f6f1be35cb49c"
       },
       "plan": "authoring/plan-opencode-typescript-fresh.json"
     },
@@ -192,17 +192,17 @@
       "capability": "openhands-fresh",
       "node": {
         "name": "harness.sdk.openhands.fresh",
-        "digest": "90b3b4f707dd3260d0dfe59b1f8afe7ed3b90e2fb20d8baf7a4f8de686a2389f"
+        "digest": "0a134f39719dc9de88072a2c48f89fe2a29e533f5b2fbfc1f07cb88b43c744a2"
       },
       "node_spec": "authoring/nodes/openhands-fresh/spec.json",
       "block": {
         "name": "harness.sdk.openhands.fresh",
-        "digest": "25c5465e59f46fbebf30f5f6b3350ac538f153442924b5dee7d093cf3381b686"
+        "digest": "adfcee37bcefc625a989e7a77996a5cb26d917a6e62d44c126030d971d152ca9"
       },
       "block_file": "blocks/openhands-fresh.json",
       "process": {
         "name": "harness.sdk.openhands.fresh",
-        "digest": "2999333e26443166addb2a9cd2a6b8f47d83ed2961814a945f2e635d1522a4d0"
+        "digest": "f238a5f5e710bca61461a408223dd8d552b673d5ba2daa8f2a260c58405ba407"
       },
       "plan": "authoring/plan-openhands-fresh.json"
     }
