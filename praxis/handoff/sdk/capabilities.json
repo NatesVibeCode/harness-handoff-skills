@@ -30,17 +30,17 @@
       "capability": "antigravity-fresh",
       "node": {
         "name": "harness.sdk.antigravity.fresh",
-        "digest": "e0f2e544a0d3a3c2559d9575d32eab97c6b41614aabc563e26b5ac0322ac5153"
+        "digest": "4c29e49932bc97826b3e0ae7b432784f75b192b280ba4061b790a542a069348a"
       },
       "node_spec": "authoring/nodes/antigravity-fresh/spec.json",
       "block": {
         "name": "harness.sdk.antigravity.fresh",
-        "digest": "6423dbb17ae15349248835a4e658f2c41fc4028051572c5e417d35ff8974b777"
+        "digest": "b2626666a7c62ba1ee483f8eda788539f7593512b0484d3b3c116e9b2d886c20"
       },
       "block_file": "blocks/antigravity-fresh.json",
       "process": {
         "name": "harness.sdk.antigravity.fresh",
-        "digest": "98ce214991be7484c626060450cf7ad8fd5c00b12ccc967128c10474af26838e"
+        "digest": "75f3cb6e2d767e20ede4d9d277da08331990a7891a13943803af7205b07549d7"
       },
       "plan": "authoring/plan-antigravity-fresh.json"
     },
@@ -48,17 +48,17 @@
       "capability": "claude-fresh",
       "node": {
         "name": "harness.sdk.claude.fresh",
-        "digest": "16018f2615e93f73e058c28db938e3a19e282f7abcb2836b057af9d5a41d5b6a"
+        "digest": "b31e4abf313e51e301f7cfad68e940cfde906fe7ebb0561167526a62326f68ad"
       },
       "node_spec": "authoring/nodes/claude-fresh/spec.json",
       "block": {
         "name": "harness.sdk.claude.fresh",
-        "digest": "74baedd3b07f1dc458a3596e65f5da3982bc001572227f1b551af473e198dc5a"
+        "digest": "d5c2d6bf0be3525b3340caf36a210d258fad2d139b7bb9d16b3b01ca9957968a"
       },
       "block_file": "blocks/claude-fresh.json",
       "process": {
         "name": "harness.sdk.claude.fresh",
-        "digest": "a4295f7ffdccda28e919305664e06a448a82a50cfabe7697a78a5750ec3bfe4d"
+        "digest": "72f42838e4a76692ef14a1d0824a4b2c5926f5a08cae90f1cb5612d026ddf8a1"
       },
       "plan": "authoring/plan-claude-fresh.json"
     },
@@ -102,17 +102,17 @@
       "capability": "copilot-fresh",
       "node": {
         "name": "harness.sdk.copilot.fresh",
-        "digest": "97fdab5dc7e60622d51c2cc21202e7543b7e858f94249b1c90ae6a096e63fcfd"
+        "digest": "9558662a05df5112206f419e06307f324e66801a985b91d16c995c14fce8b301"
       },
       "node_spec": "authoring/nodes/copilot-fresh/spec.json",
       "block": {
         "name": "harness.sdk.copilot.fresh",
-        "digest": "42bb6aa0c0cfb0648f5b01c3c31935fad24e5bf23d251cd7e1331b4f094b0ae9"
+        "digest": "5a988a2cfccfba316f98517b85cf20175fbb67122c6737188c00c7f60c10eace"
       },
       "block_file": "blocks/copilot-fresh.json",
       "process": {
         "name": "harness.sdk.copilot.fresh",
-        "digest": "0ff1e7a3ae246addfa7e0106780ddf46870d51a2c7bc78ed3296c48165dc2efe"
+        "digest": "fd01a9efa43c81da189f814a74f2df10d8b81d8326a8c2ce604b051b3d507573"
       },
       "plan": "authoring/plan-copilot-fresh.json"
     },
@@ -120,17 +120,17 @@
       "capability": "cursor-fresh",
       "node": {
         "name": "harness.sdk.cursor.fresh",
-        "digest": "b9fb052910b8bb2bfd7c6a0091b31d1d5aa7a47b1b9e722cb677ee2d1470a0cc"
+        "digest": "4e068b8db9daeab23e46675e62c97ad17acb8ad6eb57cd095e0ab6748f8912e4"
       },
       "node_spec": "authoring/nodes/cursor-fresh/spec.json",
       "block": {
         "name": "harness.sdk.cursor.fresh",
-        "digest": "f92c68129e04e693dbf4925a157d91b2afd12a2b4e5cacc75e345263bb8799bc"
+        "digest": "bed610000aff6c890cba2e446dd59b755cdcdfce94988285f058480c1ebf87f9"
       },
       "block_file": "blocks/cursor-fresh.json",
       "process": {
         "name": "harness.sdk.cursor.fresh",
-        "digest": "2f68660a69e9ec7edf91330c8c4bc2abc369d5344d993397d306e4d792fe47d3"
+        "digest": "b9598361e8778ce98183659af0789ab19d76b3f41a51bb6c2a7a65cbfe7ec62b"
       },
       "plan": "authoring/plan-cursor-fresh.json"
     },
@@ -156,17 +156,17 @@
       "capability": "muse-fresh",
       "node": {
         "name": "harness.sdk.muse.fresh",
-        "digest": "6feb76c3c2b1eaf74f27f16887d08d99f6ebbb9c69894e4c3ce979eedb38be79"
+        "digest": "9eea1d9184f4f0b34782cc1e91b25f49971806e38563e443a86a666f465fa3b0"
       },
       "node_spec": "authoring/nodes/muse-fresh/spec.json",
       "block": {
         "name": "harness.sdk.muse.fresh",
-        "digest": "d69e2e409cc0358e75e3a33e819c9e8dcd4ba48508ac9d703854f27a3a67c13a"
+        "digest": "24b6f781bff17656d2870ec3f6de3f1a9483b13387f71a49c47ea67da23223c4"
       },
       "block_file": "blocks/muse-fresh.json",
       "process": {
         "name": "harness.sdk.muse.fresh",
-        "digest": "ecfaf543354612ac32a595cc03e56b3eca5a625c75de426afd1acc40465aeb97"
+        "digest": "bb71c1e86fefe12e5ecc2561e5bc982355524ce6096c30b24c4492eca80f15ed"
       },
       "plan": "authoring/plan-muse-fresh.json"
     },
@@ -192,17 +192,17 @@
       "capability": "openhands-fresh",
       "node": {
         "name": "harness.sdk.openhands.fresh",
-        "digest": "1847c2d148d3be576faf973ee566b331b6f9d5a6122853e4eaf614a765b984dd"
+        "digest": "3f032d84bfe26b78c6decb496ae5b809f2123f6c01d8bd5e03eea8b6813309c1"
       },
       "node_spec": "authoring/nodes/openhands-fresh/spec.json",
       "block": {
         "name": "harness.sdk.openhands.fresh",
-        "digest": "5149a248dd6b68dab12afec36f5f2fad5eeaea9e13d2472a2b830bd419703501"
+        "digest": "06cdb2c3b9c9a3faafbeaccd72a204e6aa07faefaf7917f2590dc0019e8f4045"
       },
       "block_file": "blocks/openhands-fresh.json",
       "process": {
         "name": "harness.sdk.openhands.fresh",
-        "digest": "2cac28477b33801d3a2879f1edecb3b7a6bcc94be558393ae32f1274c1ea9534"
+        "digest": "95d0928b399453c8d5fca0c4b89fe3ca957dbc94939a8e31e3e586c08314826f"
       },
       "plan": "authoring/plan-openhands-fresh.json"
     }

@@ -302,6 +302,11 @@ async def query(**kwargs):
     receipt = json.loads(result.stdout)
     assert receipt['output'] == 'fixture completed output'
     assert receipt['settings_digest'] == sdk_contract.digest(json.dumps(req['settings'], sort_keys=True, separators=(',', ':')).encode())
+    assert not list(stage.rglob('__pycache__'))
+    assert not list(packages.rglob('__pycache__'))
+    repeated = run(req)
+    assert repeated.returncode == 0, repeated.stderr
+    assert not list(stage.rglob('__pycache__'))
     marker.unlink()
     (stage/'mcp_bridge/sdk_operations.py').write_text('# drift\n')
     refused = run(req)

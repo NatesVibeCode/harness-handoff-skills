@@ -13,6 +13,10 @@ import re
 import sys
 from pathlib import Path
 
+# Printed implementation material is immutable, including during unsigned
+# iteration. Import caches belong outside the print; this runner needs none.
+sys.dont_write_bytecode = True
+
 SECRET_PATTERN = re.compile(r'(?:sk-|xai-|sgamp_|crsr_|perm-)[A-Za-z0-9_-]{8,}')
 
 
