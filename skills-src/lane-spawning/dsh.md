@@ -1,0 +1,3 @@
+## Direct lane spawning
+
+For a new handoff, spawn the requested number of independent caller-owned DeepSeek Harness executions directly through the pinned ACP stdio route (or the one-shot `headless` CLI route), giving each lane its own process, its own ACP session, its own workspace, and its own result. Do not use a lane manager, shared broker, multiplexed connection, or parent agent to fan out or run the lanes. Existing-session continuation is allowed only for an exact session id recorded in the selected workspace's process-owned ledger (`.praxis/dsh-sessions.json`); a caller naming a session does not authorize continuation, and the newest session is never a substitute.

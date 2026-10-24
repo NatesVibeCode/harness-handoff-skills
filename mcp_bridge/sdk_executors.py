@@ -19,9 +19,9 @@ from __future__ import annotations
 
 import asyncio
 import importlib.util
+import re
 import sys
 
-from mcp_bridge import cli_executor
 
 
 def available(harness: str) -> bool:
@@ -45,7 +45,12 @@ def available(harness: str) -> bool:
 
 
 def _receipt(harness: str, session_id: str | None, output: str) -> dict:
-    return {"harness": harness, "route": "sdk", "session_id": session_id, "output": cli_executor.redact(output[-8000:])}
+    redacted = re.sub(
+        r"(sk-[A-Za-z0-9-_]{8,}|xai-[A-Za-z0-9-_]{8,}|sgamp_[A-Za-z0-9-_]{8,}|crsr_[A-Za-z0-9-_]{8,}|perm-[A-Za-z0-9-_]{8,})",
+        "[redacted-credential]",
+        output,
+    )
+    return {"harness": harness, "route": "sdk", "session_id": session_id, "output": redacted}
 
 
 async def run_plan(plan, *, authorization=None):

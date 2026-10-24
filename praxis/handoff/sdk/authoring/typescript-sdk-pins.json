@@ -1,0 +1,12 @@
+{
+  "schema": "praxis.harness_sdk_pins.v1",
+  "captured_at": "2026-10-24",
+  "pins": {
+    "amp": "0.1.0-20260918210405-g81edbf0",
+    "cline": "0.0.93",
+    "codex": "0.162.1",
+    "droid": "0.9.1",
+    "dsh": "0.1.5-rc.1",
+    "opencode": "1.19.0"
+  }
+}

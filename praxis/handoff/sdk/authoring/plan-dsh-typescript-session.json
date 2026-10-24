@@ -1,0 +1,182 @@
+{
+  "schema": "forge.author_plan.v1",
+  "module": "github.com/natesvibecode/harness-handoff/praxis/handoff/sdk",
+  "library": true,
+  "nodes": [
+    {
+      "key": "invoke",
+      "spec_file": "nodes/dsh-typescript-session/spec.json",
+      "source_file": "assets/sdk_dispatch.go",
+      "dispatch": {
+        "dir": "invoke",
+        "file": "spec.json",
+        "source_file": "sdk_dispatch.go",
+        "package": "sdkdispatch",
+        "symbol": "Run"
+      }
+    }
+  ],
+  "blocks": [
+    {
+      "key": "operation",
+      "name": "harness.sdk.dsh.session_turn",
+      "nodes": [
+        {
+          "key": "invoke",
+          "node": "invoke"
+        }
+      ],
+      "inputs": [
+        {
+          "name": "prompt",
+          "to": {
+            "node": "invoke",
+            "port": "prompt"
+          }
+        },
+        {
+          "name": "workspace",
+          "to": {
+            "node": "invoke",
+            "port": "workspace"
+          }
+        },
+        {
+          "name": "session_id",
+          "to": {
+            "node": "invoke",
+            "port": "session_id"
+          }
+        },
+        {
+          "name": "route_provider",
+          "to": {
+            "node": "invoke",
+            "port": "route_provider"
+          }
+        },
+        {
+          "name": "route_model",
+          "to": {
+            "node": "invoke",
+            "port": "route_model"
+          }
+        },
+        {
+          "name": "route_overlay_path",
+          "to": {
+            "node": "invoke",
+            "port": "route_overlay_path"
+          }
+        },
+        {
+          "name": "route_overlay_digest",
+          "to": {
+            "node": "invoke",
+            "port": "route_overlay_digest"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "session_id",
+          "from": {
+            "node": "invoke",
+            "port": "session_id"
+          }
+        },
+        {
+          "name": "output",
+          "from": {
+            "node": "invoke",
+            "port": "output"
+          }
+        },
+        {
+          "name": "stop_reason",
+          "from": {
+            "node": "invoke",
+            "port": "stop_reason"
+          }
+        },
+        {
+          "name": "route_requested_provider",
+          "from": {
+            "node": "invoke",
+            "port": "route_requested_provider"
+          }
+        },
+        {
+          "name": "route_requested_model",
+          "from": {
+            "node": "invoke",
+            "port": "route_requested_model"
+          }
+        },
+        {
+          "name": "route_configured_provider",
+          "from": {
+            "node": "invoke",
+            "port": "route_configured_provider"
+          }
+        },
+        {
+          "name": "route_configured_model",
+          "from": {
+            "node": "invoke",
+            "port": "route_configured_model"
+          }
+        },
+        {
+          "name": "route_observed_provider",
+          "from": {
+            "node": "invoke",
+            "port": "route_observed_provider"
+          }
+        },
+        {
+          "name": "route_observed_model",
+          "from": {
+            "node": "invoke",
+            "port": "route_observed_model"
+          }
+        },
+        {
+          "name": "route_overlay_sha256",
+          "from": {
+            "node": "invoke",
+            "port": "route_overlay_sha256"
+          }
+        },
+        {
+          "name": "route_observation_source",
+          "from": {
+            "node": "invoke",
+            "port": "route_observation_source"
+          }
+        },
+        {
+          "name": "route_observed_value",
+          "from": {
+            "node": "invoke",
+            "port": "route_observed_value"
+          }
+        }
+      ]
+    }
+  ],
+  "assets": [
+    {
+      "rel_path": "worker/harness.json",
+      "file": "assets/dsh/harness.json"
+    },
+    {
+      "rel_path": "worker/sdk/typescript/run.mjs",
+      "file": "assets/dsh/sdk_ts_runner.mjs"
+    },
+    {
+      "rel_path": "worker/sdk/typescript/adapters.mjs",
+      "file": "assets/dsh/sdk_ts_adapters.mjs"
+    }
+  ]
+}

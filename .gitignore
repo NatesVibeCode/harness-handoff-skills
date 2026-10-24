@@ -12,3 +12,7 @@ venv/
 .env.*
 !.env.example
 .DS_Store
+
+# Local build outputs are not source-library releases.
+/praxis/handoff/prints/
+/praxis/handoff/sdk/prints/

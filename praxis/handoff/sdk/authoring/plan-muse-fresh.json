@@ -1,0 +1,70 @@
+{
+  "schema": "forge.author_plan.v1",
+  "module": "github.com/natesvibecode/harness-handoff/praxis/handoff/sdk",
+  "library": true,
+  "nodes": [
+    {
+      "key": "invoke",
+      "spec_file": "nodes/muse-fresh/spec.json",
+      "source_file": "assets/sdk_dispatch.go",
+      "dispatch": {
+        "dir": "invoke",
+        "file": "spec.json",
+        "source_file": "sdk_dispatch.go",
+        "package": "sdkdispatch",
+        "symbol": "Run"
+      }
+    }
+  ],
+  "blocks": [
+    {
+      "key": "operation",
+      "name": "harness.sdk.muse.fresh",
+      "nodes": [
+        {
+          "key": "invoke",
+          "node": "invoke"
+        }
+      ],
+      "inputs": [
+        {
+          "name": "prompt",
+          "to": {
+            "node": "invoke",
+            "port": "prompt"
+          }
+        },
+        {
+          "name": "workspace",
+          "to": {
+            "node": "invoke",
+            "port": "workspace"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "receipt",
+          "from": {
+            "node": "invoke",
+            "port": "receipt"
+          }
+        }
+      ]
+    }
+  ],
+  "assets": [
+    {
+      "rel_path": "worker/harness.json",
+      "file": "assets/worker/python/harness.json"
+    },
+    {
+      "rel_path": "worker/sdk/run.py",
+      "file": "../../../../mcp_bridge/sdk_runner.py"
+    },
+    {
+      "rel_path": "worker/sdk/mcp_bridge/sdk_executors.py",
+      "file": "../../../../mcp_bridge/sdk_executors.py"
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "schema": "atlas.forge_stores.v1",
+  "patterns": [
+    {
+      "record": {
+        "kind": "node",
+        "key": "node.v1",
+        "schema_urn": "aeltum.node_spec.v1"
+      },
+      "digest": "144731dd834259d024c98b17ea7e62805ce5af074128133790a5dcdfafa0e24f"
+    }
+  ],
+  "bounds": [
+    {
+      "entry": {
+        "key": "handoff.value.length.nonnegative",
+        "kind": "count",
+        "subject": "length(*)",
+        "params": {
+          "min": 0.0
+        }
+      },
+      "digest": "11ee5a5237e83c31468ee3fc471982ea3e1c80b33ea2444d4429707d945d5196"
+    }
+  ],
+  "nodes": [],
+  "demands": [],
+  "capabilities": [],
+  "pointers": [],
+  "routes": [],
+  "prompts": [],
+  "interpreters": [],
+  "contracts": [
+    {
+      "name": "dsh",
+      "path": "../../../../dsh-harness-handoff/contract.json",
+      "digest": "sha256:34069183c4e8ebc0dcbf1bde4190407663237934e78061f8cc4185b50608d51f"
+    }
+  ]
+}

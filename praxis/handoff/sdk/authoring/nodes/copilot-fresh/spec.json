@@ -1,0 +1,348 @@
+{
+  "composition": {
+    "schema": "praxis.capability_contract.v1",
+    "inputs": {
+      "prompt": {
+        "semantic": "harness.sdk.copilot.fresh.prompt.v1"
+      },
+      "model": {
+        "semantic": "harness.sdk.copilot.fresh.model.v1"
+      },
+      "approval": {
+        "semantic": "harness.sdk.copilot.fresh.approval.v1"
+      }
+    },
+    "outputs": {
+      "receipt": {
+        "semantic": "harness.sdk.copilot.fresh.receipt.v1"
+      }
+    },
+    "outcomes": [
+      "completed"
+    ],
+    "effects": [
+      "harness.invoke"
+    ],
+    "failure": "error"
+  },
+  "schema": "aeltum.node_spec.v1",
+  "identity": {
+    "name": "harness.sdk.copilot.fresh",
+    "kind": "harness"
+  },
+  "pattern": {
+    "key": "node.v1",
+    "digest": "144731dd834259d024c98b17ea7e62805ce5af074128133790a5dcdfafa0e24f"
+  },
+  "fields": [
+    {
+      "side": "input",
+      "name": "prompt",
+      "type": {
+        "type": "string"
+      },
+      "required": true,
+      "bounds": [
+        {
+          "key": "handoff.value.length.nonnegative",
+          "digest": "11ee5a5237e83c31468ee3fc471982ea3e1c80b33ea2444d4429707d945d5196"
+        }
+      ],
+      "description": {
+        "intent": "One prompt submitted to the pinned SDK operation",
+        "tags": [
+          "harness",
+          "sdk",
+          "input"
+        ],
+        "meaning": "One prompt submitted to the pinned SDK operation",
+        "units": "typed value",
+        "source": "caller",
+        "declared_by": "harness-handoff SDK authoring"
+      }
+    },
+    {
+      "side": "input",
+      "name": "model",
+      "type": {
+        "type": "string"
+      },
+      "required": true,
+      "bounds": [
+        {
+          "key": "handoff.value.length.nonnegative",
+          "digest": "11ee5a5237e83c31468ee3fc471982ea3e1c80b33ea2444d4429707d945d5196"
+        }
+      ],
+      "description": {
+        "intent": "Explicit model identifier required by this SDK adapter",
+        "tags": [
+          "harness",
+          "sdk",
+          "input"
+        ],
+        "meaning": "Explicit model identifier required by this SDK adapter",
+        "units": "typed value",
+        "source": "caller",
+        "declared_by": "harness-handoff SDK authoring"
+      }
+    },
+    {
+      "side": "input",
+      "name": "approval",
+      "type": {
+        "type": "string",
+        "enum": [
+          "unattended"
+        ]
+      },
+      "required": true,
+      "bounds": [
+        {
+          "key": "handoff.value.length.nonnegative",
+          "digest": "11ee5a5237e83c31468ee3fc471982ea3e1c80b33ea2444d4429707d945d5196"
+        }
+      ],
+      "description": {
+        "intent": "Explicit authorization for the adapter's approve_all permission handler",
+        "tags": [
+          "harness",
+          "sdk",
+          "input"
+        ],
+        "meaning": "Explicit authorization for the adapter's approve_all permission handler",
+        "units": "typed value",
+        "source": "caller",
+        "declared_by": "harness-handoff SDK authoring"
+      }
+    },
+    {
+      "side": "output",
+      "name": "receipt",
+      "type": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "schema": {
+            "type": "string",
+            "enum": [
+              "praxis.harness_sdk_receipt.v1"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "succeeded"
+            ]
+          },
+          "harness": {
+            "type": "string",
+            "enum": [
+              "copilot"
+            ]
+          },
+          "sdk_operation": {
+            "type": "string",
+            "enum": [
+              "fresh"
+            ]
+          },
+          "distribution": {
+            "type": "string",
+            "enum": [
+              "github-copilot-sdk"
+            ]
+          },
+          "distribution_version": {
+            "type": "string",
+            "enum": [
+              "1.0.18"
+            ]
+          },
+          "module": {
+            "type": "string",
+            "enum": [
+              "copilot"
+            ]
+          },
+          "entrypoint": {
+            "type": "string",
+            "enum": [
+              "CopilotClient"
+            ]
+          },
+          "adapter": {
+            "type": "string",
+            "enum": [
+              "copilot_fresh"
+            ]
+          },
+          "adapter_digest": {
+            "type": "string",
+            "enum": [
+              "sha256:c75e244baa5afa75c2c7fa33ad682a1e70ff41b1f86d780f7fcc4858bed18db0"
+            ]
+          },
+          "runner_digest": {
+            "type": "string",
+            "enum": [
+              "sha256:115a7b89c854a6b52476624fce9a6ebbf300bcd018d8968e181ad396692dc28e"
+            ]
+          },
+          "session_id": {
+            "type": "string"
+          },
+          "output": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "schema",
+          "status",
+          "harness",
+          "sdk_operation",
+          "distribution",
+          "distribution_version",
+          "module",
+          "entrypoint",
+          "adapter",
+          "adapter_digest",
+          "runner_digest",
+          "session_id",
+          "output"
+        ]
+      },
+      "required": true,
+      "bounds": [
+        {
+          "key": "handoff.value.length.nonnegative",
+          "digest": "11ee5a5237e83c31468ee3fc471982ea3e1c80b33ea2444d4429707d945d5196"
+        }
+      ],
+      "description": {
+        "intent": "Pinned SDK operation result and session identity",
+        "tags": [
+          "harness",
+          "sdk",
+          "receipt"
+        ],
+        "meaning": "SDK result and exact execution binding",
+        "units": "typed object",
+        "source": "computed",
+        "declared_by": "harness-handoff SDK authoring"
+      }
+    }
+  ],
+  "dimensions": [
+    {
+      "name": "surface",
+      "contents": {
+        "entry": "invoke_pinned_python_sdk",
+        "inputs": [
+          {
+            "field": "prompt",
+            "target": "slot:prompt"
+          },
+          {
+            "field": "model",
+            "target": "slot:model"
+          },
+          {
+            "field": "approval",
+            "target": "slot:approval"
+          }
+        ],
+        "outputs": [
+          {
+            "field": "receipt",
+            "target": "result:json"
+          }
+        ]
+      }
+    },
+    {
+      "name": "access",
+      "contents": {
+        "share": {
+          "identity": "operator-sdk-account:copilot",
+          "digests": [
+            "d07017ebb95ed103475eec05c337261d6204cb75eb478be24693dba61d882017"
+          ]
+        }
+      }
+    },
+    {
+      "name": "handoff",
+      "contents": {
+        "harness": "copilot",
+        "executor": "sdk",
+        "contract": {
+          "digest": "sha256:d07017ebb95ed103475eec05c337261d6204cb75eb478be24693dba61d882017"
+        },
+        "ownership": "customer",
+        "interactivity": "prompts",
+        "credential_channel": "native-session",
+        "credential_auth": "native-session",
+        "sdk": {
+          "contract_file": "worker/harness.json",
+          "working_directory_slot": "",
+          "language": "python",
+          "package": "github-copilot-sdk",
+          "version": "1.0.18",
+          "module": "copilot",
+          "entrypoint": "CopilotClient",
+          "operation": "fresh",
+          "adapter": "copilot_fresh",
+          "adapter_digest": "sha256:c75e244baa5afa75c2c7fa33ad682a1e70ff41b1f86d780f7fcc4858bed18db0",
+          "runner_digest": "sha256:115a7b89c854a6b52476624fce9a6ebbf300bcd018d8968e181ad396692dc28e",
+          "contract_digest": "sha256:b38244300e8a41a6f2c9b2a301284e8fbabe7a695481a3605afab86ef70a0ca6",
+          "bindings_digest": "sha256:b38244300e8a41a6f2c9b2a301284e8fbabe7a695481a3605afab86ef70a0ca6",
+          "dispatch_source_digest": "316eebc30b2dceeb2d6bad80b9d323a14871c92aa0cb719b2a6631d20ac0670b",
+          "dispatch_pointer": "sdkdispatch.Run",
+          "runner_file": "worker/sdk/run.py",
+          "files": {
+            "worker/harness.json": "sha256:b38244300e8a41a6f2c9b2a301284e8fbabe7a695481a3605afab86ef70a0ca6",
+            "worker/sdk/run.py": "sha256:115a7b89c854a6b52476624fce9a6ebbf300bcd018d8968e181ad396692dc28e",
+            "worker/sdk/mcp_bridge/sdk_executors.py": "sha256:c75e244baa5afa75c2c7fa33ad682a1e70ff41b1f86d780f7fcc4858bed18db0"
+          },
+          "runtime": {
+            "binary": "/opt/homebrew/Cellar/python@3.14/3.14.3_1/Frameworks/Python.framework/Versions/3.14/bin/python3.14",
+            "sha256": "cbf84109626aa1013bbe408fbb9590bd0f1c1548f038b2221c6b8b87de26ca43",
+            "arguments": [],
+            "timeout_ms": 0,
+            "bundle_file": "",
+            "bundle_digest": "",
+            "target": ""
+          },
+          "environment": []
+        }
+      }
+    },
+    {
+      "name": "fields",
+      "contents": null
+    },
+    {
+      "name": "field_types",
+      "contents": null
+    }
+  ],
+  "proof_spec": {
+    "behavior": [],
+    "test": {
+      "pointer": "",
+      "digest": ""
+    },
+    "target": "sdk-runtime",
+    "mode": "real_service"
+  },
+  "usage": {
+    "purpose": "Invoke exactly one copilot Python SDK fresh operation through its pinned adapter and return a bound receipt.",
+    "use_when": [
+      "an explicit copilot SDK fresh operation is selected"
+    ],
+    "avoid_when": [
+      "the selected SDK package version or exact session identity is unknown"
+    ]
+  }
+}

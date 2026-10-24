@@ -112,13 +112,13 @@ Each entrypoint includes harness-specific SDK, protocol, and CLI recipes for dis
 
 ## Generated skills — edit the source, not the trees
 
-The fourteen `*-harness-handoff/` folders and the standalone
+The fifteen `*-harness-handoff/` folders and the standalone
 `harness-session-review/` skill package, including its bundled helper, are
 **generated**. Do not hand-edit them; a hand-edit is overwritten by the next
 build and caught by `--check`.
 
 ```sh
-python3 scripts/build_skills.py            # regenerate fourteen trees plus the review skill
+python3 scripts/build_skills.py            # regenerate fifteen trees plus the review skill
 python3 scripts/build_skills.py --check    # fail if a checked-in tree is stale
 ```
 
@@ -152,7 +152,7 @@ pasted the lane-spawning block into every file five or six times without dedupli
 which is exactly the failure a single source removes. `scripts/extract_skill_sources.py`
 is kept as the one-time migration that derived `skills-src/` from those copies.
 
-These are operational instructions with runnable command examples, not installed integrations. They do not install CLIs or supply credentials. Live delivery has not been tested across all fourteen harnesses; agents must consult installed help before using version-sensitive commands. In these files, "operator" means the person requesting the work.
+These are operational instructions with runnable command examples, not installed integrations. They do not install CLIs or supply credentials. Live delivery has not been tested across all fifteen harnesses; agents must consult installed help before using version-sensitive commands. In these files, "operator" means the person requesting the work.
 
 ## Optional MCP bridge (`mcp_bridge/`)
 
@@ -194,3 +194,10 @@ per-user authentication; connect it only to a trusted local MCP host and use
 that host's tool approval controls for each execution.
 
 See [evidence and limits](EVIDENCE.md) for checked versions, historical successes, failures, and untested paths. The skills contain no required private services, personal filesystem paths, or account configuration. Product names belong to their respective owners; this is an independent community project.
+
+## SDK action Blocks
+
+[Typed SDK action Blocks](praxis/handoff/sdk/README.md) wrap the existing Node
+implementations. Jobs compose these Blocks; the worker supplies execution
+lifecycle handling. The source library does not ship a separate SDK print
+product or qualification workflow.
