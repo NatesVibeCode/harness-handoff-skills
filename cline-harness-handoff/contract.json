@@ -18,7 +18,7 @@
       "typescript": "@cline/sdk"
     },
     "entrypoints": {
-      "typescript": "ClineCore"
+      "typescript": "Agent"
     },
     "command": null,
     "repositories": {

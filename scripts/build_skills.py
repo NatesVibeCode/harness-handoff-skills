@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Generate the fifteen handoff skill trees and the session review skill.
+"""Generate the fourteen handoff skill trees and the session review skill.
 
-The fifteen handoff trees are generated from their authored source; the standalone
+The fourteen handoff trees are generated from their authored source; the standalone
 review workflow and helper are also copied into a self-contained generated skill.
 Before this existed the handoff trees were hand-maintained copies, and commit 9322d55
 pasted the same ``## Direct lane spawning`` block into every file five or six times.

@@ -1,6 +1,6 @@
 # Agent instructions — harness-handoff
 
-Portable handoff skills for fifteen coding-agent harnesses, plus a standalone
+Portable handoff skills for fourteen coding-agent harnesses, plus a standalone
 session-review skill. Authored sources generate the skill trees.
 
 ```text
@@ -37,7 +37,6 @@ make that impossible, and `--check` is what makes it stick.
 ```sh
 python3 scripts/build_skills.py            # write the trees
 python3 scripts/build_skills.py --check    # fail if a tree is stale (exit 1)
-python3 -m pytest                          # the generator's rules, plus the real-tree gates
 ```
 
 `--check` compares every generated file byte-for-byte. Run it before committing;
@@ -45,7 +44,7 @@ a hand-edit is reverted by the next build and caught by the check.
 
 ## What the generator refuses
 
-Each of these is a test in `tests/test_build_skills.py`, not just a convention:
+The generator checks these source invariants:
 
 - a lane source with **zero or two or more** `## Direct lane spawning` headings
 - the lane block **authored by hand** in `skills-src/harnesses/<h>.md` (it is
@@ -81,6 +80,8 @@ pins it.
 
 ## When you finish
 
-Run `--check` and `pytest`, and say what they printed. If you changed a skill's
-prose, say which harness trees moved — the generated files are the artifact users
-copy, so a source edit that was not regenerated is an incomplete change.
+Regenerate edited skills and run the existing `--check` to catch stale outputs.
+Verify changed behavior through its receiving caller. Report what actually ran
+and what remains unverified. Inventory affected tests before changing them; old
+assertions do not define the desired behavior. Do not add qualification gates,
+proof-file startup prerequisites, or per-action worker products.
